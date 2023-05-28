@@ -21,7 +21,7 @@
 
 # Wurst Hacked Client Chinese Version
 
-This is an unfinished Chinese version of the wurst hacked client, based on wurst 7.17.1 version.
+This is an unfinished Chinese version of the wurst hacked client, based on wurst 7.35 version.
 
 ## Features
 
