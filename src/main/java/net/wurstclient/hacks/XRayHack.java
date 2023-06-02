@@ -73,7 +73,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	
 	public XRayHack()
 	{
-		super("X-Ray");
+		super("矿透");
 		setCategory(Category.RENDER);
 		addSetting(ores);
 		

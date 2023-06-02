@@ -44,7 +44,7 @@ public final class TriggerBotHack extends Hack implements UpdateListener
 	
 	public TriggerBotHack()
 	{
-		super("TriggerBot");
+		super("扳机机器人");
 		setCategory(Category.COMBAT);
 		
 		addSetting(range);

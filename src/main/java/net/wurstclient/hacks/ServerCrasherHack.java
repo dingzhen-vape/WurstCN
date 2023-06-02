@@ -27,7 +27,7 @@ public final class ServerCrasherHack extends Hack
 {
 	public ServerCrasherHack()
 	{
-		super("ServerCrasher");
+		super("崩溃物品");
 		
 		setCategory(Category.ITEMS);
 	}
