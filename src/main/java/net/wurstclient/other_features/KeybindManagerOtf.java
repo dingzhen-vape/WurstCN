@@ -19,14 +19,14 @@ public final class KeybindManagerOtf extends OtherFeature
 {
 	public KeybindManagerOtf()
 	{
-		super("Keybinds",
-			"This is just a shortcut to let you open the Keybind Manager from within the GUI. Normally you would go to Wurst Options > Keybinds.");
+		super("热键绑定",
+			"这只是一个快捷方式，让你可以从GUI中打开按键绑定管理器。通常你会去Wurst选项 > 按键绑定。");
 	}
 	
 	@Override
 	public String getPrimaryAction()
 	{
-		return "Open Keybind Manager";
+		return "打开热键编辑器";
 	}
 	
 	@Override

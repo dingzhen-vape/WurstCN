@@ -133,7 +133,7 @@ public final class ClickGui
 			
 		}catch(Exception e)
 		{
-			System.out.println("加载失败 " + windowsFile.getFileName());
+			System.out.println("Failed to load " + windowsFile.getFileName());
 			e.printStackTrace();
 			
 			saveWindows();
