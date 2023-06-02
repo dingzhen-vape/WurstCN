@@ -42,7 +42,7 @@ public class WurstOptionsScreen extends Screen
 	public void init()
 	{
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Back"), b -> client.setScreen(prevScreen))
+			.builder(Text.literal("返回"), b -> client.setScreen(prevScreen))
 			.dimensions(width / 2 - 100, height / 4 + 144 - 16, 200, 20)
 			.build());
 		
@@ -62,37 +62,37 @@ public class WurstOptionsScreen extends Screen
 			wurst.getOtfs().translationsOtf.getForceEnglish();
 		
 		new WurstOptionsButton(-154, 24,
-			() -> "Click Friends: "
-				+ (middleClickFriends.isChecked() ? "ON" : "OFF"),
+			() -> "点击添加好友: "
+				+ (middleClickFriends.isChecked() ? "开启" : "关闭"),
 			middleClickFriends.getWrappedDescription(200),
 			b -> middleClickFriends
 				.setChecked(!middleClickFriends.isChecked()));
 		
 		new WurstOptionsButton(-154, 48,
-			() -> "Count Users: " + (analytics.isEnabled() ? "ON" : "OFF"),
-			"Counts how many people are using Wurst\n"
-				+ "and which versions are the most popular.\n"
-				+ "We use this data to decide when to stop\n"
-				+ "supporting old Minecraft versions.\n\n"
-				+ "We use a random ID to tell users apart\n"
-				+ "so that this data can never be linked to\n"
-				+ "your Minecraft account. The random ID is\n"
-				+ "changed every 3 days to make extra sure\n"
-				+ "that you remain anonymous.",
+			() -> "统计用户数: " + (analytics.isEnabled() ? "开启" : "关闭"),
+			"统计有多少人在使用Wurst\n"
+				+ "以及哪些版本最受欢迎。\n"
+				+ "我们用这些数据来决定何时停止\n"
+				+ "支持旧的Minecraft版本。\n\n"
+				+ "我们使用一个随机ID来区分用户\n"
+				+ "这样这些数据就永远不会和\n"
+				+ "你的Minecraft账号有关。为了确保\n"
+				+ "你的匿名性，这个随机ID每3天\n"
+				+ "就会改变一次。",
 			b -> analytics.setEnabled(!analytics.isEnabled()));
 		
 		new WurstOptionsButton(-154, 72,
-			() -> "Spoof Vanilla: "
-				+ (vanillaSpoofOtf.isEnabled() ? "ON" : "OFF"),
+			() -> "伪装原版: "
+				+ (vanillaSpoofOtf.isEnabled() ? "开启" : "关闭"),
 			vanillaSpoofOtf.getWrappedDescription(200),
 			b -> vanillaSpoofOtf.doPrimaryAction());
 		
 		new WurstOptionsButton(-154, 96,
-			() -> "Translations: " + (!forceEnglish.isChecked() ? "ON" : "OFF"),
-			"§cThis is an experimental feature!\n"
-				+ "We don't have many translations yet. If you\n"
-				+ "speak both English and some other language,\n"
-				+ "please help us by adding more translations.",
+			() -> "翻译: " + (!forceEnglish.isChecked() ? "开启" : "关闭"),
+			"§c这是一个实验性的功能！\n"
+				+ "我们还没有很多翻译。如果你\n"
+				+ "会说英语和其他语言，\n"
+				+ "请帮助我们添加更多的翻译。",
 			b -> forceEnglish.setChecked(!forceEnglish.isChecked()));
 	}
 	
@@ -100,27 +100,27 @@ public class WurstOptionsScreen extends Screen
 	{
 		XRayHack xRayHack = WurstClient.INSTANCE.getHax().xRayHack;
 		
-		new WurstOptionsButton(-50, 24, () -> "Keybinds",
-			"Keybinds allow you to toggle any hack\n"
-				+ "or command by simply pressing a\n" + "button.",
+		new WurstOptionsButton(-50, 24, () -> "按键绑定",
+			"按键绑定允许你通过简单地按下一个\n"
+				+ "按钮来切换任何hack或命令。",
 			b -> client.setScreen(new KeybindManagerScreen(this)));
 		
-		new WurstOptionsButton(-50, 48, () -> "X-Ray Blocks",
-			"Manager for the blocks\n" + "that X-Ray will show.",
+		new WurstOptionsButton(-50, 48, () -> "X-Ray方块",
+			"管理X-Ray将要显示的方块。",
 			b -> xRayHack.openBlockListEditor(this));
 		
-		new WurstOptionsButton(-50, 72, () -> "Zoom",
-			"The Zoom Manager allows you to\n"
-				+ "change the zoom key, how far it\n"
-				+ "will zoom in and more.",
+		new WurstOptionsButton(-50, 72, () -> "缩放",
+			"缩放管理器允许你更改缩放键，\n"
+				+ "缩放的程度以及更多。",
 			b -> client.setScreen(new ZoomManagerScreen(this)));
+
 	}
 	
 	private void addLinkButtons()
 	{
 		OperatingSystem os = Util.getOperatingSystem();
 		
-		new WurstOptionsButton(54, 24, () -> "Official Website",
+		new WurstOptionsButton(54, 24, () -> "官方网站",
 			"WurstClient.net", b -> os.open(
 				"https://www.wurstclient.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Official+Website"));
 		
@@ -162,14 +162,14 @@ public class WurstOptionsScreen extends Screen
 		int y1 = 40;
 		int y2 = height / 4 + 24 - 28;
 		
-		drawCenteredTextWithShadow(matrixStack, tr, "Wurst Options", middleX,
+		drawCenteredTextWithShadow(matrixStack, tr, "Wurst 设置", middleX,
 			y1, 0xffffff);
 		
-		drawCenteredTextWithShadow(matrixStack, tr, "Settings", middleX - 104,
+		drawCenteredTextWithShadow(matrixStack, tr, "设置", middleX - 104,
 			y2, 0xcccccc);
-		drawCenteredTextWithShadow(matrixStack, tr, "Managers", middleX, y2,
+		drawCenteredTextWithShadow(matrixStack, tr, "编辑器", middleX, y2,
 			0xcccccc);
-		drawCenteredTextWithShadow(matrixStack, tr, "Links", middleX + 104, y2,
+		drawCenteredTextWithShadow(matrixStack, tr, "链接", middleX + 104, y2,
 			0xcccccc);
 	}
 	
