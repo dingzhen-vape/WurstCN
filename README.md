@@ -20,27 +20,10 @@
 - 你可以参考[这个教程](https://www.wurstclient.net/tutorials/installation/)来安装和使用这个hack端
 ## 缺点
 - 部分未汉化
+- 设置介绍未汉化
 ## 图片（汉化效果）
 - ![Snipaste_2023-06-02_23-26-48](https://github.com/dingzhen-vape/wurst_cn/assets/75886707/4e6f4350-aaf6-410b-88eb-23a221df6090)
 - ![Snipaste_2023-06-02_23-26-36](https://github.com/dingzhen-vape/wurst_cn/assets/75886707/08332701-bd9e-40ab-8b60-4623c0835325)
 
-# Wurst Hacked Client Chinese Version
-
-This is an unfinished Chinese version of the wurst hacked client, based on wurst 7.35 version.
-
-## Features
-
-- Translated some the features
-- Preserved the original style and performance
-- Suitable for players who like to use Chinese
-
-## Plans
-
-- Will complete the translation in the future, including the remaining features and settings, and some details optimization
-- When wurst updates, this repository may not update (because it is personal), but will try to keep up with the latest version
-
-## Download and Install
-
-- You can download the latest wurst hacked client Chinese version [here](https://wwfb.lanzoue.com/iTnkp0xjveoh)
-- You need to install [Java](https://www.java.com/) and [Minecraft Launcher](https://www.minecraft.net/) to use this hacked client
-- You can follow [this tutorial](https://www.wurstclient.net/tutorials/installation/) to install and use this hacked client
+## 版权
+- 一切版权归属Alexander01998
