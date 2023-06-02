@@ -89,7 +89,7 @@ public final class ClickGui
 			
 		windows.addAll(windowMap.values());
 		
-		Window uiSettings = new Window("UI Settings");
+		Window uiSettings = new Window("UI设置");
 		uiSettings.add(new FeatureButton(WURST.getOtfs().wurstLogoOtf));
 		uiSettings.add(new FeatureButton(WURST.getOtfs().hackListOtf));
 		uiSettings.add(new FeatureButton(WURST.getOtfs().keybindManagerOtf));
@@ -133,7 +133,7 @@ public final class ClickGui
 			
 		}catch(Exception e)
 		{
-			System.out.println("Failed to load " + windowsFile.getFileName());
+			System.out.println("加载失败 " + windowsFile.getFileName());
 			e.printStackTrace();
 			
 			saveWindows();

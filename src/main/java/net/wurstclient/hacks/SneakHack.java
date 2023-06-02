@@ -39,7 +39,7 @@ public final class SneakHack extends Hack
 	
 	public SneakHack()
 	{
-		super("Sneak");
+		super("保持潜行");
 		setCategory(Category.MOVEMENT);
 		addSetting(mode);
 		addSetting(offWhileFlying);

@@ -16,7 +16,7 @@ public final class TrueSightHack extends Hack
 {
 	public TrueSightHack()
 	{
-		super("TrueSight");
+		super("阴阳眼");
 		setCategory(Category.RENDER);
 	}
 	

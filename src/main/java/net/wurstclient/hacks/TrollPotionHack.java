@@ -29,7 +29,7 @@ public final class TrollPotionHack extends Hack
 	
 	public TrollPotionHack()
 	{
-		super("TrollPotion");
+		super("三鹿奶粉");
 		setCategory(Category.ITEMS);
 		addSetting(potionType);
 	}

@@ -22,7 +22,7 @@ public final class ThrowHack extends Hack implements RightClickListener
 	
 	public ThrowHack()
 	{
-		super("Throw");
+		super("多次使用");
 		
 		setCategory(Category.OTHER);
 		addSetting(amount);

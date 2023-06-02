@@ -31,7 +31,7 @@ public final class ProphuntEspHack extends Hack implements RenderListener
 	
 	public ProphuntEspHack()
 	{
-		super("ProphuntESP");
+		super("躲猫猫透视");
 		setCategory(Category.RENDER);
 	}
 	

@@ -56,7 +56,7 @@ public final class RestockHack extends Hack implements UpdateListener
 	
 	public RestockHack()
 	{
-		super("Restock");
+		super("仓库补充");
 		setCategory(Category.ITEMS);
 		addSetting(items);
 		addSetting(restockSlot);

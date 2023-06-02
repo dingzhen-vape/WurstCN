@@ -16,7 +16,7 @@ public final class RainbowUiHack extends Hack
 {
 	public RainbowUiHack()
 	{
-		super("RainbowUI");
+		super("彩虹");
 		setCategory(Category.FUN);
 	}
 	
