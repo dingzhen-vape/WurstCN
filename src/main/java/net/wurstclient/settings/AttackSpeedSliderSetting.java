@@ -15,13 +15,13 @@ public final class AttackSpeedSliderSetting extends SliderSetting
 	
 	public AttackSpeedSliderSetting()
 	{
-		this("Speed", "description.wurst.setting.generic.attack_speed");
+		this("速度", "description.wurst.setting.generic.attack_speed");
 	}
 	
 	public AttackSpeedSliderSetting(String name, String description)
 	{
 		super(name, description, 0, 0, 20, 0.1,
-			ValueDisplay.DECIMAL.withLabel(0, "auto"));
+			ValueDisplay.DECIMAL.withLabel(0, "自动"));
 	}
 	
 	@Override

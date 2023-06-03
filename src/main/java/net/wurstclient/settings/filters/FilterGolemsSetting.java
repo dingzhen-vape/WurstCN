@@ -14,7 +14,7 @@ public final class FilterGolemsSetting extends EntityFilterCheckbox
 {
 	public FilterGolemsSetting(String description, boolean checked)
 	{
-		super("Filter golems", description, checked);
+		super("过滤傀儡", description, checked);
 	}
 	
 	@Override
@@ -26,6 +26,6 @@ public final class FilterGolemsSetting extends EntityFilterCheckbox
 	public static FilterGolemsSetting genericCombat(boolean checked)
 	{
 		return new FilterGolemsSetting(
-			"Won't attack iron golems, snow golems and shulkers.", checked);
+			"不会攻击铁傀儡，雪傀儡和潜影贝。", checked);
 	}
 }

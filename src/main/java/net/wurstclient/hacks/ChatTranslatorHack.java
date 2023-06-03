@@ -27,10 +27,10 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 		new GoogleTranslate();
 	
 	private final EnumSetting<FromLanguage> langFrom = new EnumSetting<>(
-		"Translate from", FromLanguage.values(), FromLanguage.AUTO_DETECT);
+		"从哪种语言翻译", FromLanguage.values(), FromLanguage.AUTO_DETECT);
 	
 	private final EnumSetting<ToLanguage> langTo = new EnumSetting<>(
-		"Translate to", ToLanguage.values(), ToLanguage.ENGLISH);
+		"翻译成哪种语言", ToLanguage.values(), ToLanguage.ENGLISH);
 	
 	public ChatTranslatorHack()
 	{
@@ -93,31 +93,31 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 	
 	public static enum FromLanguage
 	{
-		AUTO_DETECT("Detect Language", "auto"),
-		AFRIKAANS("Afrikaans", "af"),
-		ARABIC("Arabic", "ar"),
-		CZECH("Czech", "cs"),
-		CHINESE_SIMPLIFIED("Chinese (simplified)", "zh-CN"),
-		CHINESE_TRADITIONAL("Chinese (traditional)", "zh-TW"),
-		DANISH("Danish", "da"),
-		DUTCH("Dutch", "nl"),
-		ENGLISH("English", "en"),
-		FINNISH("Finnish", "fi"),
-		FRENCH("French", "fr"),
-		GERMAN("Deutsch!", "de"),
-		GREEK("Greek", "el"),
-		HINDI("Hindi", "hi"),
-		ITALIAN("Italian", "it"),
-		JAPANESE("Japanese", "ja"),
-		KOREAN("Korean", "ko"),
-		NORWEGIAN("Norwegian", "no"),
-		POLISH("Polish", "pl"),
-		PORTUGUESE("Portugese", "pt"),
-		RUSSIAN("Russian", "ru"),
-		SPANISH("Spanish", "es"),
-		SWAHILI("Swahili", "sw"),
-		SWEDISH("Swedish", "sv"),
-		TURKISH("Turkish", "tr");
+		AUTO_DETECT("检测语言", "auto"),
+		AFRIKAANS("南非语", "af"),
+		ARABIC("阿拉伯语", "ar"),
+		CZECH("捷克语", "cs"),
+		CHINESE_SIMPLIFIED("中文（简体）", "zh-CN"),
+		CHINESE_TRADITIONAL("中文（繁体）", "zh-TW"),
+		DANISH("丹麦语", "da"),
+		DUTCH("荷兰语", "nl"),
+		ENGLISH("英语", "en"),
+		FINNISH("芬兰语", "fi"),
+		FRENCH("法语", "fr"),
+		GERMAN("德语！", "de"),
+		GREEK("希腊语", "el"),
+		HINDI("印地语", "hi"),
+		ITALIAN("意大利语", "it"),
+		JAPANESE("日语", "ja"),
+		KOREAN("韩语", "ko"),
+		NORWEGIAN("挪威语", "no"),
+		POLISH("波兰语", "pl"),
+		PORTUGUESE("葡萄牙语", "pt"),
+		RUSSIAN("俄语", "ru"),
+		SPANISH("西班牙语", "es"),
+		SWAHILI("斯瓦希里语", "sw"),
+		SWEDISH("瑞典语", "sv"),
+		TURKISH("土耳其语", "tr");
 		
 		private final String name;
 		private final String value;
@@ -137,30 +137,30 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 	
 	public static enum ToLanguage
 	{
-		AFRIKAANS("Afrikaans", "af"),
-		ARABIC("Arabic", "ar"),
-		CZECH("Czech", "cs"),
-		CHINESE_SIMPLIFIED("Chinese (simplified)", "zh-CN"),
-		CHINESE_TRADITIONAL("Chinese (traditional)", "zh-TW"),
-		DANISH("Danish", "da"),
-		DUTCH("Dutch", "nl"),
-		ENGLISH("English", "en"),
-		FINNISH("Finnish", "fi"),
-		FRENCH("French", "fr"),
-		GERMAN("Deutsch!", "de"),
-		GREEK("Greek", "el"),
-		HINDI("Hindi", "hi"),
-		ITALIAN("Italian", "it"),
-		JAPANESE("Japanese", "ja"),
-		KOREAN("Korean", "ko"),
-		NORWEGIAN("Norwegian", "no"),
-		POLISH("Polish", "pl"),
-		PORTUGUESE("Portugese", "pt"),
-		RUSSIAN("Russian", "ru"),
-		SPANISH("Spanish", "es"),
-		SWAHILI("Swahili", "sw"),
-		SWEDISH("Swedish", "sv"),
-		TURKISH("Turkish", "tr");
+		AFRIKAANS("南非语", "af"),
+		ARABIC("阿拉伯语", "ar"),
+		CZECH("捷克语", "cs"),
+		CHINESE_SIMPLIFIED("中文（简体）", "zh-CN"),
+		CHINESE_TRADITIONAL("中文（繁体）", "zh-TW"),
+		DANISH("丹麦语", "da"),
+		DUTCH("荷兰语", "nl"),
+		ENGLISH("英语", "en"),
+		FINNISH("芬兰语", "fi"),
+		FRENCH("法语", "fr"),
+		GERMAN("德语！", "de"),
+		GREEK("希腊语", "el"),
+		HINDI("印地语", "hi"),
+		ITALIAN("意大利语", "it"),
+		JAPANESE("日语", "ja"),
+		KOREAN("韩语", "ko"),
+		NORWEGIAN("挪威语", "no"),
+		POLISH("波兰语", "pl"),
+		PORTUGUESE("葡萄牙语", "pt"),
+		RUSSIAN("俄语", "ru"),
+		SPANISH("西班牙语", "es"),
+		SWAHILI("斯瓦希里语", "sw"),
+		SWEDISH("瑞典语", "sv"),
+		TURKISH("土耳其语", "tr");
 		
 		private final String name;
 		private final String value;

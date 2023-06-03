@@ -38,30 +38,29 @@ import net.wurstclient.util.RotationUtils;
 public final class BonemealAuraHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range =
-		new SliderSetting("Range", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
-		"\u00a7lFast\u00a7r mode can use bone meal on multiple blocks at once.\n"
-			+ "\u00a7lLegit\u00a7r mode can bypass NoCheat+.",
+	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
+		"\u00a7l快速\u00a7r模式可以一次对多个方块使用骨粉。\n"
+			+ "\u00a7l合法\u00a7r模式可以绕过NoCheat+。",
 		Mode.values(), Mode.FAST);
 	
 	private final EnumSetting<AutomationLevel> automationLevel =
-		new EnumSetting<>("Automation",
-			"How much of the bone-mealing process to automate.\n"
-				+ "\u00a7lRight Click\u00a7r simply right clicks plants with the bone meal in your hand.\n"
-				+ "\u00a7lHotbar\u00a7r selects bone meal in your hotbar and then uses it on plants.\n"
-				+ "\u00a7lInventory\u00a7r finds bone meal in your inventory, moves it to your hotbar and then uses it.",
+		new EnumSetting<>("自动化",
+			"自动化使用骨粉的程度。\n"
+				+ "\u00a7l右键\u00a7r只是用手里的骨粉右键植物。\n"
+				+ "\u00a7l快捷栏\u00a7r选择快捷栏里的骨粉，然后用它对植物。\n"
+				+ "\u00a7l背包\u00a7r在背包里找到骨粉，把它移到快捷栏，然后用它。",
 			AutomationLevel.values(), AutomationLevel.RIGHT_CLICK);
 	
 	private final CheckboxSetting saplings =
-		new CheckboxSetting("Saplings", true);
-	private final CheckboxSetting crops = new CheckboxSetting("Crops",
-		"Wheat, carrots, potatoes and beetroots.", true);
+		new CheckboxSetting("树苗", true);
+	private final CheckboxSetting crops = new CheckboxSetting("作物",
+		"小麦，胡萝卜，土豆和甜菜根。", true);
 	private final CheckboxSetting stems =
-		new CheckboxSetting("Stems", "Pumpkins and melons.", true);
-	private final CheckboxSetting cocoa = new CheckboxSetting("Cocoa", true);
-	private final CheckboxSetting other = new CheckboxSetting("Other", false);
-	
+		new CheckboxSetting("茎", "南瓜和西瓜。", true);
+	private final CheckboxSetting cocoa = new CheckboxSetting("可可", true);
+	private final CheckboxSetting other = new CheckboxSetting("其他", false);
 	public BonemealAuraHack()
 	{
 		super("骨灰光环");
@@ -295,9 +294,9 @@ public final class BonemealAuraHack extends Hack implements UpdateListener
 	
 	private enum Mode
 	{
-		FAST("Fast"),
+		FAST("快速"),
 		
-		LEGIT("Legit");
+		LEGIT("合法");
 		
 		private final String name;
 		
@@ -315,11 +314,11 @@ public final class BonemealAuraHack extends Hack implements UpdateListener
 	
 	private enum AutomationLevel
 	{
-		RIGHT_CLICK("Right Click", 0),
+		RIGHT_CLICK("右键", 0),
 		
-		HOTBAR("Hotbar", 9),
+		HOTBAR("快捷栏", 9),
 		
-		INVENTORY("Inventory", 36);
+		INVENTORY("背包", 36);
 		
 		private final String name;
 		private final int maxInvSlot;

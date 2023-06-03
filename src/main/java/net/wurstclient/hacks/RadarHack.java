@@ -40,17 +40,17 @@ public final class RadarHack extends Hack implements UpdateListener
 	private final Window window;
 	private final ArrayList<Entity> entities = new ArrayList<>();
 	
-	private final SliderSetting radius = new SliderSetting("Radius",
-		"Radius in blocks.", 100, 1, 100, 1, ValueDisplay.INTEGER);
+	private final SliderSetting radius = new SliderSetting("半径",
+		"以方块为单位的半径。", 100, 1, 100, 1, ValueDisplay.INTEGER);
 	private final CheckboxSetting rotate =
-		new CheckboxSetting("Rotate with player", true);
+		new CheckboxSetting("随玩家旋转", true);
 	
 	private final EntityFilterList entityFilters = new EntityFilterList(
-		new FilterPlayersSetting("Won't show other players.", false),
-		new FilterSleepingSetting("Won't show sleeping players.", false),
-		new FilterMonstersSetting("Won't show zombies, creepers, etc.", false),
-		new FilterAnimalsSetting("Won't show pigs, cows, etc.", false),
-		new FilterInvisibleSetting("Won't show invisible entities.", false));
+		new FilterPlayersSetting("不显示其他玩家。", false),
+		new FilterSleepingSetting("不显示睡觉的玩家。", false),
+		new FilterMonstersSetting("不显示僵尸，苦力怕等。", false),
+		new FilterAnimalsSetting("不显示猪，牛等。", false),
+		new FilterInvisibleSetting("不显示隐形的实体。", false));
 	
 	public RadarHack()
 	{

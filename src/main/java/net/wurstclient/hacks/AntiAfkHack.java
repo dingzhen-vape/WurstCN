@@ -34,7 +34,7 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class AntiAfkHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final CheckboxSetting useAi = new CheckboxSetting("Use AI", true);
+	private final CheckboxSetting useAi = new CheckboxSetting("使用AI", true);
 	
 	private int timer;
 	private Random random = new Random();

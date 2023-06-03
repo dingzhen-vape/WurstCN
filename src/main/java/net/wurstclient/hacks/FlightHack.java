@@ -24,33 +24,33 @@ public final class FlightHack extends Hack
 	implements UpdateListener, IsPlayerInWaterListener, AirStrafingSpeedListener
 {
 	public final SliderSetting horizontalSpeed = new SliderSetting(
-		"Horizontal Speed", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
+		"水平速度", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
 	
 	public final SliderSetting verticalSpeed = new SliderSetting(
-		"Vertical Speed",
-		"\u00a7c\u00a7lWARNING:\u00a7r Setting this too high can cause fall damage, even with NoFall.",
+		"垂直速度",
+		"\u00a7c\u00a7l警告:\u00a7r 设置这个太高可能会造成摔落伤害，即使有防摔。",
 		1, 0.05, 5, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting slowSneaking = new CheckboxSetting(
-		"Slow sneaking",
-		"Reduces your horizontal speed while you are sneaking to prevent you from glitching out.",
+		"慢速潜行",
+		"在你潜行时降低你的水平速度，以防止你出现故障。",
 		true);
 	
-	private final CheckboxSetting antiKick = new CheckboxSetting("Anti-Kick",
-		"Makes you fall a little bit every now and then to prevent you from getting kicked.",
+	private final CheckboxSetting antiKick = new CheckboxSetting("防踢",
+		"让你每隔一段时间稍微下降一点，以防止你被踢出。",
 		false);
 	
 	private final SliderSetting antiKickInterval =
-		new SliderSetting("Anti-Kick Interval",
-			"How often Anti-Kick should prevent you from getting kicked.\n"
-				+ "Most servers will kick you after 80 ticks.",
-			30, 5, 80, 1, ValueDisplay.INTEGER.withSuffix(" ticks"));
+		new SliderSetting("防踢间隔",
+			"防踢应该多久阻止你被踢出一次。\n"
+				+ "大多数服务器会在80个刻后踢出你。",
+			30, 5, 80, 1, ValueDisplay.INTEGER.withSuffix(" 刻"));
 	
 	private final SliderSetting antiKickDistance = new SliderSetting(
-		"Anti-Kick Distance",
-		"How far Anti-Kick should make you fall.\n"
-			+ "Most servers require at least 0.032m to stop you from getting kicked.",
-		0.07, 0.01, 0.2, 0.001, ValueDisplay.DECIMAL.withSuffix("m"));
+		"防踢距离",
+		"防踢应该让你下降多远。\n"
+			+ "大多数服务器至少需要0.032米才能阻止你被踢出。",
+		0.07, 0.01, 0.2, 0.001, ValueDisplay.DECIMAL.withSuffix("米"));
 	
 	private int tickCounter = 0;
 	

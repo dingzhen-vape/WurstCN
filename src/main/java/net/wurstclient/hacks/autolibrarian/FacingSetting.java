@@ -19,15 +19,11 @@ public final class FacingSetting extends EnumSetting<FacingSetting.Facing>
 	
 	public FacingSetting()
 	{
-		super("Facing", "How to face the villager and job site.\n\n"
-			+ "\u00a7lOff\u00a7r - Don't face the villager at all. Will be"
-			+ " detected by anti-cheat plugins.\n\n"
-			+ "\u00a7lServer-side\u00a7r - Face the villager on the"
-			+ " server-side, while still letting you move the camera freely on"
-			+ " the client-side.\n\n"
-			+ "\u00a7lClient-side\u00a7r - Face the villager by moving your"
-			+ " camera on the client-side. This is the most legit option, but"
-			+ " can be disorienting to look at.", Facing.values(),
+super("Facing", "如何面向村民和工作站。\n\n"
+			+ "\u00a7lOff\u00a7r - 不要面向村民。会被反作弊插件检测到。\n\n"
+			+ "\u00a7lServer-side\u00a7r - 在服务器端面向村民，同时在客户端自由移动摄像机。\n\n"
+			+ "\u00a7lClient-side\u00a7r - 通过在客户端移动摄像机来面向村民。这是最合法的选项，但是看起来可能会让人头晕。",
+			Facing.values(),
 			Facing.SERVER);
 	}
 	

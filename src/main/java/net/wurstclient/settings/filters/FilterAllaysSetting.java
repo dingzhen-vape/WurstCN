@@ -14,7 +14,7 @@ public final class FilterAllaysSetting extends EntityFilterCheckbox
 {
 	public FilterAllaysSetting(String description, boolean checked)
 	{
-		super("Filter allays", description, checked);
+		super("过滤盟友", description, checked);
 	}
 	
 	@Override
@@ -25,6 +25,6 @@ public final class FilterAllaysSetting extends EntityFilterCheckbox
 	
 	public static FilterAllaysSetting genericCombat(boolean checked)
 	{
-		return new FilterAllaysSetting("Won't attack allays.", checked);
+		return new FilterAllaysSetting("不会攻击盟友。", checked);
 	}
 }

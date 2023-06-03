@@ -46,15 +46,15 @@ public final class MobEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
 	private final EnumSetting<Style> style =
-		new EnumSetting<>("Style", Style.values(), Style.BOXES);
+		new EnumSetting<>("样式", Style.values(), Style.BOXES);
 	
-	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("Box size",
-		"\u00a7lAccurate\u00a7r mode shows the exact hitbox of each mob.\n"
-			+ "\u00a7lFancy\u00a7r mode shows slightly larger boxes that look better.",
+	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("盒子大小",
+		"\u00a7l精确\u00a7r模式显示每个生物的准确碰撞箱。\n"
+			+ "\u00a7l花哨\u00a7r模式显示稍微大一点的盒子，看起来更好。",
 		BoxSize.values(), BoxSize.FANCY);
 	
 	private final FilterInvisibleSetting filterInvisible =
-		new FilterInvisibleSetting("Won't show invisible mobs.", false);
+		new FilterInvisibleSetting("不会显示隐形的生物。", false);
 	
 	private final ArrayList<MobEntity> mobs = new ArrayList<>();
 	private VertexBuffer mobBox;
@@ -219,9 +219,9 @@ public final class MobEspHack extends Hack implements UpdateListener,
 	
 	private enum Style
 	{
-		BOXES("Boxes only", true, false),
-		LINES("Lines only", false, true),
-		LINES_AND_BOXES("Lines and boxes", true, true);
+		BOXES("仅盒子", true, false),
+		LINES("仅线条", false, true),
+		LINES_AND_BOXES("线条和盒子", true, true);
 		
 		private final String name;
 		private final boolean boxes;
@@ -243,8 +243,8 @@ public final class MobEspHack extends Hack implements UpdateListener,
 	
 	private enum BoxSize
 	{
-		ACCURATE("Accurate", 0),
-		FANCY("Fancy", 0.1F);
+		ACCURATE("精确", 0),
+		FANCY("花哨", 0.1F);
 		
 		private final String name;
 		private final float extraSize;

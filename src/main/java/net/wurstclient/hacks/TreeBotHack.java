@@ -56,8 +56,8 @@ import net.wurstclient.util.RotationUtils;
 public final class TreeBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("Range",
-		"How far TreeBot will reach to break blocks.", 4.5, 1, 6, 0.05,
+	private final SliderSetting range = new SliderSetting("范围",
+		"TreeBot能够破坏方块的距离。", 4.5, 1, 6, 0.05,
 		ValueDisplay.DECIMAL);
 	
 	private TreeFinder treeFinder;

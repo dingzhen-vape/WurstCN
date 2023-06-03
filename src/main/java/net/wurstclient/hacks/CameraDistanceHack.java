@@ -17,7 +17,7 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class CameraDistanceHack extends Hack
 {
 	private final SliderSetting distance =
-		new SliderSetting("Distance", 12, -0.5, 150, 0.5, ValueDisplay.DECIMAL);
+		new SliderSetting("距离", 12, -0.5, 150, 0.5, ValueDisplay.DECIMAL);
 	
 	public CameraDistanceHack()
 	{

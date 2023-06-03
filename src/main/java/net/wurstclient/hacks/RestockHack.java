@@ -36,23 +36,23 @@ public final class RestockHack extends Hack implements UpdateListener
 		Stream.concat(IntStream.range(0, 36).boxed(), Stream.of(OFFHAND_ID))
 			.collect(Collectors.toCollection(ArrayList::new));
 	
-	private ItemListSetting items = new ItemListSetting("Items",
-		"Item(s) to be restocked.", "minecraft:minecart");
+	private ItemListSetting items = new ItemListSetting("物品",
+		"需要补充的物品。", "minecraft:minecart");
 	
-	private final SliderSetting restockSlot = new SliderSetting("Slot",
-		"To which slot should we restock.", 0, -1, 9, 1,
-		ValueDisplay.INTEGER.withLabel(9, "offhand").withLabel(-1, "current"));
+	private final SliderSetting restockSlot = new SliderSetting("槽位",
+		"补充到哪个槽位。", 0, -1, 9, 1,
+		ValueDisplay.INTEGER.withLabel(9, "副手").withLabel(-1, "当前"));
 	
 	private final SliderSetting restockAmount = new SliderSetting(
-		"Minimum amount",
-		"Minimum amount of items in hand before a new round of restocking is triggered.",
-		1, 1, 64, 1, ValueDisplay.INTEGER);
+		"最小数量",
+		"手中物品的最小数量，低于这个数量时会触发补充。", 1, 1, 64, 1,
+		ValueDisplay.INTEGER);
 	
 	private final SliderSetting repairMode = new SliderSetting(
-		"Tools repair mode",
-		"Swaps out tools when their durability reaches the given threshold, so you can repair them before they break.\n"
-			+ "Can be adjusted from 0 (off) to 100.",
-		0, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "off"));
+		"工具修复模式",
+		"当工具的耐久度达到给定的阈值时，会自动换掉，以便在它们损坏之前修复它们。\n"
+			+ "可以从0（关闭）到100调整。", 0, 0, 100, 1,
+		ValueDisplay.INTEGER.withLabel(0, "关闭"));
 	
 	public RestockHack()
 	{
@@ -160,7 +160,7 @@ public final class RestockHack extends Hack implements UpdateListener
 		if(index == OFFHAND_ID)
 			return OFFHAND_PKT_ID;
 		
-		throw new IllegalArgumentException("unimplemented data slot");
+		throw new IllegalArgumentException("未实现的数据槽");
 	}
 	
 	private List<Integer> searchSlotsWithItem(String itemName, int slotToSkip)

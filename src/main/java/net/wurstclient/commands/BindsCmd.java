@@ -31,13 +31,13 @@ public final class BindsCmd extends Command
 {
 	public BindsCmd()
 	{
-		super("binds", "Allows you to manage keybinds through the chat.",
+		super("binds", "允许你通过聊天管理按键绑定。",
 			".binds add <key> <hacks>", ".binds add <key> <commands>",
 			".binds remove <key>", ".binds list [<page>]",
 			".binds load-profile <file>", ".binds save-profile <file>",
 			".binds list-profiles [<page>]", ".binds remove-all",
-			".binds reset", "Multiple hacks/commands must be separated by ';'.",
-			"Profiles are saved in '.minecraft/wurst/keybinds'.");
+			".binds reset", "多个外挂/命令必须用';'分隔。",
+			"配置文件保存在'.minecraft/wurst/keybinds'中。");
 	}
 	
 	@Override

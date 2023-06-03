@@ -52,30 +52,31 @@ import net.wurstclient.util.RotationUtils.Rotation;
 @SearchTags({"anchor aura", "CrystalAura", "crystal aura"})
 public final class AnchorAuraHack extends Hack implements UpdateListener
 {
-	private final SliderSetting range = new SliderSetting("Range",
-		"Determines how far AnchorAura will reach to place, charge and detonate anchors.",
+	private final SliderSetting range = new SliderSetting("范围",
+		"决定了锚点光环在放置、充能和引爆锚点时的最大距离。",
 		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting autoPlace = new CheckboxSetting(
-		"Auto-place anchors",
-		"When enabled, AnchorAura will automatically place anchors near valid entities.\n"
-			+ "When disabled, AnchorAura will only charge and detonate manually placed anchors.",
+		"自动放置锚点",
+		"当启用时，锚点光环会自动在有效的实体附近放置锚点。\n"
+			+ "当禁用时，锚点光环只会充能和引爆手动放置的锚点。",
 		true);
 	
 	private final EnumSetting<FaceBlocks> faceBlocks = new EnumSetting<>(
-		"Face anchors",
-		"Whether or not AnchorAura should face the correct direction when placing and right-clicking respawn anchors.\n\n"
-			+ "Slower but can help with anti-cheat plugins.",
+		"面向锚点",
+		"锚点光环在放置和右击重生锚点时是否要面向正确的方向。\n\n"
+			+ "速度较慢，但可以帮助应对反作弊插件。",
 		FaceBlocks.values(), FaceBlocks.OFF);
 	
 	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"Check line of sight",
-		"Ensures that you don't reach through blocks when placing or right-clicking respawn anchors.\n\n"
-			+ "Slower but can help with anti-cheat plugins.",
+		"检查视线",
+		"确保你在放置或右击重生锚点时不会穿过方块。\n\n"
+			+ "速度较慢，但可以帮助应对反作弊插件。",
 		false);
 	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
-		"Take items from", "Where to look for respawn anchors and glowstone.",
+		"从哪里拿物品", "在哪里寻找重生锚点和萤石。",
+		
 		TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final EntityFilterList entityFilters =

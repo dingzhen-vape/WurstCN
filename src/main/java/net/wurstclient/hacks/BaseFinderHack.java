@@ -45,9 +45,9 @@ public final class BaseFinderHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final BlockListSetting naturalBlocks = new BlockListSetting(
-		"Natural Blocks",
-		"These blocks will be considered part of natural generation.\n\n"
-			+ "They will NOT be highlighted as player bases.",
+		"自然方块",
+		"这些方块将被认为是自然生成的一部分。\n\n"
+			+ "它们不会被高亮显示为玩家的基地。",
 		"minecraft:acacia_leaves", "minecraft:acacia_log", "minecraft:air",
 		"minecraft:allium", "minecraft:amethyst_block",
 		"minecraft:amethyst_cluster", "minecraft:andesite",
@@ -89,8 +89,8 @@ public final class BaseFinderHack extends Hack
 		"minecraft:tall_grass", "minecraft:tall_seagrass", "minecraft:tuff",
 		"minecraft:vine", "minecraft:water", "minecraft:white_tulip");
 	
-	private final ColorSetting color = new ColorSetting("Color",
-		"Man-made blocks will be highlighted in this color.", Color.RED);
+	private final ColorSetting color = new ColorSetting("颜色",
+		"人造方块将以这种颜色高亮显示。", Color.RED);
 	
 	private ArrayList<String> blockNames;
 	
@@ -117,17 +117,17 @@ public final class BaseFinderHack extends Hack
 	{
 		String name = getName() + " [";
 		
-		// counter
+		// 计数器
 		if(counter >= 10000)
-			name += "10000+ blocks";
+			name += "10000+ 个方块";
 		else if(counter == 1)
-			name += "1 block";
+			name += "1 个方块";
 		else if(counter == 0)
-			name += "nothing";
+			name += "什么也没有";
 		else
-			name += counter + " blocks";
+			name += counter + " 个方块";
 		
-		name += " found]";
+		name += " 被发现]";
 		return name;
 	}
 	
@@ -271,9 +271,9 @@ public final class BaseFinderHack extends Hack
 			if(messageTimer <= 0)
 			{
 				ChatUtils
-					.warning("BaseFinder found \u00a7lA LOT\u00a7r of blocks.");
+					.warning("BaseFinder 发现了\u00a7l很多\u00a7r的方块。");
 				ChatUtils.message(
-					"To prevent lag, it will only show the first 10000 blocks.");
+					"为了防止卡顿，它只会显示前10000个方块。");
 			}
 			
 			// reset timer
