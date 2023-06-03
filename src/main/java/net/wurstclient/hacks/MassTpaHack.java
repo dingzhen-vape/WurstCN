@@ -65,7 +65,7 @@ public final class MassTpaHack extends Hack
 		
 		if(players.isEmpty())
 		{
-			ChatUtils.error("Couldn't find any players.");
+			ChatUtils.error("找不到任何玩家");
 			setEnabled(false);
 		}
 	}
@@ -107,14 +107,14 @@ public final class MassTpaHack extends Hack
 		if(message.contains("/help") || message.contains("permission"))
 		{
 			event.cancel();
-			ChatUtils.error("This server doesn't have TPA.");
+			ChatUtils.error("这个服务器没有TPA。");
 			setEnabled(false);
 			
 		}else if(message.contains("accepted") && message.contains("request")
 			|| message.contains("akzeptiert") && message.contains("anfrage"))
 		{
 			event.cancel();
-			ChatUtils.message("Someone accepted your TPA request. Stopping.");
+			ChatUtils.message("有人接受了你的TPA请求。停止。");
 			setEnabled(false);
 		}
 	}

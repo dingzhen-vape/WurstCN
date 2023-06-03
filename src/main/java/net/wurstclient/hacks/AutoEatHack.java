@@ -47,43 +47,43 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class AutoEatHack extends Hack implements UpdateListener
 {
 	private final SliderSetting targetHunger = new SliderSetting(
-		"Target hunger", "description.wurst.setting.autoeat.target_hunger", 10,
+		"目标饥饿值", "description.wurst.setting.autoeat.target_hunger", 10,
 		0, 10, 0.5, ValueDisplay.DECIMAL);
 	
-	private final SliderSetting minHunger = new SliderSetting("Min hunger",
+	private final SliderSetting minHunger = new SliderSetting("最小饥饿值",
 		"description.wurst.setting.autoeat.min_hunger", 6.5, 0, 10, 0.5,
 		ValueDisplay.DECIMAL);
 	
 	private final SliderSetting injuredHunger = new SliderSetting(
-		"Injured hunger", "description.wurst.setting.autoeat.injured_hunger",
+		"受伤饥饿值", "description.wurst.setting.autoeat.injured_hunger",
 		10, 0, 10, 0.5, ValueDisplay.DECIMAL);
 	
 	private final SliderSetting injuryThreshold =
-		new SliderSetting("Injury threshold",
+		new SliderSetting("受伤阈值",
 			"description.wurst.setting.autoeat.injury_threshold", 1.5, 0.5, 10,
 			0.5, ValueDisplay.DECIMAL);
 	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
-		"Take items from", "description.wurst.setting.autoeat.take_items_from",
+		"从哪里拿物品", "description.wurst.setting.autoeat.take_items_from",
 		TakeItemsFrom.values(), TakeItemsFrom.HOTBAR);
 	
 	private final CheckboxSetting allowOffhand =
-		new CheckboxSetting("Allow offhand", true);
+		new CheckboxSetting("允许副手", true);
 	
 	private final CheckboxSetting eatWhileWalking =
-		new CheckboxSetting("Eat while walking",
+		new CheckboxSetting("边走边吃",
 			"description.wurst.setting.autoeat.eat_while_walking", false);
 	
 	private final CheckboxSetting allowHunger =
-		new CheckboxSetting("Allow hunger effect",
+		new CheckboxSetting("允许饥饿效果",
 			"description.wurst.setting.autoeat.allow_hunger", true);
 	
 	private final CheckboxSetting allowPoison =
-		new CheckboxSetting("Allow poison effect",
+		new CheckboxSetting("允许中毒效果",
 			"description.wurst.setting.autoeat.allow_poison", false);
 	
 	private final CheckboxSetting allowChorus =
-		new CheckboxSetting("Allow chorus fruit",
+		new CheckboxSetting("允许紫颂果",
 			"description.wurst.setting.autoeat.allow_chorus", false);
 	
 	private int oldSlot = -1;
@@ -347,11 +347,11 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private enum TakeItemsFrom
 	{
-		HANDS("Hands", 0),
+		HANDS("手上的", 0),
 		
-		HOTBAR("Hotbar", 9),
+		HOTBAR("快捷栏", 9),
 		
-		INVENTORY("Inventory", 36);
+		INVENTORY("背包", 36);
 		
 		private final String name;
 		private final int maxInvSlot;

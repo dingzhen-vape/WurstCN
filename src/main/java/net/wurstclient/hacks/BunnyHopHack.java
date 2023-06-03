@@ -60,13 +60,13 @@ public final class BunnyHopHack extends Hack implements UpdateListener
 	
 	private enum JumpIf
 	{
-		SPRINTING("Sprinting",
+		SPRINTING("疾跑",
 			p -> p.isSprinting()
 				&& (p.forwardSpeed != 0 || p.sidewaysSpeed != 0)),
 		
-		WALKING("Walking", p -> p.forwardSpeed != 0 || p.sidewaysSpeed != 0),
+		WALKING("行走", p -> p.forwardSpeed != 0 || p.sidewaysSpeed != 0),
 		
-		ALWAYS("Always", p -> true);
+		ALWAYS("总是", p -> true);
 		
 		private final String name;
 		private final Predicate<ClientPlayerEntity> condition;

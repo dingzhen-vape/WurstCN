@@ -48,16 +48,16 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
 	private final EnumSetting<Style> style =
-		new EnumSetting<>("Style", Style.values(), Style.LINES_AND_BOXES);
+		new EnumSetting<>("样式", Style.values(), Style.LINES_AND_BOXES);
 	
-	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("Box size",
-		"\u00a7lAccurate\u00a7r mode shows the exact hitbox of each player.\n"
-			+ "\u00a7lFancy\u00a7r mode shows slightly larger boxes that look better.",
+	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("盒子大小",
+		"\u00a7l精确\u00a7r模式显示每个玩家的准确碰撞箱。\n"
+			+ "\u00a7l花哨\u00a7r模式显示稍微大一点的盒子，看起来更好。",
 		BoxSize.values(), BoxSize.FANCY);
 	
 	private final EntityFilterList entityFilters = new EntityFilterList(
-		new FilterSleepingSetting("Won't show sleeping players.", false),
-		new FilterInvisibleSetting("Won't show invisible players.", false));
+		new FilterSleepingSetting("不会显示睡觉的玩家。", false),
+		new FilterInvisibleSetting("不会显示隐形的玩家。", false));
 	
 	private final ArrayList<PlayerEntity> players = new ArrayList<>();
 	
@@ -230,9 +230,9 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	
 	private enum Style
 	{
-		BOXES("Boxes only", true, false),
-		LINES("Lines only", false, true),
-		LINES_AND_BOXES("Lines and boxes", true, true);
+		BOXES("只有盒子", true, false),
+		LINES("只有线", false, true),
+		LINES_AND_BOXES("二者都有", true, true);
 		
 		private final String name;
 		private final boolean boxes;
@@ -254,8 +254,8 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	
 	private enum BoxSize
 	{
-		ACCURATE("Accurate", 0),
-		FANCY("Fancy", 0.1F);
+		ACCURATE("精确", 0),
+		FANCY("花哨", 0.1F);
 		
 		private final String name;
 		private final float extraSize;

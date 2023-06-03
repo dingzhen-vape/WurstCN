@@ -21,19 +21,19 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 	"auto quit"})
 public final class AutoLeaveHack extends Hack implements UpdateListener
 {
-	private final SliderSetting health = new SliderSetting("Health",
-		"Leaves the server when your health reaches this value or falls below it.",
-		4, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" hearts"));
+	private final SliderSetting health = new SliderSetting("生命值",
+		"当你的生命值达到或低于这个值时，离开服务器。",
+		4, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" 颗心"));
 	
-	public final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
-		"\u00a7lQuit\u00a7r mode just quits the game normally.\n"
-			+ "Bypasses NoCheat+ but not CombatLog.\n\n"
-			+ "\u00a7lChars\u00a7r mode sends a special chat message that causes the server to kick you.\n"
-			+ "Bypasses NoCheat+ and some versions of CombatLog.\n\n"
-			+ "\u00a7lTP\u00a7r mode teleports you to an invalid location, causing the server to kick you.\n"
-			+ "Bypasses CombatLog, but not NoCheat+.\n\n"
-			+ "\u00a7lSelfHurt\u00a7r mode sends the packet for attacking another player, but with yourself as both the attacker and the target. This causes the server to kick you.\n"
-			+ "Bypasses both CombatLog and NoCheat+.",
+	public final EnumSetting<Mode> mode = new EnumSetting<>("模式",
+		"\u00a7l退出\u00a7r模式只是正常地退出游戏。\n"
+			+ "可以绕过NoCheat+，但不能绕过CombatLog。\n\n"
+			+ "\u00a7l字符\u00a7r模式发送一个特殊的聊天信息，让服务器把你踢出去。\n"
+			+ "可以绕过NoCheat+和一些版本的CombatLog。\n\n"
+			+ "\u00a7lTP\u00a7r模式将你传送到一个无效的位置，让服务器把你踢出去。\n"
+			+ "可以绕过CombatLog，但不能绕过NoCheat+。\n\n"
+			+ "\u00a7l自残\u00a7r模式发送攻击另一个玩家的数据包，但是把自己作为攻击者和目标。这会让服务器把你踢出去。\n"
+			+ "可以绕过CombatLog和NoCheat+。",
 		Mode.values(), Mode.QUIT);
 	
 	public AutoLeaveHack()
@@ -108,13 +108,13 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 	
 	public static enum Mode
 	{
-		QUIT("Quit"),
+		QUIT("退出"),
 		
 		CHARS("Chars"),
 		
 		TELEPORT("TP"),
 		
-		SELFHURT("SelfHurt");
+		SELFHURT("伤害自己");
 		
 		private final String name;
 		

@@ -45,30 +45,30 @@ public final class KillauraLegitHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range =
-		new SliderSetting("Range", 4.25, 1, 4.25, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", 4.25, 1, 4.25, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
 	private final SliderSetting rotationSpeed =
-		new SliderSetting("Rotation Speed", 600, 10, 3600, 10,
+		new SliderSetting("旋转速度", 600, 10, 3600, 10,
 			ValueDisplay.DEGREES.withSuffix("/s"));
 	
-	private final EnumSetting<Priority> priority = new EnumSetting<>("Priority",
-		"Determines which entity will be attacked first.\n"
-			+ "\u00a7lDistance\u00a7r - Attacks the closest entity.\n"
-			+ "\u00a7lAngle\u00a7r - Attacks the entity that requires the least head movement.\n"
-			+ "\u00a7lHealth\u00a7r - Attacks the weakest entity.",
+	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
+		"决定哪个实体会被优先攻击。\n"
+			+ "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
+			+ "\u00a7l角度\u00a7r - 攻击需要最少头部移动的实体。\n"
+			+ "\u00a7l生命值\u00a7r - 攻击最弱的实体。",
 		Priority.values(), Priority.ANGLE);
 	
-	private final SliderSetting fov = new SliderSetting("FOV",
-		"Field Of View - how far away from your crosshair an entity can be before it's ignored.\n"
-			+ "360\u00b0 = entities can be attacked all around you.",
+	private final SliderSetting fov = new SliderSetting("视野",
+		"视场 - 实体离你的准星多远才会被忽略。\n"
+			+ "360\u00b0 = 实体可以在你周围被攻击。",
 		360, 30, 360, 10, ValueDisplay.DEGREES);
 	
 	private final CheckboxSetting damageIndicator = new CheckboxSetting(
-		"Damage indicator",
-		"Renders a colored box within the target, inversely proportional to its remaining health.",
+		"伤害指示器",
+		"在目标内渲染一个颜色的盒子，与其剩余生命值成反比。",
 		true);
 	
 	// same filters as in Killaura, but with stricter defaults
@@ -272,13 +272,13 @@ public final class KillauraLegitHack extends Hack
 	
 	private enum Priority
 	{
-		DISTANCE("Distance", e -> MC.player.squaredDistanceTo(e)),
+		DISTANCE("距离", e -> MC.player.squaredDistanceTo(e)),
 		
-		ANGLE("Angle",
+		ANGLE("角度",
 			e -> RotationUtils
 				.getAngleToLookVec(e.getBoundingBox().getCenter())),
 		
-		HEALTH("Health", e -> e instanceof LivingEntity
+		HEALTH("生命值", e -> e instanceof LivingEntity
 			? ((LivingEntity)e).getHealth() : Integer.MAX_VALUE);
 		
 		private final String name;

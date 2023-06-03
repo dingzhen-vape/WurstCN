@@ -65,17 +65,17 @@ import net.wurstclient.util.RotationUtils;
 public final class SearchHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
-	private final BlockSetting block = new BlockSetting("Block",
-		"The type of block to search for.", "minecraft:diamond_ore", false);
+	private final BlockSetting block = new BlockSetting("方块",
+		"要搜索的方块类型。", "minecraft:diamond_ore", false);
 	
-	private final EnumSetting<SearchArea> area = new EnumSetting<>("Area",
-		"The area around the player to search in.\n"
-			+ "Higher values require a faster computer.",
+	private final EnumSetting<SearchArea> area = new EnumSetting<>("区域",
+		"玩家周围要搜索的区域。\n"
+			+ "更大的值需要更快的电脑。",
 		SearchArea.values(), SearchArea.D11);
 	
-	private final SliderSetting limit = new SliderSetting("Limit",
-		"The maximum number of blocks to display.\n"
-			+ "Higher values require a faster computer.",
+	private final SliderSetting limit = new SliderSetting("限制",
+		"要显示的方块的最大数量。\n"
+			+ "更大的值需要更快的电脑。",
 		4, 3, 6, 1, ValueDisplay.LOGARITHMIC);
 	private int prevLimit;
 	private boolean notify;
@@ -397,9 +397,9 @@ public final class SearchHack extends Hack
 			notify = true;
 		else if(notify)
 		{
-			ChatUtils.warning("Search found \u00a7lA LOT\u00a7r of blocks!"
-				+ " To prevent lag, it will only show the closest \u00a76"
-				+ limit.getValueString() + "\u00a7r results.");
+			ChatUtils.warning("搜索发现了\u00a7l很多\u00a7r的方块！"
+				+ "为了防止卡顿，它只会显示最近的\u00a76"
+				+ limit.getValueString() + "\u00a7r个结果。");
 			notify = false;
 		}
 		

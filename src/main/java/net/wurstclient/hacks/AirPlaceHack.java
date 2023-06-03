@@ -20,7 +20,7 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class AirPlaceHack extends Hack implements RightClickListener
 {
 	private final SliderSetting range =
-		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("距离", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	public AirPlaceHack()
 	{

@@ -24,17 +24,16 @@ import net.wurstclient.settings.EnumSetting;
 public final class SneakHack extends Hack
 	implements PreMotionListener, PostMotionListener
 {
-	private final EnumSetting<SneakMode> mode = new EnumSetting<>("Mode",
-		"\u00a7lPacket\u00a7r mode makes it look like you're sneaking without slowing you down.\n"
-			+ "\u00a7lLegit\u00a7r mode actually makes you sneak.",
+	private final EnumSetting<SneakMode> mode = new EnumSetting<>("模式",
+		"\u00a7l数据包\u00a7r模式让你看起来像在潜行，但不会降低你的速度。\n"
+			+ "\u00a7l合法\u00a7r模式真的让你潜行。",
 		SneakMode.values(), SneakMode.LEGIT);
 	
 	private final CheckboxSetting offWhileFlying =
-		new CheckboxSetting("Turn off while flying",
-			"Automatically disables Legit Sneak while you are flying or using"
-				+ " Freecam, so that it doesn't force you to fly down.\n\n"
-				+ "Keep in mind that this also means you won't be hidden from"
-				+ " other players while doing these things.",
+		new CheckboxSetting("飞行时关闭",
+			"当你在飞行或使用"
+				+ "Freecam时，自动关闭合法潜行，这样它就不会强制你向下飞。\n\n"
+				+ "请记住，这也意味着你在做这些事情时不会对其他玩家隐藏。",
 			false);
 	
 	public SneakHack()
@@ -133,8 +132,8 @@ public final class SneakHack extends Hack
 	
 	private enum SneakMode
 	{
-		PACKET("Packet"),
-		LEGIT("Legit");
+		PACKET("发包"),
+		LEGIT("合法");
 		
 		private final String name;
 		

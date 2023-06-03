@@ -57,13 +57,13 @@ public final class MobSpawnEspHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
 	private final EnumSetting<DrawDistance> drawDistance = new EnumSetting<>(
-		"Draw distance", DrawDistance.values(), DrawDistance.D9);
+		"绘制距离", DrawDistance.values(), DrawDistance.D9);
 	
 	private final SliderSetting loadingSpeed = new SliderSetting(
-		"Loading speed", 1, 1, 5, 1, ValueDisplay.INTEGER.withSuffix("x"));
+		"加载速度", 1, 1, 5, 1, ValueDisplay.INTEGER.withSuffix("x"));
 	
 	private final CheckboxSetting depthTest =
-		new CheckboxSetting("Depth test", true);
+		new CheckboxSetting("深度测试", true);
 	
 	private final HashMap<Chunk, ChunkScanner> scanners = new HashMap<>();
 	private ExecutorService pool;
@@ -166,7 +166,7 @@ public final class MobSpawnEspHack extends Hack
 			}catch(ConcurrentModificationException e)
 			{
 				System.out.println(
-					"WARNING! ChunkScanner.compileDisplayList(); failed with the following exception:");
+					"警告！ChunkScanner.compileDisplayList(); 失败，出现以下异常：");
 				e.printStackTrace();
 				
 				if(scanner.vertexBuffer != null)

@@ -43,7 +43,7 @@ public final class ProtectHack extends Hack
 		new AttackSpeedSliderSetting();
 	
 	private final CheckboxSetting useAi =
-		new CheckboxSetting("Use AI (experimental)", false);
+		new CheckboxSetting("使用AI（实验性）", false);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);
@@ -93,8 +93,8 @@ public final class ProtectHack extends Hack
 	public String getRenderName()
 	{
 		if(friend != null)
-			return "Protecting " + friend.getName().getString();
-		return "Protect";
+			return "保护中 " + friend.getName().getString();
+		return "保护";
 	}
 	
 	@Override

@@ -68,16 +68,16 @@ public final class TunnellerHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final EnumSetting<TunnelSize> size = new EnumSetting<>(
-		"Tunnel size", TunnelSize.values(), TunnelSize.SIZE_3X3);
+		"隧道大小", TunnelSize.values(), TunnelSize.SIZE_3X3);
 	
-	private final SliderSetting limit = new SliderSetting("Limit",
-		"Automatically stops once the tunnel has reached the given length.\n\n"
-			+ "0 = no limit",
-		0, 0, 1000, 1, ValueDisplay.INTEGER.withSuffix(" blocks")
-			.withLabel(1, "1 block").withLabel(0, "disabled"));
+	private final SliderSetting limit = new SliderSetting("限制",
+		"当隧道达到给定的长度时自动停止。\n\n"
+			+ "0 = 无限制",
+		0, 0, 1000, 1, ValueDisplay.INTEGER.withSuffix(" 方块")
+			.withLabel(1, "1 方块").withLabel(0, "关闭"));
 	
-	private final CheckboxSetting torches = new CheckboxSetting("Place torches",
-		"Places just enough torches to prevent mobs from spawning inside the tunnel.",
+	private final CheckboxSetting torches = new CheckboxSetting("放置火把",
+		"在隧道内放置足够的火把来防止怪物生成。",
 		false);
 	
 	private BlockPos start;

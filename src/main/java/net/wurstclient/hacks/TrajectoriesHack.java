@@ -47,16 +47,16 @@ import net.wurstclient.util.RotationUtils;
 	"arrow trajectories", "bow trajectories"})
 public final class TrajectoriesHack extends Hack implements RenderListener
 {
-	private final ColorSetting missColor = new ColorSetting("Miss Color",
-		"Color of the trajectory when it doesn't hit anything.", Color.GRAY);
+	private final ColorSetting missColor = new ColorSetting("未命中颜色",
+		"当轨迹没有击中任何东西时的颜色。", Color.GRAY);
 	
 	private final ColorSetting entityHitColor =
-		new ColorSetting("Entity Hit Color",
-			"Color of the trajectory when it hits an entity.", Color.RED);
+		new ColorSetting("实体命中颜色",
+			"当轨迹击中一个实体时的颜色。", Color.RED);
 	
 	private final ColorSetting blockHitColor =
-		new ColorSetting("Block Hit Color",
-			"Color of the trajectory when it hits a block.", Color.GREEN);
+		new ColorSetting("方块命中颜色",
+			"当轨迹击中一个方块时的颜色。", Color.GREEN);
 	
 	public TrajectoriesHack()
 	{

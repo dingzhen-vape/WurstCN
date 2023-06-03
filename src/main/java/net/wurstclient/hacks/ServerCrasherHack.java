@@ -37,7 +37,7 @@ public final class ServerCrasherHack extends Hack
 	{
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("Creative mode only.");
+			ChatUtils.error("只有创造模式可用.");
 			setEnabled(false);
 			return;
 		}
@@ -72,10 +72,10 @@ public final class ServerCrasherHack extends Hack
 			
 			MC.player.networkHandler.sendPacket(
 				new CreativeInventoryActionC2SPacket(36 + i, stack));
-			ChatUtils.message("Item created.");
+			ChatUtils.message("物品已创造.");
 			return;
 		}
 		
-		ChatUtils.error("Please clear a slot in your hotbar.");
+		ChatUtils.error("请检查你的物品栏是否有空余位置");
 	}
 }

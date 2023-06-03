@@ -49,30 +49,30 @@ import net.wurstclient.util.json.JsonException;
 public final class AutoBuildHack extends Hack
 	implements UpdateListener, RightClickListener, RenderListener
 {
-	private final FileSetting templateSetting = new FileSetting("Template",
-		"Determines what to build.\n\n"
-			+ "Templates are just JSON files. Feel free to add your own or to edit / delete the default templates.\n\n"
-			+ "If you mess up, simply press the 'Reset to Defaults' button or delete the folder.",
+	private final FileSetting templateSetting = new FileSetting("模板",
+		"决定了要建造什么。\n\n"
+			+ "模板只是JSON文件。你可以随意添加你自己的，或者编辑/删除默认的模板。\n\n"
+			+ "如果你弄乱了，只需按下'重置为默认值'按钮或删除文件夹。",
 		"autobuild", DefaultAutoBuildTemplates::createFiles);
 	
-	private final SliderSetting range = new SliderSetting("Range",
-		"How far to reach when placing blocks.\n" + "Recommended values:\n"
-			+ "6.0 for vanilla\n" + "4.25 for NoCheat+",
+	private final SliderSetting range = new SliderSetting("范围",
+		"放置方块时的最大距离。\n" + "推荐值:\n"
+			+ "6.0 对于原版\n" + "4.25 对于NoCheat+",
 		6, 1, 10, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"Check line of sight",
-		"Makes sure that you don't reach through walls when placing blocks. Can help with AntiCheat plugins but slows down building.",
+		"检查视线",
+		"确保你在放置方块时不会穿过墙壁。可以帮助应对反作弊插件，但会减慢建造速度。",
 		false);
 	
-	private final CheckboxSetting instaBuild = new CheckboxSetting("InstaBuild",
-		"Builds small templates (<= 64 blocks) instantly.\n"
-			+ "For best results, stand close to the block you're placing.",
+	private final CheckboxSetting instaBuild = new CheckboxSetting("立即建造",
+		"立即建造小型模板（<= 64个方块）。\n"
+			+ "为了获得最佳效果，请站在你要放置的方块附近。",
 		true);
 	
 	private final CheckboxSetting fastPlace =
-		new CheckboxSetting("Always FastPlace",
-			"Builds as if FastPlace was enabled, even if it's not.", true);
+		new CheckboxSetting("总是快速放置",
+			"就像启用了快速放置一样建造，即使没有启用。", true);
 	
 	private Status status = Status.NO_TEMPLATE;
 	private AutoBuildTemplate template;

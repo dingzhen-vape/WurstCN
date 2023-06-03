@@ -69,7 +69,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	private final String warning;
 	
 	private final String renderName =
-		Math.random() < 0.01 ? "X-Wurst" : getName();
+		Math.random() < 0.3 ? "X-Wurst" : getName();
 	
 	public XRayHack()
 	{
@@ -84,7 +84,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 		Pattern optifine = Pattern.compile("opti(?:fine|fabric).*");
 		
 		if(mods.stream().anyMatch(optifine.asPredicate()))
-			warning = "OptiFine is installed. X-Ray will not work properly!";
+			warning = "OptiFine已安装。X-Ray将无法正常工作！";
 		else
 			warning = null;
 	}

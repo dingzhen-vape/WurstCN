@@ -30,18 +30,14 @@ public final class FastBreakHack extends Hack
 	implements UpdateListener, BlockBreakingProgressListener
 {
 	private final SliderSetting activationChance = new SliderSetting(
-		"Activation chance",
-		"Only FastBreaks some of the blocks you break with the given chance,"
-			+ " which makes it harder for anti-cheat plugins to detect.\n\n"
-			+ "This setting does nothing if Legit mode is enabled.",
+		"激活几率",
+		"只有给定几率的一些方块会被快速破坏，这使得反作弊插件更难检测到。\n\n"
+			+ "如果启用了合法模式，这个设置不起作用。",
 		1, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
-	private final CheckboxSetting legitMode = new CheckboxSetting("Legit mode",
-		"Only removes the delay between breaking blocks, without speeding up"
-			+ " the breaking process itself.\n\n"
-			+ "This is much slower, but great at bypassing anti-cheat plugins."
-			+ " Use this if regular FastBreak is not working and the Activation"
-			+ " chance slider doesn't help.",
+	private final CheckboxSetting legitMode = new CheckboxSetting("合法模式",
+		"只是去除了破坏方块之间的延迟，而不加速破坏过程本身。\n\n"
+			+ "这样会慢得多，但是很好地绕过了反作弊插件。如果普通的快速破坏不起作用，而激活几率滑块也没有帮助，就使用这个。",
 		false);
 	
 	private final Random random = new Random();
@@ -60,7 +56,7 @@ public final class FastBreakHack extends Hack
 	public String getRenderName()
 	{
 		if(legitMode.isChecked())
-			return getName() + "Legit";
+			return getName() + "合法";
 		return getName();
 	}
 	

@@ -16,19 +16,19 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class NameTagsHack extends Hack
 {
 	private final CheckboxSetting unlimitedRange =
-		new CheckboxSetting("Unlimited range",
-			"Removes the 64 block distance limit for nametags.", true);
+		new CheckboxSetting("无限范围",
+			"移除了名牌的64方块距离限制。", true);
 	
 	private final CheckboxSetting seeThrough = new CheckboxSetting(
-		"See-through mode",
-		"Renders nametags on the see-through text layer. This makes them"
-			+ " easier to read behind walls, but harder to read behind water"
-			+ " and other transparent things.",
+		"透视模式",
+		"在透视文字层上渲染名牌。这使得它们"
+			+ "在墙后更容易阅读，但在水"
+			+ "和其他透明的东西后更难阅读。",
 		false);
 	
 	private final CheckboxSetting forceNametags = new CheckboxSetting(
-		"Force nametags",
-		"Forces nametags of all players to be visible, even your own.", false);
+		"强制名牌",
+		"强制所有玩家的名牌可见，甚至是你自己的。", false);
 	
 	public NameTagsHack()
 	{

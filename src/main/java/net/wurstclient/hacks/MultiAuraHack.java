@@ -32,13 +32,13 @@ import net.wurstclient.util.RotationUtils;
 public final class MultiAuraHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range =
-		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("距离", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
 	private final SliderSetting fov =
-		new SliderSetting("FOV", 360, 30, 360, 10, ValueDisplay.DEGREES);
+		new SliderSetting("视角", 360, 30, 360, 10, ValueDisplay.DEGREES);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(false);

@@ -33,28 +33,26 @@ import net.wurstclient.util.ChatUtils;
 public final class AutoFishHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
-	private final SliderSetting validRange = new SliderSetting("Valid range",
-		"Any bites that occur outside of this range will be ignored.\n\n"
-			+ "Increase your range if bites are not being detected, decrease it"
-			+ " if other people's bites are being detected as yours.",
+	private final SliderSetting validRange = new SliderSetting("有效范围",
+		"发生在这个范围之外的咬钩将被忽略。\n\n"
+			+ "如果咬钩没有被检测到，就增加你的范围，如果别人的咬钩被检测为你的，就减少你的范围。",
 		1.5, 0.25, 8, 0.25, ValueDisplay.DECIMAL);
 	
-	private final SliderSetting catchDelay = new SliderSetting("Catch delay",
-		"How long AutoFish will wait after a bite before reeling in.", 0, 0, 60,
-		1, ValueDisplay.INTEGER.withSuffix(" ticks"));
+	private final SliderSetting catchDelay = new SliderSetting("收杆延迟",
+		"咬钩后AutoFish等待多久才收杆。", 0, 0, 60,
+		1, ValueDisplay.INTEGER.withSuffix(" 刻"));
 	
-	private final SliderSetting retryDelay = new SliderSetting("Retry delay",
-		"If casting or reeling in the fishing rod fails, this is how long"
-			+ " AutoFish will wait before trying again.",
-		15, 0, 100, 1, ValueDisplay.INTEGER.withSuffix(" ticks"));
+	private final SliderSetting retryDelay = new SliderSetting("重试延迟",
+		"如果抛竿或收杆失败，AutoFish会等待多久才再次尝试。",
+		15, 0, 100, 1, ValueDisplay.INTEGER.withSuffix(" 刻"));
 	
-	private final SliderSetting patience = new SliderSetting("Patience",
-		"How long AutoFish will wait if it doesn't get a bite before reeling in.",
-		60, 10, 120, 1, ValueDisplay.INTEGER.withSuffix("s"));
+	private final SliderSetting patience = new SliderSetting("耐心",
+		"如果没有咬钩，AutoFish会等待多久才收杆。",
+		60, 10, 120, 1, ValueDisplay.INTEGER.withSuffix("秒"));
 	
 	private final CheckboxSetting stopWhenInvFull = new CheckboxSetting(
-		"Stop when inv full",
-		"If enabled, AutoFish will turn itself off when your inventory is full.",
+		"背包满时停止",
+		"如果启用，当你的背包满了时，AutoFish会自动关闭。",
 		false);
 	
 	private final ShallowWaterWarningCheckbox shallowWaterWarning =
@@ -130,7 +128,7 @@ public final class AutoFishHack extends Hack
 			&& MC.player.getInventory().getEmptySlot() == -1)
 		{
 			ChatUtils.message(
-				"AutoFish has stopped because your inventory is full.");
+				"自动钓鱼已停止，因为你的背包已满");
 			setEnabled(false);
 			return;
 		}

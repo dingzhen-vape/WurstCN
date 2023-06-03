@@ -25,7 +25,7 @@ import net.wurstclient.util.ChatUtils;
 public final class KillPotionHack extends Hack
 {
 	private final EnumSetting<PotionType> potionType =
-		new EnumSetting<>("Potion type", "The type of potion to generate.",
+		new EnumSetting<>("药水类型", "要生成的药水的类型。",
 			PotionType.values(), PotionType.SPLASH);
 	
 	public KillPotionHack()
@@ -42,7 +42,7 @@ public final class KillPotionHack extends Hack
 		// check gamemode
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("Creative mode only.");
+			ChatUtils.error("只有创造模式可用");
 			setEnabled(false);
 			return;
 		}
@@ -52,9 +52,9 @@ public final class KillPotionHack extends Hack
 		
 		// give potion
 		if(placeStackInHotbar(stack))
-			ChatUtils.message("Potion created.");
+			ChatUtils.message("已生成.");
 		else
-			ChatUtils.error("Please clear a slot in your hotbar.");
+			ChatUtils.error("请清空你的快捷栏中的一个槽。");
 		
 		setEnabled(false);
 	}
@@ -76,14 +76,14 @@ public final class KillPotionHack extends Hack
 	
 	private enum PotionType
 	{
-		NORMAL("Normal", "Potion", Items.POTION),
+		NORMAL("普通", "药水", Items.POTION),
 		
-		SPLASH("Splash", "Splash Potion", Items.SPLASH_POTION),
+		SPLASH("喷溅", "喷溅药水", Items.SPLASH_POTION),
 		
-		LINGERING("Lingering", "Lingering Potion", Items.LINGERING_POTION);
+		LINGERING("滞留", "滞留药水", Items.LINGERING_POTION);
 		
-		// does not work
-		// ARROW("Arrow", "Arrow", Items.TIPPED_ARROW);
+		// 不起作用
+		// ARROW("箭", "箭", Items.TIPPED_ARROW);
 		
 		private final String name;
 		private final String itemName;
@@ -119,7 +119,7 @@ public final class KillPotionHack extends Hack
 			stack.setNbt(nbt);
 			
 			String name =
-				"\u00a7f" + itemName + " of \u00a74\u00a7lINSTANT DEATH";
+				"\u00a7f" + itemName + " of \u00a74\u00a7l瞬间死亡";
 			stack.setCustomName(Text.literal(name));
 			
 			return stack;

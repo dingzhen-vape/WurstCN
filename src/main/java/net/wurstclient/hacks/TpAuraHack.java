@@ -37,16 +37,15 @@ public final class TpAuraHack extends Hack implements UpdateListener
 	private final Random random = new Random();
 	
 	private final SliderSetting range =
-		new SliderSetting("Range", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final EnumSetting<Priority> priority = new EnumSetting<>("Priority",
-		"Determines which entity will be attacked first.\n"
-			+ "\u00a7lDistance\u00a7r - Attacks the closest entity.\n"
-			+ "\u00a7lAngle\u00a7r - Attacks the entity that requires the least head movement.\n"
-			+ "\u00a7lHealth\u00a7r - Attacks the weakest entity.",
+	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
+		"决定哪个实体会被先攻击。\n"
+			+ "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
+			+ "\u00a7l角度\u00a7r - 攻击",
 		Priority.values(), Priority.ANGLE);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =

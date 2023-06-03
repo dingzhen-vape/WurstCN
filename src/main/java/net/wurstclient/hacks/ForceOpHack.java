@@ -216,8 +216,8 @@ public final class ForceOpHack extends Hack implements ChatInputListener
 			sendIndexToDialog();
 		}
 		
-		ChatUtils.message("\u00a7c[\u00a74\u00a7lFAILURE\u00a7c]\u00a7f All "
-			+ (lastPW + 1) + " passwords were wrong.");
+		ChatUtils.message("\u00a7c[\u00a74\u00a7l失败\u00a7c]\u00a7f 所有 "
+			+ (lastPW + 1) + " 个密码都是错的。");
 	}
 	
 	private void sleep(long millis)
