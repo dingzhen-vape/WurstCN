@@ -15,7 +15,7 @@
 
 ## 下载和安装
 
-- 你可以在[这里](https://wwfb.lanzoue.com/iTnkp0xjveoh)下载最新的wurst cn端汉化版,密码：4y46
+- 你可以在[这里](https://wwfb.lanzoue.com/b032gu5re))下载最新的wurst cn端汉化版,密码:6398
 - 你需要安装[Java](https://www.java.com/)和[Minecraft Launcher](https://www.minecraft.net/)才能使用这个hack端
 - 你可以参考[这个教程](https://www.wurstclient.net/tutorials/installation/)来安装和使用这个hack端
 ## 缺点
