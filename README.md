@@ -10,12 +10,12 @@
 
 ## 计划
 
-- 未来将会完成汉化，包括剩1234余的功能和设置，以及一些细节的优化
+- 未来将会完成汉化，包括剩余的功能和设置，以及一些细节的优化
 - 当wurst更新的时候，这个仓库可能会更新（因为是个人）
 
 ## 下载和安装
 
-- 你可以在[这里](https://wwfb.lanzoue.com/b032gu5re))下载最新的wurst cn端汉化版,密码:6398
+- 你可以在[这里](https://wwfb.lanzoue.com/b032gu5re)下载最新的wurst cn端汉化版,密码:6398
 - 你需要安装[Java](https://www.java.com/)和[Minecraft Launcher](https://www.minecraft.net/)才能使用这个hack端
 - 你可以参考[这个教程](https://www.wurstclient.net/tutorials/installation/)来安装和使用这个hack端
 ## 缺点
