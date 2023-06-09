@@ -28,7 +28,7 @@ public final class KeybindList
 	
 	private final KeybindsFile keybindsFile;
 	private final Path profilesFolder =
-		WurstClient.INSTANCE.getWurstFolder().resolve("热键绑定");
+		WurstClient.INSTANCE.getWurstFolder().resolve("keybinds");
 	
 	public KeybindList(Path keybindsFile)
 	{
