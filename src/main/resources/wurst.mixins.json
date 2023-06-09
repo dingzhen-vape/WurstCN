@@ -8,7 +8,6 @@
   "client": [
   	"AbstractBlockStateMixin",
     "AbstractSignEditScreenMixin",
-    "AllowedAddressResolverMixin",
     "ArmorItemMixin",
     "BackgroundRendererMixin",
   	"BlockEntityRenderDispatcherMixin",
