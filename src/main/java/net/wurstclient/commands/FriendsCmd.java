@@ -22,13 +22,13 @@ public class FriendsCmd extends Command
 	private static final int FRIENDS_PER_PAGE = 8;
 	
 	private final CheckboxSetting middleClickFriends =
-		new CheckboxSetting("Middle click friends",
-			"Add/remove friends by clicking them with the middle mouse button.",
+		new CheckboxSetting("中键添加好友",
+			"通过中键点击其他玩家来添加或删除好友。",
 			true);
 	
 	public FriendsCmd()
 	{
-		super("friends", "Manages your friends list.", ".friends add <name>",
+		super("friends", "管理你的好友列表。", ".friends add <name>",
 			".friends remove <name>", ".friends remove-all",
 			".friends list [<page>]");
 		

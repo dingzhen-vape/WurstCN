@@ -10,8 +10,7 @@ package net.wurstclient.hacks;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -47,52 +46,52 @@ public final class GlideHack extends Hack
 		addSetting(moveSpeed);
 		addSetting(minHeight);
 	}
-	
+
 	@Override
 	public void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(AirStrafingSpeedListener.class, this);
 	}
-	
+
 	@Override
 	public void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(AirStrafingSpeedListener.class, this);
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		ClientPlayerEntity player = MC.player;
 		Vec3d v = player.getVelocity();
-		
+
 		if(player.isOnGround() || player.isTouchingWater() || player.isInLava()
-			|| player.isClimbing() || v.y >= 0)
+				|| player.isClimbing() || v.y >= 0)
 			return;
-		
+
 		if(minHeight.getValue() > 0)
 		{
 			Box box = player.getBoundingBox();
 			box = box.union(box.offset(0, -minHeight.getValue(), 0));
 			if(!MC.world.isSpaceEmpty(box))
 				return;
-			
+
 			BlockPos min = BlockPos.ofFloored(box.minX, box.minY, box.minZ);
 			BlockPos max = BlockPos.ofFloored(box.maxX, box.maxY, box.maxZ);
 			Stream<BlockPos> stream = StreamSupport
-				.stream(BlockUtils.getAllInBox(min, max).spliterator(), true);
-			
+					.stream(BlockUtils.getAllInBox(min, max).spliterator(), true);
+
 			// manual collision check, since liquids don't have bounding boxes
-			if(stream.map(BlockUtils::getState).map(BlockState::getMaterial)
-				.anyMatch(Material::isLiquid))
+			if(stream.map(BlockUtils::getBlock)
+					.anyMatch(b -> b instanceof FluidBlock))
 				return;
 		}
-		
+
 		player.setVelocity(v.x, Math.max(v.y, -fallSpeed.getValue()), v.z);
 	}
-	
+
 	@Override
 	public void onGetAirStrafingSpeed(AirStrafingSpeedEvent event)
 	{

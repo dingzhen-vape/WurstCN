@@ -19,23 +19,23 @@ public final class FacingSetting extends EnumSetting<FacingSetting.Facing>
 	
 	public FacingSetting()
 	{
-super("Facing", "如何面向村民和工作站。\n\n"
-			+ "\u00a7lOff\u00a7r - 不要面向村民。会被反作弊插件检测到。\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在服务器端面向村民，同时在客户端自由移动摄像机。\n\n"
-			+ "\u00a7lClient-side\u00a7r - 通过在客户端移动摄像机来面向村民。这是最合法的选项，但是看起来可能会让人头晕。",
-			Facing.values(),
+		super("面向", "如何面向村民和工作站。\n\n"
+			+ "\u00a7l关闭\u00a7r - 不要面向村民。会被反作弊插件检测到。\n\n"
+			+ "\u00a7l服务器端\u00a7r - 在服务器端面向村民，同时在客户端自由移动摄像头。\n\n"
+			+ "\u00a7l客户端\u00a7r - 通过在客户端移动摄像头来面向村民。这是最合法的选项，但是看起来可能会让人头晕。", Facing.values(),
 			Facing.SERVER);
 	}
 	
 	public enum Facing
 	{
-		OFF("Off", v -> {}),
+		OFF("关闭", v -> {}),
 		
-		SERVER("Server-side",
+		SERVER("服务器端",
 			v -> WURST.getRotationFaker().faceVectorPacket(v)),
 		
-		CLIENT("Client-side",
+		CLIENT("客户端",
 			v -> WURST.getRotationFaker().faceVectorClient(v));
+
 		
 		private String name;
 		private Consumer<Vec3d> face;

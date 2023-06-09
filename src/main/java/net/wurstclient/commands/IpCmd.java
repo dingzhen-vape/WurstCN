@@ -19,9 +19,9 @@ public final class IpCmd extends Command
 	public IpCmd()
 	{
 		super("ip",
-			"Shows the IP of the server you are currently\n"
-				+ "connected to or copies it to the clipboard.",
-			".ip", "Copy to clipboard: .ip copy");
+			"显示你当前连接的服务器的IP，\n"
+				+ "或将其复制到剪贴板。",
+			".ip", "复制到剪贴板: .ip copy");
 	}
 	
 	@Override

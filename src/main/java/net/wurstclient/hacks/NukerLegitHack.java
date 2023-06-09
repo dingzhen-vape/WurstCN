@@ -15,7 +15,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -89,13 +88,7 @@ public final class NukerLegitHack extends Hack
 		addSetting(lockId);
 		addSetting(multiIdList);
 	}
-	
-	@Override
-	public String getRenderName()
-	{
-		return mode.getSelected().getRenderName(this);
-	}
-	
+
 	@Override
 	public void onEnable()
 	{
@@ -105,13 +98,13 @@ public final class NukerLegitHack extends Hack
 		WURST.getHax().nukerHack.setEnabled(false);
 		WURST.getHax().speedNukerHack.setEnabled(false);
 		WURST.getHax().tunnellerHack.setEnabled(false);
-		
+
 		// add listeners
 		EVENTS.add(LeftClickListener.class, this);
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(RenderListener.class, this);
 	}
-	
+
 	@Override
 	public void onDisable()
 	{
@@ -119,7 +112,7 @@ public final class NukerLegitHack extends Hack
 		EVENTS.remove(LeftClickListener.class, this);
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
-		
+
 		// resets
 		MC.options.attackKey.setPressed(false);
 		renderer.resetProgress();
@@ -127,162 +120,161 @@ public final class NukerLegitHack extends Hack
 		if(!lockId.isChecked())
 			id.setBlock(Blocks.AIR);
 	}
-	
+
 	@Override
 	public void onLeftClick(LeftClickEvent event)
 	{
 		// check mode
 		if(mode.getSelected() != Mode.ID)
 			return;
-		
+
 		if(lockId.isChecked())
 			return;
-		
+
 		// check hitResult
 		if(MC.crosshairTarget == null
-			|| !(MC.crosshairTarget instanceof BlockHitResult))
+				|| !(MC.crosshairTarget instanceof BlockHitResult))
 			return;
-		
+
 		// check pos
 		BlockPos pos = ((BlockHitResult)MC.crosshairTarget).getBlockPos();
-		if(pos == null
-			|| BlockUtils.getState(pos).getMaterial() == Material.AIR)
+		if(pos == null || BlockUtils.getBlock(pos) == Blocks.AIR)
 			return;
-		
+
 		// set id
 		id.setBlockName(BlockUtils.getName(pos));
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		currentBlock = null;
-		
+
 		// abort if using IDNuker without an ID being set
 		if(mode.getSelected() == Mode.ID && id.getBlock() == Blocks.AIR)
 		{
 			renderer.resetProgress();
 			return;
 		}
-		
+
 		// get valid blocks
 		Iterable<BlockPos> validBlocks = getValidBlocks(range.getValueI(),
-			mode.getSelected().getValidator(this));
-		
+				mode.getSelected().getValidator(this));
+
 		// find closest valid block
 		for(BlockPos pos : validBlocks)
 		{
 			// break block
 			if(!breakBlockExtraLegit(pos))
 				continue;
-			
+
 			// set currentBlock if successful
 			currentBlock = pos;
 			break;
 		}
-		
+
 		// reset if no block was found
 		if(currentBlock == null)
 		{
 			MC.options.attackKey.setPressed(false);
 			renderer.resetProgress();
 		}
-		
+
 		renderer.updateProgress();
 	}
-	
+
 	private ArrayList<BlockPos> getValidBlocks(int range,
-		Predicate<BlockPos> validator)
+											   Predicate<BlockPos> validator)
 	{
 		Vec3d eyesVec = RotationUtils.getEyesPos();
 		BlockPos center = BlockPos.ofFloored(eyesVec);
-		
+
 		return BlockUtils.getAllInBoxStream(center, range)
-			.filter(BlockUtils::canBeClicked).filter(validator)
-			.sorted(Comparator.comparingDouble(
-				pos -> eyesVec.squaredDistanceTo(Vec3d.ofCenter(pos))))
-			.collect(Collectors.toCollection(ArrayList::new));
+				.filter(BlockUtils::canBeClicked).filter(validator)
+				.sorted(Comparator.comparingDouble(
+						pos -> eyesVec.squaredDistanceTo(Vec3d.ofCenter(pos))))
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
-	
+
 	private boolean breakBlockExtraLegit(BlockPos pos)
 	{
 		BlockBreakingParams params = BlockBreaker.getBlockBreakingParams(pos);
 		if(!params.lineOfSight() || params.distanceSq() > range.getValueSq())
 			return false;
-		
+
 		// face block
 		WURST.getRotationFaker().faceVectorClient(params.hitVec());
-		
+
 		WURST.getHax().autoToolHack.equipIfEnabled(pos);
-		
+
 		if(!MC.interactionManager.isBreakingBlock())
 			MC.interactionManager.attackBlock(pos, params.side());
-			
+
 		// if attack key is down but nothing happens,
 		// release it for one tick
 		if(MC.options.attackKey.isPressed()
-			&& !MC.interactionManager.isBreakingBlock())
+				&& !MC.interactionManager.isBreakingBlock())
 		{
 			MC.options.attackKey.setPressed(false);
 			return true;
 		}
-		
+
 		// damage block
 		MC.options.attackKey.setPressed(true);
 		return true;
 	}
-	
+
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
 		renderer.render(matrixStack, partialTicks, currentBlock);
 	}
-	
+
 	private enum Mode
 	{
 		NORMAL("Normal", n -> "NukerLegit", (n, p) -> true),
-		
+
 		ID("ID",
-			n -> "IDNukerLegit ["
-				+ n.id.getBlockName().replace("minecraft:", "") + "]",
-			(n, p) -> BlockUtils.getName(p).equals(n.id.getBlockName())),
-		
+				n -> "IDNukerLegit ["
+						+ n.id.getBlockName().replace("minecraft:", "") + "]",
+				(n, p) -> BlockUtils.getName(p).equals(n.id.getBlockName())),
+
 		MULTI_ID("MultiID",
-			n -> "MultiIDNuker [" + n.multiIdList.getBlockNames().size()
-				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
-					: " IDs]"),
-			(n, p) -> n.multiIdList.getBlockNames()
-				.contains(BlockUtils.getName(p))),
-		
+				n -> "MultiIDNuker [" + n.multiIdList.getBlockNames().size()
+						+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
+						: " IDs]"),
+				(n, p) -> n.multiIdList.getBlockNames()
+						.contains(BlockUtils.getName(p))),
+
 		FLAT("Flat", n -> "FlatNukerLegit",
-			(n, p) -> p.getY() >= MC.player.getPos().getY()),
-		
+				(n, p) -> p.getY() >= MC.player.getPos().getY()),
+
 		SMASH("Smash", n -> "SmashNukerLegit",
-			(n, p) -> BlockUtils.getHardness(p) >= 1);
-		
+				(n, p) -> BlockUtils.getHardness(p) >= 1);
+
 		private final String name;
 		private final Function<NukerLegitHack, String> renderName;
 		private final BiPredicate<NukerLegitHack, BlockPos> validator;
-		
+
 		private Mode(String name, Function<NukerLegitHack, String> renderName,
-			BiPredicate<NukerLegitHack, BlockPos> validator)
+					 BiPredicate<NukerLegitHack, BlockPos> validator)
 		{
 			this.name = name;
 			this.renderName = renderName;
 			this.validator = validator;
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return name;
 		}
-		
+
 		public String getRenderName(NukerLegitHack n)
 		{
 			return renderName.apply(n);
 		}
-		
+
 		public Predicate<BlockPos> getValidator(NukerLegitHack n)
 		{
 			return p -> validator.test(n, p);

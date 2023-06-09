@@ -44,10 +44,10 @@ public final class PathCmd extends Command
 	public PathCmd()
 	{
 		super("path",
-			"Shows the shortest path to a specific point.\n"
-				+ "Useful for labyrinths and caves.",
+			"显示到指定点的最短路径。\n"
+				+ "对于迷宫和洞穴很有用。",
 			".path <x> <y> <z>", ".path <entity>", ".path -debug",
-			".path -depth", ".path -refresh", "Turn off: .path");
+			".path -depth", ".path -refresh", "关闭: .path");
 		
 		addSetting(debugMode);
 		addSetting(depthTest);

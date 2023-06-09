@@ -32,8 +32,8 @@ public final class GiveCmd extends Command
 	public GiveCmd()
 	{
 		super("give",
-			"Gives you an item with custom NBT data.\n"
-				+ "Requires creative mode.",
+			"给你一个带有自定义NBT数据的物品。\n"
+				+ "需要创造模式。",
 			".give <item> [<amount>] [<nbt>]", ".give <id> [<amount>] [<nbt>]");
 	}
 	

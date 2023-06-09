@@ -20,10 +20,8 @@ import net.wurstclient.util.ChatUtils;
 
 public final class AnnoyCmd extends Command implements ChatInputListener
 {
-	private final CheckboxSetting rcMode = new CheckboxSetting("RC mode",
-		"Remote control mode. Re-enables a bug that allows .annoy to run Wurst"
-			+ " commands. Not recommended for security reasons, but until we have a"
-			+ " proper remote control feature, this is at least better than nothing.",
+	private final CheckboxSetting rcMode = new CheckboxSetting("RC模式",
+		"远程控制模式。重新启用一个让.annoy可以运行Wurst命令的bug。出于安全原因不推荐使用，但在我们有一个合适的远程控制功能之前，这至少比没有好一些。",
 		false);
 	
 	private boolean enabled;
@@ -31,8 +29,8 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 	
 	public AnnoyCmd()
 	{
-		super("annoy", "Annoys a player by repeating everything they say.",
-			".annoy <player>", "Turn off: .annoy");
+		super("annoy", "通过重复他们说的话来烦扰一个玩家。",
+			".annoy <player>", "关闭: .annoy");
 		addSetting(rcMode);
 	}
 	

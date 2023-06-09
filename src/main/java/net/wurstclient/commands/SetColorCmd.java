@@ -25,10 +25,10 @@ public final class SetColorCmd extends Command
 	public SetColorCmd()
 	{
 		super("setcolor",
-			"Changes a color setting of a feature. Allows you\n"
-				+ "to set RGB values through keybinds.",
+			"更改某个功能的颜色设置。允许你\n"
+				+ "通过快捷键设置RGB值。",
 			".setcolor <feature> <setting> <RGB>",
-			"Example: .setcolor ClickGUI AC #FF0000");
+			"示例: .setcolor ClickGUI AC #FF0000");
 	}
 	
 	@Override

@@ -26,11 +26,11 @@ public final class EnabledHaxCmd extends Command
 {
 	public EnabledHaxCmd()
 	{
-		super("enabledhax", "Allows you to make profiles of enabled hacks.",
+		super("enabledhax", "允许你创建已启用的黑客功能的配置文件。",
 			".enabledhax load-profile <file>",
 			".enabledhax save-profile <file>",
 			".enabledhax list-profiles [<page>]",
-			"Profiles are saved in '.minecraft/wurst/enabled hacks'.");
+			"配置文件保存在'.minecraft/wurst/enabled hacks'中。");
 	}
 	
 	@Override

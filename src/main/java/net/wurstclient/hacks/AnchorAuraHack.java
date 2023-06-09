@@ -95,19 +95,19 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 		
 		entityFilters.forEach(this::addSetting);
 	}
-	
+
 	@Override
 	public void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 	}
-	
+
 	@Override
 	public void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
@@ -116,38 +116,38 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 			ChatUtils.error("Respawn anchors don't explode in this dimension.");
 			setEnabled(false);
 		}
-		
+
 		ArrayList<BlockPos> anchors = getNearbyAnchors();
-		
+
 		Map<Boolean, ArrayList<BlockPos>> anchorsByCharge = anchors.stream()
-			.collect(Collectors.partitioningBy(this::isChargedAnchor,
-				Collectors.toCollection(ArrayList::new)));
-		
+				.collect(Collectors.partitioningBy(this::isChargedAnchor,
+						Collectors.toCollection(ArrayList::new)));
+
 		ArrayList<BlockPos> chargedAnchors = anchorsByCharge.get(true);
 		ArrayList<BlockPos> unchargedAnchors = anchorsByCharge.get(false);
-		
+
 		if(!chargedAnchors.isEmpty())
 		{
 			detonate(chargedAnchors);
 			return;
 		}
-		
+
 		if(!unchargedAnchors.isEmpty()
-			&& hasItem(item -> item == Items.GLOWSTONE))
+				&& hasItem(item -> item == Items.GLOWSTONE))
 		{
 			charge(unchargedAnchors);
 			// TODO: option to wait until next tick?
 			detonate(unchargedAnchors);
 			return;
 		}
-		
+
 		if(!autoPlace.isChecked()
-			|| !hasItem(item -> item == Items.RESPAWN_ANCHOR))
+				|| !hasItem(item -> item == Items.RESPAWN_ANCHOR))
 			return;
-		
+
 		ArrayList<Entity> targets = getNearbyTargets();
 		ArrayList<BlockPos> newAnchors = placeAnchorsNear(targets);
-		
+
 		if(!newAnchors.isEmpty() && hasItem(item -> item == Items.GLOWSTONE))
 		{
 			// TODO: option to wait until next tick?
@@ -155,81 +155,81 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 			detonate(newAnchors);
 		}
 	}
-	
+
 	private ArrayList<BlockPos> placeAnchorsNear(ArrayList<Entity> targets)
 	{
 		ArrayList<BlockPos> newAnchors = new ArrayList<>();
-		
+
 		boolean shouldSwing = false;
 		for(Entity target : targets)
 		{
 			ArrayList<BlockPos> freeBlocks = getFreeBlocksNear(target);
-			
+
 			for(BlockPos pos : freeBlocks)
 				if(placeAnchor(pos))
 				{
 					shouldSwing = true;
 					newAnchors.add(pos);
-					
+
 					// TODO optional speed limit(?)
 					break;
 				}
 		}
-		
+
 		if(shouldSwing)
 			MC.player.swingHand(Hand.MAIN_HAND);
-		
+
 		return newAnchors;
 	}
-	
+
 	private void detonate(ArrayList<BlockPos> chargedAnchors)
 	{
 		if(isSneaking())
 			return;
-		
+
 		if(!selectItem(item -> item != Items.GLOWSTONE))
 			return;
-		
+
 		boolean shouldSwing = false;
-		
+
 		for(BlockPos pos : chargedAnchors)
 			if(rightClickBlock(pos))
 				shouldSwing = true;
-			
+
 		if(shouldSwing)
 			MC.player.swingHand(Hand.MAIN_HAND);
 	}
-	
+
 	private void charge(ArrayList<BlockPos> unchargedAnchors)
 	{
 		if(isSneaking())
 			return;
-		
+
 		if(!selectItem(item -> item == Items.GLOWSTONE))
 			return;
-		
+
 		boolean shouldSwing = false;
-		
+
 		for(BlockPos pos : unchargedAnchors)
 			if(rightClickBlock(pos))
 				shouldSwing = true;
-			
+
 		if(shouldSwing)
 			MC.player.swingHand(Hand.MAIN_HAND);
 	}
-	
+
 	private boolean selectItem(Predicate<Item> item)
 	{
 		PlayerInventory inventory = MC.player.getInventory();
 		IClientPlayerInteractionManager im = IMC.getInteractionManager();
 		int maxInvSlot = takeItemsFrom.getSelected().maxInvSlot;
-		
+
 		for(int slot = 0; slot < maxInvSlot; slot++)
 		{
 			ItemStack stack = inventory.getStack(slot);
 			if(!item.test(stack.getItem()))
 				continue;
-			
+
 			if(slot < 9)
 				inventory.selectedSlot = slot;
 			else if(inventory.getEmptySlot() < 9)
@@ -244,279 +244,279 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 				im.windowClick_PICKUP(slot);
 				im.windowClick_PICKUP(inventory.selectedSlot + 36);
 			}
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean hasItem(Predicate<Item> item)
 	{
 		PlayerInventory inventory = MC.player.getInventory();
 		int maxInvSlot = takeItemsFrom.getSelected().maxInvSlot;
-		
+
 		for(int slot = 0; slot < maxInvSlot; slot++)
 		{
 			ItemStack stack = inventory.getStack(slot);
 			if(!item.test(stack.getItem()))
 				continue;
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean rightClickBlock(BlockPos pos)
 	{
 		Vec3d eyesPos = RotationUtils.getEyesPos();
 		Vec3d posVec = Vec3d.ofCenter(pos);
 		double distanceSqPosVec = eyesPos.squaredDistanceTo(posVec);
-		
+
 		for(Direction side : Direction.values())
 		{
 			Vec3d hitVec = posVec.add(Vec3d.of(side.getVector()).multiply(0.5));
 			double distanceSqHitVec = eyesPos.squaredDistanceTo(hitVec);
-			
+
 			// check if hitVec is within range (6 blocks)
 			if(distanceSqHitVec > 36)
 				continue;
-			
+
 			// check if side is facing towards player
 			if(distanceSqHitVec >= distanceSqPosVec)
 				continue;
-			
+
 			if(checkLOS.isChecked() && MC.world
-				.raycast(new RaycastContext(eyesPos, hitVec,
-					RaycastContext.ShapeType.COLLIDER,
-					RaycastContext.FluidHandling.NONE, MC.player))
-				.getType() != HitResult.Type.MISS)
+					.raycast(new RaycastContext(eyesPos, hitVec,
+							RaycastContext.ShapeType.COLLIDER,
+							RaycastContext.FluidHandling.NONE, MC.player))
+					.getType() != HitResult.Type.MISS)
 				continue;
-			
+
 			faceBlocks.getSelected().face(hitVec);
-			
+
 			// place block
 			IMC.getInteractionManager().rightClickBlock(pos, side, hitVec);
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean placeAnchor(BlockPos pos)
 	{
 		Vec3d eyesPos = RotationUtils.getEyesPos();
 		double rangeSq = Math.pow(range.getValue(), 2);
 		Vec3d posVec = Vec3d.ofCenter(pos);
 		double distanceSqPosVec = eyesPos.squaredDistanceTo(posVec);
-		
+
 		for(Direction side : Direction.values())
 		{
 			BlockPos neighbor = pos.offset(side);
-			
+
 			// check if neighbor can be right clicked
 			if(!isClickableNeighbor(neighbor))
 				continue;
-			
+
 			Vec3d dirVec = Vec3d.of(side.getVector());
 			Vec3d hitVec = posVec.add(dirVec.multiply(0.5));
-			
+
 			// check if hitVec is within range
 			if(eyesPos.squaredDistanceTo(hitVec) > rangeSq)
 				continue;
-			
+
 			// check if side is visible (facing away from player)
 			if(distanceSqPosVec > eyesPos.squaredDistanceTo(posVec.add(dirVec)))
 				continue;
-			
+
 			if(checkLOS.isChecked() && MC.world
-				.raycast(new RaycastContext(eyesPos, hitVec,
-					RaycastContext.ShapeType.COLLIDER,
-					RaycastContext.FluidHandling.NONE, MC.player))
-				.getType() != HitResult.Type.MISS)
+					.raycast(new RaycastContext(eyesPos, hitVec,
+							RaycastContext.ShapeType.COLLIDER,
+							RaycastContext.FluidHandling.NONE, MC.player))
+					.getType() != HitResult.Type.MISS)
 				continue;
-			
+
 			if(!selectItem(item -> item == Items.RESPAWN_ANCHOR))
 				return false;
-			
+
 			faceBlocks.getSelected().face(hitVec);
-			
+
 			// place block
 			IMC.getInteractionManager().rightClickBlock(neighbor,
-				side.getOpposite(), hitVec);
-			
+					side.getOpposite(), hitVec);
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private ArrayList<BlockPos> getNearbyAnchors()
 	{
 		Vec3d eyesVec = RotationUtils.getEyesPos().subtract(0.5, 0.5, 0.5);
 		double rangeD = range.getValue();
 		int rangeI = (int)Math.ceil(rangeD);
 		double rangeSq = Math.pow(rangeD + 0.5, 2);
-		
+
 		BlockPos center = BlockPos.ofFloored(RotationUtils.getEyesPos());
 		BlockPos min = center.add(-rangeI, -rangeI, -rangeI);
 		BlockPos max = center.add(rangeI, rangeI, rangeI);
-		
+
 		Comparator<BlockPos> furthestFromPlayer =
-			Comparator.<BlockPos> comparingDouble(
-				pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos))).reversed();
-		
+				Comparator.<BlockPos> comparingDouble(
+						pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos))).reversed();
+
 		return BlockUtils.getAllInBoxStream(min, max)
-			.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
-			.filter(pos -> BlockUtils.getBlock(pos) == Blocks.RESPAWN_ANCHOR)
-			.sorted(furthestFromPlayer)
-			.collect(Collectors.toCollection(ArrayList::new));
+				.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
+				.filter(pos -> BlockUtils.getBlock(pos) == Blocks.RESPAWN_ANCHOR)
+				.sorted(furthestFromPlayer)
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
-	
+
 	private ArrayList<Entity> getNearbyTargets()
 	{
 		double rangeSq = Math.pow(range.getValue(), 2);
-		
+
 		Comparator<Entity> furthestFromPlayer = Comparator
-			.<Entity> comparingDouble(e -> MC.player.squaredDistanceTo(e))
-			.reversed();
-		
+				.<Entity> comparingDouble(e -> MC.player.squaredDistanceTo(e))
+				.reversed();
+
 		Stream<Entity> stream =
-			StreamSupport.stream(MC.world.getEntities().spliterator(), false)
-				.filter(e -> !e.isRemoved())
-				.filter(e -> e instanceof LivingEntity
-					&& ((LivingEntity)e).getHealth() > 0)
-				.filter(e -> e != MC.player)
-				.filter(e -> !(e instanceof FakePlayerEntity))
-				.filter(e -> !WURST.getFriends().contains(e.getEntityName()))
-				.filter(e -> MC.player.squaredDistanceTo(e) <= rangeSq);
-		
+				StreamSupport.stream(MC.world.getEntities().spliterator(), false)
+						.filter(e -> !e.isRemoved())
+						.filter(e -> e instanceof LivingEntity
+								&& ((LivingEntity)e).getHealth() > 0)
+						.filter(e -> e != MC.player)
+						.filter(e -> !(e instanceof FakePlayerEntity))
+						.filter(e -> !WURST.getFriends().contains(e.getEntityName()))
+						.filter(e -> MC.player.squaredDistanceTo(e) <= rangeSq);
+
 		stream = entityFilters.applyTo(stream);
-		
+
 		return stream.sorted(furthestFromPlayer)
-			.collect(Collectors.toCollection(ArrayList::new));
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
-	
+
 	private ArrayList<BlockPos> getFreeBlocksNear(Entity target)
 	{
 		Vec3d eyesVec = RotationUtils.getEyesPos().subtract(0.5, 0.5, 0.5);
 		double rangeD = range.getValue();
 		double rangeSq = Math.pow(rangeD + 0.5, 2);
 		int rangeI = 2;
-		
+
 		BlockPos center = target.getBlockPos();
 		BlockPos min = center.add(-rangeI, -rangeI, -rangeI);
 		BlockPos max = center.add(rangeI, rangeI, rangeI);
 		Box targetBB = target.getBoundingBox();
-		
+
 		Vec3d targetEyesVec =
-			target.getPos().add(0, target.getEyeHeight(target.getPose()), 0);
-		
+				target.getPos().add(0, target.getEyeHeight(target.getPose()), 0);
+
 		Comparator<BlockPos> closestToTarget =
-			Comparator.<BlockPos> comparingDouble(
-				pos -> targetEyesVec.squaredDistanceTo(Vec3d.ofCenter(pos)));
-		
+				Comparator.<BlockPos> comparingDouble(
+						pos -> targetEyesVec.squaredDistanceTo(Vec3d.ofCenter(pos)));
+
 		return BlockUtils.getAllInBoxStream(min, max)
-			.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
-			.filter(this::isReplaceable).filter(this::hasClickableNeighbor)
-			.filter(pos -> !targetBB.intersects(new Box(pos)))
-			.sorted(closestToTarget)
-			.collect(Collectors.toCollection(ArrayList::new));
+				.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
+				.filter(this::isReplaceable).filter(this::hasClickableNeighbor)
+				.filter(pos -> !targetBB.intersects(new Box(pos)))
+				.sorted(closestToTarget)
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
-	
+
 	private boolean isReplaceable(BlockPos pos)
 	{
-		return BlockUtils.getState(pos).getMaterial().isReplaceable();
+		return BlockUtils.getState(pos).isReplaceable();
 	}
-	
+
 	private boolean hasClickableNeighbor(BlockPos pos)
 	{
 		return isClickableNeighbor(pos.up()) || isClickableNeighbor(pos.down())
-			|| isClickableNeighbor(pos.north())
-			|| isClickableNeighbor(pos.east())
-			|| isClickableNeighbor(pos.south())
-			|| isClickableNeighbor(pos.west());
+				|| isClickableNeighbor(pos.north())
+				|| isClickableNeighbor(pos.east())
+				|| isClickableNeighbor(pos.south())
+				|| isClickableNeighbor(pos.west());
 	}
-	
+
 	private boolean isClickableNeighbor(BlockPos pos)
 	{
 		return BlockUtils.canBeClicked(pos)
-			&& !BlockUtils.getState(pos).getMaterial().isReplaceable();
+				&& !BlockUtils.getState(pos).isReplaceable();
 	}
-	
+
 	private boolean isChargedAnchor(BlockPos pos)
 	{
 		try
 		{
 			return BlockUtils.getState(pos).get(RespawnAnchorBlock.CHARGES) > 0;
-			
+
 		}catch(IllegalArgumentException e)
 		{
 			return false;
 		}
 	}
-	
+
 	private boolean isSneaking()
 	{
 		return MC.player.isSneaking() || WURST.getHax().sneakHack.isEnabled();
 	}
-	
+
 	private enum FaceBlocks
 	{
 		OFF("Off", v -> {}),
-		
+
 		SERVER("Server-side",
-			v -> WURST.getRotationFaker().faceVectorPacket(v)),
-		
+				v -> WURST.getRotationFaker().faceVectorPacket(v)),
+
 		CLIENT("Client-side",
-			v -> WURST.getRotationFaker().faceVectorClient(v)),
-		
+				v -> WURST.getRotationFaker().faceVectorClient(v)),
+
 		SPAM("Packet spam", v -> {
 			Rotation rotation = RotationUtils.getNeededRotations(v);
 			PlayerMoveC2SPacket.LookAndOnGround packet =
-				new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
-					rotation.getPitch(), MC.player.isOnGround());
+					new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
+							rotation.getPitch(), MC.player.isOnGround());
 			MC.player.networkHandler.sendPacket(packet);
 		});
-		
+
 		private String name;
 		private Consumer<Vec3d> face;
-		
+
 		private FaceBlocks(String name, Consumer<Vec3d> face)
 		{
 			this.name = name;
 			this.face = face;
 		}
-		
+
 		public void face(Vec3d v)
 		{
 			face.accept(v);
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return name;
 		}
 	}
-	
+
 	private enum TakeItemsFrom
 	{
 		HOTBAR("Hotbar", 9),
-		
+
 		INVENTORY("Inventory", 36);
-		
+
 		private final String name;
 		private final int maxInvSlot;
-		
+
 		private TakeItemsFrom(String name, int maxInvSlot)
 		{
 			this.name = name;
 			this.maxInvSlot = maxInvSlot;
 		}
-		
+
 		@Override
 		public String toString()
 		{

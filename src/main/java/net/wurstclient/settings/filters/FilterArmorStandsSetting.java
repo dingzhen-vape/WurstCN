@@ -14,7 +14,7 @@ public final class FilterArmorStandsSetting extends EntityFilterCheckbox
 {
 	public FilterArmorStandsSetting(String description, boolean checked)
 	{
-		super("过滤盔甲架", description, checked);
+		super("Filter armor stands", description, checked);
 	}
 	
 	@Override
@@ -25,7 +25,7 @@ public final class FilterArmorStandsSetting extends EntityFilterCheckbox
 	
 	public static FilterArmorStandsSetting genericCombat(boolean checked)
 	{
-		return new FilterArmorStandsSetting("不会攻击盔甲架。",
+		return new FilterArmorStandsSetting("Won't attack armor stands.",
 			checked);
 	}
 }

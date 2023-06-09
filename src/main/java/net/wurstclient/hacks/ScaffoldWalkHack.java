@@ -29,7 +29,7 @@ import net.wurstclient.util.RotationUtils;
 import net.wurstclient.util.RotationUtils.Rotation;
 
 @SearchTags({"scaffold walk", "BridgeWalk", "bridge walk", "AutoBridge",
-	"auto bridge", "tower"})
+		"auto bridge", "tower"})
 public final class ScaffoldWalkHack extends Hack implements UpdateListener
 {
 	public ScaffoldWalkHack()
@@ -37,28 +37,28 @@ public final class ScaffoldWalkHack extends Hack implements UpdateListener
 		super("简单搭路");
 		setCategory(Category.BLOCKS);
 	}
-	
+
 	@Override
 	public void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 	}
-	
+
 	@Override
 	public void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		BlockPos belowPlayer = BlockPos.ofFloored(MC.player.getPos()).down();
-		
+
 		// check if block is already placed
-		if(!BlockUtils.getState(belowPlayer).getMaterial().isReplaceable())
+		if(!BlockUtils.getState(belowPlayer).isReplaceable())
 			return;
-		
+
 		// search blocks in hotbar
 		int newSlot = -1;
 		for(int i = 0; i < 9; i++)
@@ -67,42 +67,42 @@ public final class ScaffoldWalkHack extends Hack implements UpdateListener
 			ItemStack stack = MC.player.getInventory().getStack(i);
 			if(stack.isEmpty() || !(stack.getItem() instanceof BlockItem))
 				continue;
-			
+
 			// filter out non-solid blocks
 			Block block = Block.getBlockFromItem(stack.getItem());
 			BlockState state = block.getDefaultState();
 			if(!state.isFullCube(EmptyBlockView.INSTANCE, BlockPos.ORIGIN))
 				continue;
-			
+
 			// filter out blocks that would fall
 			if(block instanceof FallingBlock && FallingBlock
-				.canFallThrough(BlockUtils.getState(belowPlayer.down())))
+					.canFallThrough(BlockUtils.getState(belowPlayer.down())))
 				continue;
-			
+
 			newSlot = i;
 			break;
 		}
-		
+
 		// check if any blocks were found
 		if(newSlot == -1)
 			return;
-		
+
 		// set slot
 		int oldSlot = MC.player.getInventory().selectedSlot;
 		MC.player.getInventory().selectedSlot = newSlot;
-		
+
 		scaffoldTo(belowPlayer);
-		
+
 		// reset slot
 		MC.player.getInventory().selectedSlot = oldSlot;
 	}
-	
+
 	private void scaffoldTo(BlockPos belowPlayer)
 	{
 		// tries to place a block directly under the player
 		if(placeBlock(belowPlayer))
 			return;
-			
+
 		// if that doesn't work, tries to place a block next to the block that's
 		// under the player
 		Direction[] sides = Direction.values();
@@ -112,7 +112,7 @@ public final class ScaffoldWalkHack extends Hack implements UpdateListener
 			if(placeBlock(neighbor))
 				return;
 		}
-		
+
 		// if that doesn't work, tries to place a block next to a block that's
 		// next to the block that's under the player
 		for(Direction side : sides)
@@ -120,54 +120,54 @@ public final class ScaffoldWalkHack extends Hack implements UpdateListener
 			{
 				if(side.getOpposite().equals(side2))
 					continue;
-				
+
 				BlockPos neighbor = belowPlayer.offset(side).offset(side2);
 				if(placeBlock(neighbor))
 					return;
 			}
 	}
-	
+
 	private boolean placeBlock(BlockPos pos)
 	{
 		Vec3d eyesPos = new Vec3d(MC.player.getX(),
-			MC.player.getY() + MC.player.getEyeHeight(MC.player.getPose()),
-			MC.player.getZ());
-		
+				MC.player.getY() + MC.player.getEyeHeight(MC.player.getPose()),
+				MC.player.getZ());
+
 		for(Direction side : Direction.values())
 		{
 			BlockPos neighbor = pos.offset(side);
 			Direction side2 = side.getOpposite();
-			
+
 			// check if side is visible (facing away from player)
 			if(eyesPos.squaredDistanceTo(Vec3d.ofCenter(pos)) >= eyesPos
-				.squaredDistanceTo(Vec3d.ofCenter(neighbor)))
+					.squaredDistanceTo(Vec3d.ofCenter(neighbor)))
 				continue;
-			
+
 			// check if neighbor can be right clicked
 			if(!BlockUtils.canBeClicked(neighbor))
 				continue;
-			
+
 			Vec3d hitVec = Vec3d.ofCenter(neighbor)
-				.add(Vec3d.of(side2.getVector()).multiply(0.5));
-			
+					.add(Vec3d.of(side2.getVector()).multiply(0.5));
+
 			// check if hitVec is within range (4.25 blocks)
 			if(eyesPos.squaredDistanceTo(hitVec) > 18.0625)
 				continue;
-			
+
 			// place block
 			Rotation rotation = RotationUtils.getNeededRotations(hitVec);
 			PlayerMoveC2SPacket.LookAndOnGround packet =
-				new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
-					rotation.getPitch(), MC.player.isOnGround());
+					new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
+							rotation.getPitch(), MC.player.isOnGround());
 			MC.player.networkHandler.sendPacket(packet);
 			IMC.getInteractionManager().rightClickBlock(neighbor, side2,
-				hitVec);
+					hitVec);
 			MC.player.swingHand(Hand.MAIN_HAND);
 			IMC.setItemUseCooldown(4);
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
 }

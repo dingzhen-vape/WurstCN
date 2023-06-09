@@ -19,49 +19,49 @@ public final class RemoteViewFilterList extends EntityFilterList
 		super(filters);
 	}
 	
-public static RemoteViewFilterList create()
+	public static RemoteViewFilterList create()
 	{
 		ArrayList<EntityFilter> builder = new ArrayList<>();
 		
 		builder
-			.add(new FilterPlayersSetting("不会观察其他玩家。", false));
+			.add(new FilterPlayersSetting("Won't view other players.", false));
 		
 		builder.add(
-			new FilterSleepingSetting("不会观察睡觉的玩家。", false));
+			new FilterSleepingSetting("Won't view sleeping players.", false));
 		
 		builder.add(new FilterFlyingSetting(
-			"不会观察离地面至少给定距离的玩家。",
+			"Won't view players that are at least the given distance above ground.",
 			0));
 		
 		builder.add(new FilterMonstersSetting(
-			"不会观察僵尸，苦力怕等。", true));
+			"Won't view zombies, creepers, etc.", true));
 		
-		builder.add(new FilterPigmenSetting("不会观察僵尸猪人。", true));
+		builder.add(new FilterPigmenSetting("Won't view zombie pigmen.", true));
 		
-		builder.add(new FilterEndermenSetting("不会观察末影人。", true));
+		builder.add(new FilterEndermenSetting("Won't view endermen.", true));
 		
 		builder
-			.add(new FilterAnimalsSetting("不会观察猪，牛等。", true));
+			.add(new FilterAnimalsSetting("Won't view pigs, cows, etc.", true));
 		
 		builder.add(new FilterBabiesSetting(
-			"不会观察小猪，小村民等。", true));
+			"Won't view baby pigs, baby villagers, etc.", true));
 		
 		builder.add(new FilterPetsSetting(
-			"不会观察驯服的狼，驯服的马等。", true));
+			"Won't view tamed wolves, tamed horses, etc.", true));
 		
 		builder.add(new FilterTradersSetting(
-			"不会观察村民，流浪商人等。", true));
+			"Won't view villagers, wandering traders, etc.", true));
 		
 		builder.add(new FilterGolemsSetting(
-			"不会观察铁傀儡，雪傀儡和潜影贝。", true));
+			"Won't view iron golems, snow golems and shulkers.", true));
 		
-		builder.add(new FilterAllaysSetting("不会观察盟友。", true));
+		builder.add(new FilterAllaysSetting("Won't view allays.", true));
 		
-		builder.add(new FilterInvisibleSetting("不会观察隐形的实体。",
+		builder.add(new FilterInvisibleSetting("Won't view invisible entities.",
 			false));
 		
 		builder.add(
-			new FilterArmorStandsSetting("不会观察盔甲架。", true));
+			new FilterArmorStandsSetting("Won't view armor stands.", true));
 		
 		return new RemoteViewFilterList(builder);
 	}

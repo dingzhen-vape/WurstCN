@@ -14,7 +14,7 @@ public final class FilterTradersSetting extends EntityFilterCheckbox
 {
 	public FilterTradersSetting(String description, boolean checked)
 	{
-		super("过滤商人", description, checked);
+		super("Filter traders", description, checked);
 	}
 	
 	@Override
@@ -26,6 +26,6 @@ public final class FilterTradersSetting extends EntityFilterCheckbox
 	public static FilterTradersSetting genericCombat(boolean checked)
 	{
 		return new FilterTradersSetting(
-			"不会攻击村民，流浪商人等。", checked);
+			"Won't attack villagers, wandering traders, etc.", checked);
 	}
 }

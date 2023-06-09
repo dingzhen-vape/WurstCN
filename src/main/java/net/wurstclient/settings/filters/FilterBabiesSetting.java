@@ -14,7 +14,7 @@ public final class FilterBabiesSetting extends EntityFilterCheckbox
 {
 	public FilterBabiesSetting(String description, boolean checked)
 	{
-		super("过滤幼崽", description, checked);
+		super("Filter babies", description, checked);
 	}
 	
 	@Override
@@ -26,6 +26,6 @@ public final class FilterBabiesSetting extends EntityFilterCheckbox
 	public static FilterBabiesSetting genericCombat(boolean checked)
 	{
 		return new FilterBabiesSetting(
-			"不会攻击小猪，小村民等。", checked);
+			"Won't attack baby pigs, baby villagers, etc.", checked);
 	}
 }

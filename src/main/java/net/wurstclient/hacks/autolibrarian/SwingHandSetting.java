@@ -22,23 +22,22 @@ public final class SwingHandSetting
 	
 	public SwingHandSetting()
 	{
-		super("Swing hand", "如何在与村民和工作站互动时挥动手臂。\n\n"
-			+ "\u00a7lOff\u00a7r - 不要挥动手臂。会被反作弊插件检测到。\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在服务器端挥动手臂，不在客户端播放动画。\n\n"
-			+ "\u00a7lClient-side\u00a7r - 在客户端挥动手臂。这是最合法的选项。", SwingHand.values(),
+		super("挥动手臂", "在与村民和工作站互动时如何挥动手臂。\n\n"
+			+ "\u00a7l关闭\u00a7r - 不要挥动手臂。会被反作弊插件检测到。\n\n"
+			+ "\u00a7l服务器端\u00a7r - 在服务器端挥动手臂，而不在客户端播放动画。\n\n"
+			+ "\u00a7l客户端\u00a7r - 在客户端挥动手臂。这是最合法的选项。", SwingHand.values(),
 			SwingHand.SERVER);
 	}
 	
 	public enum SwingHand
 	{
-		OFF("Off", hand -> {}),
+		OFF("关闭", hand -> {}),
 		
-		SERVER("Server-side",
+		SERVER("服务器端",
 			hand -> MC.player.networkHandler
 				.sendPacket(new HandSwingC2SPacket(hand))),
 		
-		CLIENT("Client-side", hand -> MC.player.swingHand(hand));
-		
+		CLIENT("客户端", hand -> MC.player.swingHand(hand));
 		private String name;
 		private Consumer<Hand> swing;
 		

@@ -32,7 +32,7 @@ public final class CreativeFlightHack extends Hack implements UpdateListener
 			"防踢应该多久阻止你被踢出一次。\n"
 				+ "大多数服务器会在80个刻后踢出你。",
 			30, 5, 80, 1,
-			SliderSetting.ValueDisplay.INTEGER.withSuffix(" 刻"));
+			ValueDisplay.INTEGER.withSuffix(" 刻"));
 	
 	private final SliderSetting antiKickDistance = new SliderSetting(
 		"防踢距离",

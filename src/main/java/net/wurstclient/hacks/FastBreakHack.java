@@ -102,7 +102,7 @@ public final class FastBreakHack extends Hack
 		if(!fastBreakBlock)
 			return;
 		
-		Action action = PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK;
+		Action action = Action.STOP_DESTROY_BLOCK;
 		Direction direction = event.getDirection();
 		im.sendPlayerActionC2SPacket(action, blockPos, direction);
 	}

@@ -15,7 +15,7 @@ public final class FilterPetsSetting extends EntityFilterCheckbox
 {
 	public FilterPetsSetting(String description, boolean checked)
 	{
-		super("过滤宠物", description, checked);
+		super("Filter pets", description, checked);
 	}
 	
 	@Override
@@ -29,6 +29,6 @@ public final class FilterPetsSetting extends EntityFilterCheckbox
 	public static FilterPetsSetting genericCombat(boolean checked)
 	{
 		return new FilterPetsSetting(
-			"不会攻击驯服的狼，驯服的马等。", checked);
+			"Won't attack tamed wolves, tamed horses, etc.", checked);
 	}
 }

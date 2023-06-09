@@ -14,7 +14,7 @@ public final class FilterMonstersSetting extends EntityFilterCheckbox
 {
 	public FilterMonstersSetting(String description, boolean checked)
 	{
-		super("过滤怪物", description, checked);
+		super("Filter monsters", description, checked);
 	}
 	
 	@Override
@@ -25,7 +25,7 @@ public final class FilterMonstersSetting extends EntityFilterCheckbox
 	
 	public static FilterMonstersSetting genericCombat(boolean checked)
 	{
-		return new FilterMonstersSetting("不会攻击僵尸，苦力怕等。",
+		return new FilterMonstersSetting("Won't attack zombies, creepers, etc.",
 			checked);
 	}
 }

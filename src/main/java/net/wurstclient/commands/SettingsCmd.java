@@ -26,10 +26,10 @@ public final class SettingsCmd extends Command
 {
 	public SettingsCmd()
 	{
-		super("settings", "Allows you to make profiles of your settings.",
+		super("settings", "允许你创建你的设置的配置文件。",
 			".settings load-profile <file>", ".settings save-profile <file>",
 			".settings list-profiles [<page>]",
-			"Profiles are saved in '.minecraft/wurst/settings'.");
+			"配置文件保存在'.minecraft/wurst/settings'中。");
 	}
 	
 	@Override

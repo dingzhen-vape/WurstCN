@@ -22,7 +22,7 @@ public final class NoTelemetryOtf extends OtherFeature
 	public NoTelemetryOtf()
 	{
 		super("NoTelemetry",
-			"Disables the \"required\" telemetry that Mojang introduced in 22w46a. Turns out it's not so required after all.");
+			"禁用Mojang在22w46a中引入的\"必需\"的遥测。原来它并不是那么必需。");
 		addSetting(disableTelemetry);
 	}
 	
@@ -35,7 +35,7 @@ public final class NoTelemetryOtf extends OtherFeature
 	@Override
 	public String getPrimaryAction()
 	{
-		return isEnabled() ? "Re-enable Telemetry" : "Disable Telemetry";
+		return isEnabled() ? "重新启用遥测" : "禁用遥测";
 	}
 	
 	@Override

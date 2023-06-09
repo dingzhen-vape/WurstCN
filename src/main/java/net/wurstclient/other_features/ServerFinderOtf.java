@@ -18,6 +18,6 @@ public final class ServerFinderOtf extends OtherFeature
 	public ServerFinderOtf()
 	{
 		super("ServerFinder",
-			"Allows you to find easy-to-grief Minecraft servers quickly and easily. To use it, press the 'Server Finder' button on the server selection screen.");
+			"让你能够快速简单地找到容易被破坏的Minecraft服务器。要使用它，按下服务器选择界面上的'Server Finder'按钮。");
 	}
 }

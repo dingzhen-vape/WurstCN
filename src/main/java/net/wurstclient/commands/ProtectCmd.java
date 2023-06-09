@@ -23,7 +23,7 @@ public final class ProtectCmd extends Command
 {
 	public ProtectCmd()
 	{
-		super("protect", "Protects the given entity from other entities.",
+		super("protect", "保护给定的实体不受其他实体的攻击。",
 			".protect <entity>");
 	}
 	

@@ -21,8 +21,8 @@ public final class TCmd extends Command
 {
 	public TCmd()
 	{
-		super("t", "Toggles a hack.", ".t <hack> [on|off]", "Examples:",
-			"Toggle Nuker: .t Nuker", "Disable Nuker: .t Nuker off");
+		super("t", "切换一个hack。", ".t <hack> [on|off]", "示例:",
+			"切换Nuker: .t Nuker", "关闭Nuker: .t Nuker off");
 	}
 	
 	@Override

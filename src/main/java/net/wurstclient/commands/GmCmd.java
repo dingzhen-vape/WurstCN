@@ -15,7 +15,7 @@ public final class GmCmd extends Command
 {
 	public GmCmd()
 	{
-		super("gm", "Shortcut for /gamemode.", ".gm <gamemode>");
+		super("gm", "游戏模式的快捷方式。", ".gm <gamemode>");
 	}
 	
 	@Override

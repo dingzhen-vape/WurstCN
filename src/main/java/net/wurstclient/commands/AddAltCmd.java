@@ -20,8 +20,8 @@ public final class AddAltCmd extends Command
 {
 	public AddAltCmd()
 	{
-		super("addalt", "Adds a player to your alt list.", ".addalt <player>",
-			"Add all players on the server: .addalt all");
+		super("addalt", "将一个玩家添加到你的alt列表中。", ".addalt <player>",
+			"添加服务器上的所有玩家: .addalt all");
 	}
 	
 	@Override

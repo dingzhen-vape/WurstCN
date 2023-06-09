@@ -18,7 +18,7 @@ public final class SayCmd extends Command
 	public SayCmd()
 	{
 		super("say",
-			"Sends the given chat message, even if it starts with a\n" + "dot.",
+			"发送给定的聊天消息，即使它以\n" + "点号开头。",
 			".say <message>");
 	}
 	

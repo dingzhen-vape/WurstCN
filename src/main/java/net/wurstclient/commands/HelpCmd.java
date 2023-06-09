@@ -23,8 +23,8 @@ public final class HelpCmd extends Command
 	
 	public HelpCmd()
 	{
-		super("help", "Shows help for a command or a list of commands.",
-			".help <command>", "List commands: .help [<page>]");
+		super("help", "显示一个命令或命令列表的帮助。",
+			".help <command>", "列出命令: .help [<page>]");
 	}
 	
 	@Override

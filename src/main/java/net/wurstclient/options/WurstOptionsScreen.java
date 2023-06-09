@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.Util.OperatingSystem;
@@ -62,23 +62,23 @@ public class WurstOptionsScreen extends Screen
 			wurst.getOtfs().translationsOtf.getForceEnglish();
 		
 		new WurstOptionsButton(-154, 24,
-			() -> "点击添加好友: "
+			() -> "点击好友: "
 				+ (middleClickFriends.isChecked() ? "开启" : "关闭"),
 			middleClickFriends.getWrappedDescription(200),
 			b -> middleClickFriends
 				.setChecked(!middleClickFriends.isChecked()));
 		
 		new WurstOptionsButton(-154, 48,
-			() -> "统计用户数: " + (analytics.isEnabled() ? "开启" : "关闭"),
+			() -> "统计用户: " + (analytics.isEnabled() ? "开启" : "关闭"),
 			"统计有多少人在使用Wurst\n"
 				+ "以及哪些版本最受欢迎。\n"
 				+ "我们用这些数据来决定何时停止\n"
 				+ "支持旧的Minecraft版本。\n\n"
 				+ "我们使用一个随机ID来区分用户\n"
-				+ "这样这些数据就永远不会和\n"
-				+ "你的Minecraft账号有关。为了确保\n"
-				+ "你的匿名性，这个随机ID每3天\n"
-				+ "就会改变一次。",
+				+ "这样这些数据就永远不会与\n"
+				+ "你的Minecraft账号相关联。为了确保\n"
+				+ "你的匿名性，随机ID每3天会\n"
+				+ "改变一次。",
 			b -> analytics.setEnabled(!analytics.isEnabled()));
 		
 		new WurstOptionsButton(-154, 72,
@@ -91,8 +91,8 @@ public class WurstOptionsScreen extends Screen
 			() -> "翻译: " + (!forceEnglish.isChecked() ? "开启" : "关闭"),
 			"§c这是一个实验性的功能！\n"
 				+ "我们还没有很多翻译。如果你\n"
-				+ "会说英语和其他语言，\n"
-				+ "请帮助我们添加更多的翻译。",
+				+ "会说英语和其他语言，请帮助我们\n"
+				+ "添加更多的翻译。",
 			b -> forceEnglish.setChecked(!forceEnglish.isChecked()));
 	}
 	
@@ -101,26 +101,23 @@ public class WurstOptionsScreen extends Screen
 		XRayHack xRayHack = WurstClient.INSTANCE.getHax().xRayHack;
 		
 		new WurstOptionsButton(-50, 24, () -> "按键绑定",
-			"按键绑定允许你通过简单地按下一个\n"
-				+ "按钮来切换任何hack或命令。",
+			"按键绑定让你可以通过简单地按下一个按钮来切换任何黑客功能或命令。",
 			b -> client.setScreen(new KeybindManagerScreen(this)));
 		
 		new WurstOptionsButton(-50, 48, () -> "X-Ray方块",
-			"管理X-Ray将要显示的方块。",
+			"管理X-Ray将显示的方块。",
 			b -> xRayHack.openBlockListEditor(this));
 		
 		new WurstOptionsButton(-50, 72, () -> "缩放",
-			"缩放管理器允许你更改缩放键，\n"
-				+ "缩放的程度以及更多。",
+			"缩放管理器让你可以改变缩放键，缩放的距离和更多。",
 			b -> client.setScreen(new ZoomManagerScreen(this)));
-
 	}
 	
 	private void addLinkButtons()
 	{
 		OperatingSystem os = Util.getOperatingSystem();
 		
-		new WurstOptionsButton(54, 24, () -> "官方网站",
+		new WurstOptionsButton(54, 24, () -> "Official Website",
 			"WurstClient.net", b -> os.open(
 				"https://www.wurstclient.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Official+Website"));
 		
@@ -146,34 +143,34 @@ public class WurstOptionsScreen extends Screen
 	}
 	
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY,
+	public void render(DrawContext context, int mouseX, int mouseY,
 		float partialTicks)
 	{
-		renderBackground(matrixStack);
-		renderTitles(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderButtonTooltip(matrixStack, mouseX, mouseY);
+		renderBackground(context);
+		renderTitles(context);
+		super.render(context, mouseX, mouseY, partialTicks);
+		renderButtonTooltip(context, mouseX, mouseY);
 	}
 	
-	private void renderTitles(MatrixStack matrixStack)
+	private void renderTitles(DrawContext context)
 	{
 		TextRenderer tr = client.textRenderer;
 		int middleX = width / 2;
 		int y1 = 40;
 		int y2 = height / 4 + 24 - 28;
 		
-		drawCenteredTextWithShadow(matrixStack, tr, "Wurst 设置", middleX,
-			y1, 0xffffff);
+		context.drawCenteredTextWithShadow(tr, "Wurst 设置", middleX, y1,
+			0xffffff);
 		
-		drawCenteredTextWithShadow(matrixStack, tr, "设置", middleX - 104,
-			y2, 0xcccccc);
-		drawCenteredTextWithShadow(matrixStack, tr, "编辑器", middleX, y2,
+		context.drawCenteredTextWithShadow(tr, "设置", middleX - 104, y2,
 			0xcccccc);
-		drawCenteredTextWithShadow(matrixStack, tr, "链接", middleX + 104, y2,
+		context.drawCenteredTextWithShadow(tr, "编辑器", middleX, y2,
+			0xcccccc);
+		context.drawCenteredTextWithShadow(tr, "链接", middleX + 104, y2,
 			0xcccccc);
 	}
 	
-	private void renderButtonTooltip(MatrixStack matrixStack, int mouseX,
+	private void renderButtonTooltip(DrawContext context, int mouseX,
 		int mouseY)
 	{
 		for(Drawable d : ((IScreen)this).getButtons())
@@ -191,7 +188,7 @@ public class WurstOptionsScreen extends Screen
 			if(woButton.tooltip.isEmpty())
 				continue;
 			
-			renderTooltip(matrixStack, woButton.tooltip, mouseX, mouseY);
+			context.drawTooltip(textRenderer, woButton.tooltip, mouseX, mouseY);
 			break;
 		}
 	}

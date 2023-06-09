@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
@@ -55,55 +56,55 @@ public final class BowAimbotHack extends Hack
 	implements UpdateListener, RenderListener, GUIRenderListener
 {
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"决定哪个实体会被优先攻击。\n"
-			+ "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
-			+ "\u00a7l角度\u00a7r - 攻击需要最少头部移动的实体。\n"
-			+ "\u00a7l角度+距离\u00a7r - 角度和距离的混合。这通常是最好的判断你想要瞄准的目标的方法。\n"
-			+ "\u00a7l生命值\u00a7r - 攻击最弱的实体。",
-		Priority.values(), Priority.ANGLE_DIST);
-	
+			"决定哪个实体会被优先攻击。\n"
+					+ "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
+					+ "\u00a7l角度\u00a7r - 攻击需要最少头部移动的实体。\n"
+					+ "\u00a7l角度+距离\u00a7r - 角度和距离的混合。这通常是最好的判断你想要瞄准的目标的方法。\n"
+					+ "\u00a7l生命值\u00a7r - 攻击最弱的实体。",
+			Priority.values(), Priority.ANGLE_DIST);
+
 	private final SliderSetting predictMovement = new SliderSetting(
-		"预测移动",
-		"控制BowAimbot的移动预测算法的强度。",
-		0.2, 0, 2, 0.01, ValueDisplay.PERCENTAGE);
-	
+			"预测移动",
+			"控制BowAimbot的移动预测算法的强度。",
+			0.2, 0, 2, 0.01, ValueDisplay.PERCENTAGE);
+
 	private final EntityFilterList entityFilters =
-		EntityFilterList.genericCombat();
-	
+			EntityFilterList.genericCombat();
+
 	private final ColorSetting color = new ColorSetting("ESP颜色",
-		"BowAimbot在目标周围绘制的框的颜色。", Color.RED);
-	
+			"BowAimbot在目标周围绘制的方框的颜色。", Color.RED);
+
 	private static final Box TARGET_BOX =
 		new Box(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5);
-	
+
 	private Entity target;
 	private float velocity;
-	
+
 	public BowAimbotHack()
 	{
 		super("自瞄");
-		
+
 		setCategory(Category.COMBAT);
 		addSetting(priority);
 		addSetting(predictMovement);
-		
+
 		entityFilters.forEach(this::addSetting);
-		
+
 		addSetting(color);
 	}
-	
+
 	@Override
 	public void onEnable()
 	{
 		// disable conflicting hacks
 		WURST.getHax().excavatorHack.setEnabled(false);
-		
+
 		// register event listeners
 		EVENTS.add(GUIRenderListener.class, this);
 		EVENTS.add(RenderListener.class, this);
 		EVENTS.add(UpdateListener.class, this);
 	}
-	
+
 	@Override
 	public void onDisable()
 	{
@@ -111,12 +112,12 @@ public final class BowAimbotHack extends Hack
 		EVENTS.remove(RenderListener.class, this);
 		EVENTS.remove(UpdateListener.class, this);
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		ClientPlayerEntity player = MC.player;
-		
+
 		// check if item is ranged weapon
 		ItemStack stack = MC.player.getInventory().getMainHandStack();
 		Item item = stack.getItem();
@@ -125,7 +126,7 @@ public final class BowAimbotHack extends Hack
 			target = null;
 			return;
 		}
-		
+
 		// check if using bow
 		if(item instanceof BowItem && !MC.options.useKey.isPressed()
 			&& !player.isUsingItem())
@@ -133,28 +134,28 @@ public final class BowAimbotHack extends Hack
 			target = null;
 			return;
 		}
-		
+
 		// check if crossbow is loaded
 		if(item instanceof CrossbowItem && !CrossbowItem.isCharged(stack))
 		{
 			target = null;
 			return;
 		}
-		
+
 		// set target
 		if(filterEntities(Stream.of(target)) == null)
 			target = filterEntities(StreamSupport
 				.stream(MC.world.getEntities().spliterator(), true));
-		
+
 		if(target == null)
 			return;
-		
+
 		// set velocity
 		velocity = (72000 - player.getItemUseTimeLeft()) / 20F;
 		velocity = (velocity * velocity + velocity * 2) / 3;
 		if(velocity > 1)
 			velocity = 1;
-		
+
 		// set position to aim at
 		double d = RotationUtils.getEyesPos().distanceTo(
 			target.getBoundingBox().getCenter()) * predictMovement.getValue();
@@ -165,12 +166,12 @@ public final class BowAimbotHack extends Hack
 			- player.getEyeHeight(player.getPose());
 		double posZ = target.getZ() + (target.getZ() - target.lastRenderZ) * d
 			- player.getZ();
-		
+
 		// set yaw
 		float neededYaw = (float)Math.toDegrees(Math.atan2(posZ, posX)) - 90;
 		MC.player.setYaw(
 			RotationUtils.limitAngleChange(MC.player.getYaw(), neededYaw));
-		
+
 		// calculate needed pitch
 		double hDistance = Math.sqrt(posX * posX + posZ * posZ);
 		double hDistanceSq = hDistance * hDistance;
@@ -180,7 +181,7 @@ public final class BowAimbotHack extends Hack
 		float neededPitch = (float)-Math.toDegrees(Math.atan((velocitySq - Math
 			.sqrt(velocityPow4 - g * (g * hDistanceSq + 2 * posY * velocitySq)))
 			/ (g * hDistance)));
-		
+
 		// set pitch
 		if(Float.isNaN(neededPitch))
 			WURST.getRotationFaker()
@@ -188,100 +189,101 @@ public final class BowAimbotHack extends Hack
 		else
 			MC.player.setPitch(neededPitch);
 	}
-	
+
 	private Entity filterEntities(Stream<Entity> s)
 	{
 		Stream<Entity> stream = s.filter(EntityUtils.IS_ATTACKABLE);
 		stream = entityFilters.applyTo(stream);
-		
+
 		return stream.min(priority.getSelected().comparator).orElse(null);
 	}
-	
+
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
 		if(target == null)
 			return;
-		
+
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		
+
 		matrixStack.push();
-		
+
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		RenderUtils.applyRegionalRenderOffset(matrixStack, regionX, regionZ);
-		
+
 		// set position
 		matrixStack.translate(target.getX() - regionX, target.getY(),
 			target.getZ() - regionZ);
-		
+
 		// set size
 		float boxWidth = target.getWidth() + 0.1F;
 		float boxHeight = target.getHeight() + 0.1F;
 		matrixStack.scale(boxWidth, boxHeight, boxWidth);
-		
+
 		// move to center
 		matrixStack.translate(0, 0.5, 0);
-		
+
 		float v = 1 / velocity;
 		matrixStack.scale(v, v, v);
-		
+
 		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		float[] colorF = color.getColorF();
-		
+
 		// draw outline
 		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2],
 			0.5F * velocity);
 		RenderUtils.drawOutlinedBox(TARGET_BOX, matrixStack);
-		
+
 		// draw box
 		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2],
 			0.25F * velocity);
 		RenderUtils.drawSolidBox(TARGET_BOX, matrixStack);
-		
+
 		matrixStack.pop();
-		
+
 		// GL resets
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 	}
-	
+
 	@Override
-	public void onRenderGUI(MatrixStack matrixStack, float partialTicks)
+	public void onRenderGUI(DrawContext context, float partialTicks)
 	{
+		MatrixStack matrixStack = context.getMatrices();
 		if(target == null)
 			return;
-		
+
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_CULL_FACE);
-		
+
 		matrixStack.push();
-		
+
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		
+
 		String message;
 		if(velocity < 1)
-			message = "锁定中: " + (int)(velocity * 100) + "%";
+			message = "Charging: " + (int)(velocity * 100) + "%";
 		else
-			message = "锁定完成";
-		
+			message = "Target Locked";
+
 		TextRenderer tr = MC.textRenderer;
-		
+
 		// translate to center
 		Window sr = MC.getWindow();
 		int msgWidth = tr.getWidth(message);
 		matrixStack.translate(sr.getScaledWidth() / 2 - msgWidth / 2,
 			sr.getScaledHeight() / 2 + 1, 0);
-		
+
 		// background
 		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		RenderSystem.setShaderColor(0, 0, 0, 0.5F);
@@ -292,45 +294,45 @@ public final class BowAimbotHack extends Hack
 		bufferBuilder.vertex(matrix, msgWidth + 3, 10, 0).next();
 		bufferBuilder.vertex(matrix, 0, 10, 0).next();
 		tessellator.draw();
-		
+
 		// text
 		RenderSystem.setShaderColor(1, 1, 1, 1);
-		MC.textRenderer.draw(matrixStack, message, 2, 1, 0xffffffff);
-		
+		context.drawText(MC.textRenderer, message, 2, 1, 0xffffffff, false);
+
 		matrixStack.pop();
-		
+
 		// GL resets
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_BLEND);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 	}
-	
+
 	private enum Priority
 	{
-		DISTANCE("距离", e -> MC.player.squaredDistanceTo(e)),
-		
-		ANGLE("角度",
+		DISTANCE("Distance", e -> MC.player.squaredDistanceTo(e)),
+
+		ANGLE("Angle",
 			e -> RotationUtils
 				.getAngleToLookVec(e.getBoundingBox().getCenter())),
-		
-		ANGLE_DIST("距离+角度",
+
+		ANGLE_DIST("Angle+Dist",
 			e -> Math
 				.pow(RotationUtils
 					.getAngleToLookVec(e.getBoundingBox().getCenter()), 2)
 				+ MC.player.squaredDistanceTo(e)),
-		
+
 		HEALTH("Health", e -> e instanceof LivingEntity
 			? ((LivingEntity)e).getHealth() : Integer.MAX_VALUE);
-		
+
 		private final String name;
 		private final Comparator<Entity> comparator;
-		
+
 		private Priority(String name, ToDoubleFunction<Entity> keyExtractor)
 		{
 			this.name = name;
 			comparator = Comparator.comparingDouble(keyExtractor);
 		}
-		
+
 		@Override
 		public String toString()
 		{

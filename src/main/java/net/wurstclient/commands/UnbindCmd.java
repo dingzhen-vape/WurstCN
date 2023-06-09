@@ -14,8 +14,8 @@ public final class UnbindCmd extends Command
 {
 	public UnbindCmd()
 	{
-		super("unbind", "Shortcut for '.binds remove'.", ".unbind <key>",
-			"Use .binds for more options.");
+		super("unbind", "删除绑定的快捷方式。", ".unbind <key>",
+			"使用.binds查看更多选项。");
 	}
 	
 	@Override

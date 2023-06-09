@@ -14,7 +14,7 @@ public final class FilterPigmenSetting extends EntityFilterCheckbox
 {
 	public FilterPigmenSetting(String description, boolean checked)
 	{
-		super("过滤猪人", description, checked);
+		super("Filter pigmen", description, checked);
 	}
 	
 	@Override
@@ -25,6 +25,6 @@ public final class FilterPigmenSetting extends EntityFilterCheckbox
 	
 	public static FilterPigmenSetting genericCombat(boolean checked)
 	{
-		return new FilterPigmenSetting("不会攻击僵尸猪人。", checked);
+		return new FilterPigmenSetting("Won't attack zombie pigmen.", checked);
 	}
 }

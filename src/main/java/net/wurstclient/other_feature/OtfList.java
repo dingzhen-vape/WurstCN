@@ -52,7 +52,7 @@ public final class OtfList
 			
 		}catch(Exception e)
 		{
-			String message = "Initializing other Wurst features";
+			String message = "初始化其他Wurst功能";
 			CrashReport report = CrashReport.create(e, message);
 			throw new CrashException(report);
 		}

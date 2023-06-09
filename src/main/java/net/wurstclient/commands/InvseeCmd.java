@@ -24,7 +24,7 @@ public final class InvseeCmd extends Command implements RenderListener
 	public InvseeCmd()
 	{
 		super("invsee",
-			"Allows you to see parts of another player's inventory.",
+			"允许你查看另一个玩家背包中的部分物品。",
 			".invsee <player>");
 	}
 	
