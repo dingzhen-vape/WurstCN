@@ -13,7 +13,7 @@ public final class FilterInvisibleSetting extends EntityFilterCheckbox
 {
 	public FilterInvisibleSetting(String description, boolean checked)
 	{
-		super("Filter invisible", description, checked);
+		super("过滤隐形", description, checked);
 	}
 	
 	@Override
@@ -24,7 +24,7 @@ public final class FilterInvisibleSetting extends EntityFilterCheckbox
 	
 	public static FilterInvisibleSetting genericCombat(boolean checked)
 	{
-		return new FilterInvisibleSetting("Won't attack invisible entities.",
+		return new FilterInvisibleSetting("不会攻击隐形的实体。",
 			checked);
 	}
 }
