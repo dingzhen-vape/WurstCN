@@ -1,31 +1,40 @@
-# Wurst Hack端汉化版
+# Wurst Client v7
 
-这是一个基本完成汉化的wurst hack端，基于wurst 7.35版本制作。
+## Downloads (for users)
 
-## 特点
+[https://www.wurstclient.net/download/](https://www.wurstclient.net/download/?utm_source=GitHub&utm_medium=Wurst7&utm_campaign=README.md&utm_content=Downloads+%28for+users%29)
 
-- 汉化了部分的功能
-- 保留了原版的风格和性能
-- 适合喜欢用中文的玩家使用
+## Setup (for developers)
 
-## 计划
+(This assumes that you are using Windows with [Eclipse](https://www.eclipse.org/downloads/) and [Java Development Kit 17](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot) already installed.)
 
-- 未来将会完成汉化，包括剩余的功能和设置，以及一些细节的优化
-- 当wurst更新的时候，这个仓库可能会更新（因为是个人）
+1. Run these two commands in PowerShell:
 
-## 下载和安装
+```
+./gradlew.bat genSources
+./gradlew.bat eclipse
+```
 
-- 你可以在[这里](https://wwfb.lanzoue.com/b032gu5re)下载最新的wurst cn端汉化版,密码:6398
-- 你需要安装[Java](https://www.java.com/)和[Minecraft Launcher](https://www.minecraft.net/)才能使用这个hack端
-- 你可以参考[这个教程](https://www.wurstclient.net/tutorials/installation/)来安装和使用这个hack端
-## 缺点
-- 部分未汉化
-- 设置介绍未汉化
-## 图片（汉化效果）
-- ![Snipaste_2023-06-02_23-26-48](https://github.com/dingzhen-vape/wurst_cn/assets/75886707/4e6f4350-aaf6-410b-88eb-23a221df6090)
-- ![Snipaste_2023-06-02_23-26-36](https://github.com/dingzhen-vape/wurst_cn/assets/75886707/08332701-bd9e-40ab-8b60-4623c0835325)
+2. In Eclipse, go to `Import...` > `Existing Projects into Workspace` and select this project.
 
-## 版权
-- 一切版权归属Alexander01998
-## 特别感谢
-- Bing chat
+## Contributing
+
+If you want to help but are not sure what to do, take a look at our [planning board](https://github.com/orgs/Wurst-Imperium/projects/5/views/1) or the [help wanted list](https://github.com/Wurst-Imperium/Wurst7/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Of course you can contribute anything you like, but these issues are particularly useful.
+
+If you are contributing multiple unrelated features, please create a separate pull request for each feature. Squeezing everything into one giant pull request makes it very difficult for me to add your features, as I have to test, validate and add them one by one.
+
+Thank you for your understanding - and thanks again for taking the time to contribute!!
+
+## Translations
+
+We have a [Crowdin project](https://crowdin.com/project/wurst7) for translations. You can also submit translations here on GitHub, but Crowdin is preferred since it makes it much easier to resolve issues.
+
+To enable translations in-game, go to Wurst Options > Translations > ON.
+
+Names of features (hacks/commands/etc.) should always be kept in English. This ensures that everyone can use the same commands, keybinds, etc. regardless of their language setting. It also makes it easier to communicate with someone who uses Wurst in a different language.
+
+The translation files are located in [this folder](https://github.com/Wurst-Imperium/Wurst7/tree/master/src/main/resources/assets/wurst/lang), in case you need them.
+
+## License
+
+This code is licensed under the GNU General Public License v3. **You can only use this code in open-source clients that you release under the same license! Using it in closed-source/proprietary clients is not allowed!**

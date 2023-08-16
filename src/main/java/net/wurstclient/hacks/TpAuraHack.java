@@ -45,7 +45,8 @@ public final class TpAuraHack extends Hack implements UpdateListener
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
 		"决定哪个实体会被先攻击。\n"
 			+ "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
-			+ "\u00a7l角度\u00a7r - 攻击",
+			+ "\u00a7l角度\u00a7r - 攻击需要最少头部移动的实体。\n"
+			+ "\u00a7l生命值\u00a7r - 攻击最弱的实体。",
 		Priority.values(), Priority.ANGLE);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
@@ -140,13 +141,13 @@ public final class TpAuraHack extends Hack implements UpdateListener
 	
 	private enum Priority
 	{
-		DISTANCE("Distance", e -> MC.player.squaredDistanceTo(e)),
+		DISTANCE("距离", e -> MC.player.squaredDistanceTo(e)),
 		
-		ANGLE("Angle",
+		ANGLE("角度",
 			e -> RotationUtils
 				.getAngleToLookVec(e.getBoundingBox().getCenter())),
 		
-		HEALTH("Health", e -> e instanceof LivingEntity
+		HEALTH("生命值", e -> e instanceof LivingEntity
 			? ((LivingEntity)e).getHealth() : Integer.MAX_VALUE);
 		
 		private final String name;

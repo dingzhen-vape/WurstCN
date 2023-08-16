@@ -82,7 +82,7 @@ public final class KillPotionHack extends Hack
 		
 		LINGERING("滞留", "滞留药水", Items.LINGERING_POTION);
 		
-		// 不起作用
+		// does not work
 		// ARROW("箭", "箭", Items.TIPPED_ARROW);
 		
 		private final String name;

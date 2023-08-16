@@ -10,6 +10,9 @@
       "finishEditing()V": "Lnet/minecraft/class_7743;method_45662()V",
       "init()V": "Lnet/minecraft/class_7743;method_25426()V"
     },
+    "net/wurstclient/mixin/AllowedAddressResolverMixin": {
+      "resolve(Lnet/minecraft/client/network/ServerAddress;)Ljava/util/Optional;": "Lnet/minecraft/class_6370;method_36907(Lnet/minecraft/class_639;)Ljava/util/Optional;"
+    },
     "net/wurstclient/mixin/BackgroundRendererMixin": {
       "getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;": "Lnet/minecraft/class_758;method_42588(Lnet/minecraft/class_1297;F)Lnet/minecraft/class_758$class_7286;"
     },
@@ -224,6 +227,9 @@
       "net/wurstclient/mixin/AbstractSignEditScreenMixin": {
         "finishEditing()V": "Lnet/minecraft/class_7743;method_45662()V",
         "init()V": "Lnet/minecraft/class_7743;method_25426()V"
+      },
+      "net/wurstclient/mixin/AllowedAddressResolverMixin": {
+        "resolve(Lnet/minecraft/client/network/ServerAddress;)Ljava/util/Optional;": "Lnet/minecraft/class_6370;method_36907(Lnet/minecraft/class_639;)Ljava/util/Optional;"
       },
       "net/wurstclient/mixin/BackgroundRendererMixin": {
         "getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;": "Lnet/minecraft/class_758;method_42588(Lnet/minecraft/class_1297;F)Lnet/minecraft/class_758$class_7286;"

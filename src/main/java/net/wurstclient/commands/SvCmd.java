@@ -19,7 +19,8 @@ public final class SvCmd extends Command
 {
 	public SvCmd()
 	{
-		super("sv", "显示你当前连接的服务器的版本。", ".sv");
+		super("sv", "Shows the version of the server\n"
+			+ "you are currently connected to.", ".sv");
 	}
 	
 	@Override

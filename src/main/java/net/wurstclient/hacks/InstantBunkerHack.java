@@ -36,65 +36,65 @@ import net.wurstclient.util.RotationUtils;
 
 @SearchTags({"instant bunker"})
 public final class InstantBunkerHack extends Hack
-		implements UpdateListener, RenderListener
+	implements UpdateListener, RenderListener
 {
 	private final int[][] template = {{2, 0, 2}, {-2, 0, 2}, {2, 0, -2},
-			{-2, 0, -2}, {2, 1, 2}, {-2, 1, 2}, {2, 1, -2}, {-2, 1, -2}, {2, 2, 2},
-			{-2, 2, 2}, {2, 2, -2}, {-2, 2, -2}, {1, 2, 2}, {0, 2, 2}, {-1, 2, 2},
-			{2, 2, 1}, {2, 2, 0}, {2, 2, -1}, {-2, 2, 1}, {-2, 2, 0}, {-2, 2, -1},
-			{1, 2, -2}, {0, 2, -2}, {-1, 2, -2}, {1, 0, 2}, {0, 0, 2}, {-1, 0, 2},
-			{2, 0, 1}, {2, 0, 0}, {2, 0, -1}, {-2, 0, 1}, {-2, 0, 0}, {-2, 0, -1},
-			{1, 0, -2}, {0, 0, -2}, {-1, 0, -2}, {1, 1, 2}, {0, 1, 2}, {-1, 1, 2},
-			{2, 1, 1}, {2, 1, 0}, {2, 1, -1}, {-2, 1, 1}, {-2, 1, 0}, {-2, 1, -1},
-			{1, 1, -2}, {0, 1, -2}, {-1, 1, -2}, {1, 2, 1}, {-1, 2, 1}, {1, 2, -1},
-			{-1, 2, -1}, {0, 2, 1}, {1, 2, 0}, {-1, 2, 0}, {0, 2, -1}, {0, 2, 0}};
+		{-2, 0, -2}, {2, 1, 2}, {-2, 1, 2}, {2, 1, -2}, {-2, 1, -2}, {2, 2, 2},
+		{-2, 2, 2}, {2, 2, -2}, {-2, 2, -2}, {1, 2, 2}, {0, 2, 2}, {-1, 2, 2},
+		{2, 2, 1}, {2, 2, 0}, {2, 2, -1}, {-2, 2, 1}, {-2, 2, 0}, {-2, 2, -1},
+		{1, 2, -2}, {0, 2, -2}, {-1, 2, -2}, {1, 0, 2}, {0, 0, 2}, {-1, 0, 2},
+		{2, 0, 1}, {2, 0, 0}, {2, 0, -1}, {-2, 0, 1}, {-2, 0, 0}, {-2, 0, -1},
+		{1, 0, -2}, {0, 0, -2}, {-1, 0, -2}, {1, 1, 2}, {0, 1, 2}, {-1, 1, 2},
+		{2, 1, 1}, {2, 1, 0}, {2, 1, -1}, {-2, 1, 1}, {-2, 1, 0}, {-2, 1, -1},
+		{1, 1, -2}, {0, 1, -2}, {-1, 1, -2}, {1, 2, 1}, {-1, 2, 1}, {1, 2, -1},
+		{-1, 2, -1}, {0, 2, 1}, {1, 2, 0}, {-1, 2, 0}, {0, 2, -1}, {0, 2, 0}};
 	private final ArrayList<BlockPos> positions = new ArrayList<>();
-
+	
 	private int blockIndex;
 	private boolean building;
 	private int startTimer;
-
+	
 	public InstantBunkerHack()
 	{
 		super("自闭小屋");
 		setCategory(Category.BLOCKS);
 	}
-
+	
 	@Override
 	public void onEnable()
 	{
 		WURST.getHax().tunnellerHack.setEnabled(false);
-
+		
 		if(!MC.player.isOnGround())
 		{
 			ChatUtils.error("Can't build this in mid-air.");
 			setEnabled(false);
 			return;
 		}
-
+		
 		ItemStack stack = MC.player.getInventory().getMainHandStack();
-
+		
 		if(!(stack.getItem() instanceof BlockItem))
 		{
 			ChatUtils.error("You must have blocks in the main hand.");
 			setEnabled(false);
 			return;
 		}
-
+		
 		if(stack.getCount() < 57 && !MC.player.isCreative())
 			ChatUtils.warning("Not enough blocks. Bunker may be incomplete.");
-
+		
 		// get start pos and facings
 		BlockPos startPos = BlockPos.ofFloored(MC.player.getPos());
 		Direction facing = MC.player.getHorizontalFacing();
 		Direction facing2 = facing.rotateYCounterclockwise();
-
+		
 		// set positions
 		positions.clear();
 		for(int[] pos : template)
 			positions.add(startPos.up(pos[1]).offset(facing, pos[2])
-					.offset(facing2, pos[0]));
-
+				.offset(facing2, pos[0]));
+		
 		if(!"".isEmpty())// mode.getSelected() == 1)
 		{
 			// initialize building process
@@ -102,14 +102,14 @@ public final class InstantBunkerHack extends Hack
 			building = true;
 			IMC.setItemUseCooldown(4);
 		}
-
+		
 		startTimer = 2;
 		MC.player.jump();
-
+		
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(RenderListener.class, this);
 	}
-
+	
 	@Override
 	public void onDisable()
 	{
@@ -117,7 +117,7 @@ public final class InstantBunkerHack extends Hack
 		EVENTS.remove(RenderListener.class, this);
 		building = false;
 	}
-
+	
 	@Override
 	public void onUpdate()
 	{
@@ -126,20 +126,20 @@ public final class InstantBunkerHack extends Hack
 			startTimer--;
 			return;
 		}
-
+		
 		// build instantly
 		if(!building && startTimer <= 0)
 		{
 			for(BlockPos pos : positions)
 				if(BlockUtils.getState(pos).isReplaceable()
-						&& !MC.player.getBoundingBox().intersects(new Box(pos)))
+					&& !MC.player.getBoundingBox().intersects(new Box(pos)))
 					placeBlockSimple(pos);
 			MC.player.swingHand(Hand.MAIN_HAND);
-
+			
 			if(MC.player.isOnGround())
 				setEnabled(false);
 		}
-
+		
 		// place next block
 		// if(blockIndex < positions.size() && (IMC.getItemUseCooldown() == 0
 		// || WURST.getHax().fastPlaceHack.isEnabled()))
@@ -168,140 +168,140 @@ public final class InstantBunkerHack extends Hack
 		// }
 		// }
 	}
-
+	
 	private void placeBlockSimple(BlockPos pos)
 	{
 		Direction side = null;
 		Direction[] sides = Direction.values();
-
+		
 		Vec3d eyesPos = RotationUtils.getEyesPos();
 		Vec3d posVec = Vec3d.ofCenter(pos);
 		double distanceSqPosVec = eyesPos.squaredDistanceTo(posVec);
-
+		
 		Vec3d[] hitVecs = new Vec3d[sides.length];
 		for(int i = 0; i < sides.length; i++)
 			hitVecs[i] =
-					posVec.add(Vec3d.of(sides[i].getVector()).multiply(0.5));
-
+				posVec.add(Vec3d.of(sides[i].getVector()).multiply(0.5));
+		
 		for(int i = 0; i < sides.length; i++)
 		{
 			// check if neighbor can be right clicked
 			BlockPos neighbor = pos.offset(sides[i]);
 			if(!BlockUtils.canBeClicked(neighbor))
 				continue;
-
+			
 			// check line of sight
 			BlockState neighborState = BlockUtils.getState(neighbor);
 			VoxelShape neighborShape =
-					neighborState.getOutlineShape(MC.world, neighbor);
+				neighborState.getOutlineShape(MC.world, neighbor);
 			if(MC.world.raycastBlock(eyesPos, hitVecs[i], neighbor,
-					neighborShape, neighborState) != null)
+				neighborShape, neighborState) != null)
 				continue;
-
+			
 			side = sides[i];
 			break;
 		}
-
+		
 		if(side == null)
 			for(int i = 0; i < sides.length; i++)
 			{
 				// check if neighbor can be right clicked
 				if(!BlockUtils.canBeClicked(pos.offset(sides[i])))
 					continue;
-
+				
 				// check if side is facing away from player
 				if(distanceSqPosVec > eyesPos.squaredDistanceTo(hitVecs[i]))
 					continue;
-
+				
 				side = sides[i];
 				break;
 			}
-
+		
 		if(side == null)
 			return;
-
+		
 		Vec3d hitVec = hitVecs[side.ordinal()];
-
+		
 		// face block
 		// WURST.getRotationFaker().faceVectorPacket(hitVec);
 		// if(RotationUtils.getAngleToLastReportedLookVec(hitVec) > 1)
 		// return;
-
+		
 		// check timer
 		// if(IMC.getItemUseCooldown() > 0)
 		// return;
-
+		
 		// place block
 		IMC.getInteractionManager().rightClickBlock(pos.offset(side),
-				side.getOpposite(), hitVec);
-
+			side.getOpposite(), hitVec);
+		
 		// swing arm
 		MC.player.networkHandler
-				.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
-
+			.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
+		
 		// reset timer
 		IMC.setItemUseCooldown(4);
 	}
-
+	
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
 		if(!building || blockIndex >= positions.size())
 			return;
-
+		
 		// scale and offset
 		float scale = 1.0F * 7.0F / 8.0F;
 		double offset = (1.0 - scale) / 2.0;
-
+		
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_CULL_FACE);
-
+		
 		matrixStack.push();
-
+		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		RenderUtils.applyRegionalRenderOffset(matrixStack, regionX, regionZ);
-
+		
 		// green box
 		{
 			GL11.glDepthMask(false);
 			RenderSystem.setShaderColor(0, 1, 0, 0.15F);
 			BlockPos pos = positions.get(blockIndex);
-
+			
 			matrixStack.push();
 			matrixStack.translate(pos.getX() - regionX, pos.getY(),
-					pos.getZ() - regionZ);
+				pos.getZ() - regionZ);
 			matrixStack.translate(offset, offset, offset);
 			matrixStack.scale(scale, scale, scale);
-
+			
 			RenderUtils.drawSolidBox(matrixStack);
-
+			
 			matrixStack.pop();
 			GL11.glDepthMask(true);
 		}
-
+		
 		// black outlines
 		RenderSystem.setShaderColor(0, 0, 0, 0.5F);
 		for(int i = blockIndex; i < positions.size(); i++)
 		{
 			BlockPos pos = positions.get(i);
-
+			
 			matrixStack.push();
 			matrixStack.translate(pos.getX() - regionX, pos.getY(),
-					pos.getZ() - regionZ);
+				pos.getZ() - regionZ);
 			matrixStack.translate(offset, offset, offset);
 			matrixStack.scale(scale, scale, scale);
-
+			
 			RenderUtils.drawOutlinedBox(matrixStack);
-
+			
 			matrixStack.pop();
 		}
-
+		
 		matrixStack.pop();
-
+		
 		// GL resets
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		GL11.glDisable(GL11.GL_BLEND);

@@ -17,14 +17,14 @@ public enum Category
 	FUN("娱乐"),
 	ITEMS("物品"),
 	OTHER("其他");
-
+	
 	private final String name;
-
+	
 	private Category(String name)
 	{
 		this.name = name;
 	}
-
+	
 	public String getName()
 	{
 		return name;

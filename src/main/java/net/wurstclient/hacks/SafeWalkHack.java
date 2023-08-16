@@ -27,7 +27,7 @@ public final class SafeWalkHack extends Hack
 	private final SliderSetting edgeDistance = new SliderSetting(
 		"潜行边缘距离",
 		"SafeWalk会让你离边缘多近才开始潜行。\n\n"
-			+ "这个设置只在\"在边缘潜行\"开启时生效。",
+			+ "这个设置只在\"Sneak at edges\"开启时生效。",
 		0.05, 0.05, 0.25, 0.001, ValueDisplay.DECIMAL.withSuffix("m"));
 	
 	private boolean sneaking;

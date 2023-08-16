@@ -44,7 +44,7 @@ public final class CrashChestHack extends Hack
 			return;
 		}
 		
-		// 生成物品
+		// generate item
 		ItemStack stack = new ItemStack(Blocks.CHEST);
 		NbtCompound nbtCompound = new NbtCompound();
 		NbtList nbtList = new NbtList();
@@ -54,7 +54,7 @@ public final class CrashChestHack extends Hack
 		stack.setNbt(nbtCompound);
 		stack.setCustomName(Text.literal("复制我"));
 		
-		// 给予物品
+		// give item
 		MC.player.getInventory().armor.set(0, stack);
 		ChatUtils.message("物品已放置在你的鞋子槽中。");
 		setEnabled(false);

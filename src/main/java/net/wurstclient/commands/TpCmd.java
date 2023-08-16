@@ -23,15 +23,16 @@ import net.wurstclient.util.MathUtils;
 public final class TpCmd extends Command
 {
 	private final CheckboxSetting disableFreecam =
-		new CheckboxSetting("禁用Freecam",
-			"在传送之前禁用Freecam。\n\n"
-				+ "这允许你将你的真实角色传送到你的"
-				+ "Freecam位置，只需在Freecam启用时输入\".tp ~ ~ ~\"即可。",
+		new CheckboxSetting("Disable Freecam",
+			"Disables Freecam just before teleporting.\n\n"
+				+ "This allows you to teleport your actual character to your"
+				+ " Freecam position by typing \".tp ~ ~ ~\" while Freecam is"
+				+ " enabled.",
 			true);
 	
 	public TpCmd()
 	{
-		super("tp", "将你传送到10个方块以内的地方。", ".tp <x> <y> <z>",
+		super("tp", "Teleports you up to 10 blocks away.", ".tp <x> <y> <z>",
 			".tp <entity>");
 		addSetting(disableFreecam);
 	}

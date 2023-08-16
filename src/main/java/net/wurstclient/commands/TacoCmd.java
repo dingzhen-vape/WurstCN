@@ -36,7 +36,7 @@ public final class TacoCmd extends Command
 	public TacoCmd()
 	{
 		super("taco", "在你的热键栏上生成一个跳舞的塔可。\n"
-			+ "\"我喜欢那个小家伙。太可爱了！\" -WiZARD");
+			+ "\"I love that little guy. So cute!\" -WiZARD");
 		setCategory(Category.FUN);
 	}
 	
