@@ -21,7 +21,8 @@ public final class EnchantCmd extends Command
 {
 	public EnchantCmd()
 	{
-		super("enchant", "用所有的附魔（除了缓摧和诅咒）来附魔手持物品。", ".enchant");
+		super("enchant", "Enchants an item with everything,\n"
+			+ "except for silk touch and curses.", ".enchant");
 	}
 	
 	@Override

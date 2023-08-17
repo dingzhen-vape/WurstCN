@@ -213,8 +213,8 @@ public final class TillauraHack extends Hack implements UpdateListener
 	
 	private boolean hasLineOfSight(Vec3d from, Vec3d to)
 	{
-		ShapeType type = ShapeType.COLLIDER;
-		FluidHandling fluid = FluidHandling.NONE;
+		ShapeType type = RaycastContext.ShapeType.COLLIDER;
+		FluidHandling fluid = RaycastContext.FluidHandling.NONE;
 		
 		RaycastContext context =
 			new RaycastContext(from, to, type, fluid, MC.player);

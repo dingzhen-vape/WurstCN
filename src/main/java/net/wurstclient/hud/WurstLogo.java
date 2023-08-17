@@ -35,8 +35,6 @@ public final class WurstLogo
 		WurstLogoOtf otf = WurstClient.INSTANCE.getOtfs().wurstLogoOtf;
 		if(!otf.isVisible())
 			return;
-		
-		String version = getVersionString();
 		TextRenderer tr = WurstClient.MC.textRenderer;
 		
 		// draw version background
@@ -49,29 +47,13 @@ public final class WurstLogo
 		else
 			color = otf.getBackgroundColor();
 		
-		drawQuads(matrixStack, 0, 6, tr.getWidth(version) + 76, 17, color[0],
-			color[1], color[2], 0.5F);
-		
 		// draw version string
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		context.drawText(tr, version, 74, 8, otf.getTextColor(), false);
-		
 		// draw Wurst logo
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_BLEND);
 		context.drawTexture(texture, 0, 3, 0, 0, 72, 18, 72, 18);
-	}
-	
-	private String getVersionString()
-	{
-		String version = "v" + WurstClient.VERSION;
-		version += " MC" + WurstClient.MC_VERSION;
-		
-		if(WurstClient.INSTANCE.getUpdater().isOutdated())
-			version += " (outdated)";
-		
-		return version;
 	}
 	
 	private void drawQuads(MatrixStack matrices, int x1, int y1, int x2, int y2,

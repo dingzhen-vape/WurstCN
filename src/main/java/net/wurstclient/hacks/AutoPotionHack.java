@@ -21,7 +21,7 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
-@SearchTags({"AutoPotion", "auto potion", "AutoSplashPotion",
+@SearchTags({"自动嗑药", "auto potion", "AutoSplashPotion",
 	"auto splash potion"})
 public final class AutoPotionHack extends Hack implements UpdateListener
 {

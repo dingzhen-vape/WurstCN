@@ -15,7 +15,7 @@ import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 @SearchTags({"auto steal", "ChestStealer", "chest stealer",
-	"steal store buttons", "Steal/Store buttons"})
+	"steal store buttons", "偷/存按钮"})
 public final class AutoStealHack extends Hack
 {
 	private final SliderSetting delay = new SliderSetting("延迟",

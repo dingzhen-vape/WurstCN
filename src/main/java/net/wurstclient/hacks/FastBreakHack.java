@@ -31,13 +31,17 @@ public final class FastBreakHack extends Hack
 {
 	private final SliderSetting activationChance = new SliderSetting(
 		"激活几率",
-		"只有给定几率的一些方块会被快速破坏，这使得反作弊插件更难检测到。\n\n"
-			+ "如果启用了合法模式，这个设置不起作用。",
+		"只有给定几率的一些方块被你打破时才使用快速破坏,"
+			+ "这使得反作弊插件更难检测到。\n\n"
+			+ "如果启用了合法模式,这个设置没有任何作用。",
 		1, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
 	private final CheckboxSetting legitMode = new CheckboxSetting("合法模式",
-		"只是去除了破坏方块之间的延迟，而不加速破坏过程本身。\n\n"
-			+ "这样会慢得多，但是很好地绕过了反作弊插件。如果普通的快速破坏不起作用，而激活几率滑块也没有帮助，就使用这个。",
+		"只是移除打破方块之间的延迟,而不加速"
+			+ "打破过程本身。\n\n"
+			+ "这要慢得多,但是很好地绕过了反作弊插件。如果常规的快速破坏不起作用,而且激活"
+			+ "几率滑块也没有帮助,请使用这个功能。"
+			+ "快速破坏",
 		false);
 	
 	private final Random random = new Random();
@@ -56,7 +60,7 @@ public final class FastBreakHack extends Hack
 	public String getRenderName()
 	{
 		if(legitMode.isChecked())
-			return getName() + "合法";
+			return getName() + "Legit";
 		return getName();
 	}
 	
@@ -102,7 +106,7 @@ public final class FastBreakHack extends Hack
 		if(!fastBreakBlock)
 			return;
 		
-		Action action = Action.STOP_DESTROY_BLOCK;
+		Action action = PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK;
 		Direction direction = event.getDirection();
 		im.sendPlayerActionC2SPacket(action, blockPos, direction);
 	}

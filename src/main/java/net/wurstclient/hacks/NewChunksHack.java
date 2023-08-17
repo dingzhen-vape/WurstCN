@@ -36,58 +36,58 @@ import net.wurstclient.util.ChunkUtils;
 import net.wurstclient.util.RenderUtils;
 
 public final class NewChunksHack extends Hack
-		implements UpdateListener, RenderListener
+	implements UpdateListener, RenderListener
 {
 	private final NewChunksStyleSetting style = new NewChunksStyleSetting();
-
+	
 	private final NewChunksShowSetting show = new NewChunksShowSetting();
-
+	
 	private final CheckboxSetting showReasons = new CheckboxSetting(
-			"显示原因",
-			"高亮显示导致每个区块被标记为新/旧的方块。",
-			false);
-
+		"显示原因",
+		"高亮显示导致每个区块被标记为新/旧的方块。",
+		false);
+	
 	private final CheckboxSetting showCounter =
-			new CheckboxSetting("显示计数器",
-					"显示到目前为止发现的新/旧区块的数量。", false);
-
+		new CheckboxSetting("显示计数器",
+			"显示到目前为止发现的新/旧区块的数量。", false);
+	
 	private final SliderSetting altitude =
-			new SliderSetting("高度", 0, -64, 320, 1, ValueDisplay.INTEGER);
-
+		new SliderSetting("高度", 0, -64, 320, 1, ValueDisplay.INTEGER);
+	
 	private final SliderSetting drawDistance =
-			new SliderSetting("绘制距离", 32, 8, 64, 1, ValueDisplay.INTEGER);
-
+		new SliderSetting("绘制距离", 32, 8, 64, 1, ValueDisplay.INTEGER);
+	
 	private final SliderSetting opacity = new SliderSetting("不透明度", 0.75,
-			0.1, 1, 0.01, ValueDisplay.PERCENTAGE);
-
+		0.1, 1, 0.01, ValueDisplay.PERCENTAGE);
+	
 	private final ColorSetting newChunksColor =
-			new ColorSetting("新区块颜色", Color.RED);
-
+		new ColorSetting("新区块颜色", Color.RED);
+	
 	private final ColorSetting oldChunksColor =
-			new ColorSetting("旧区块颜色", Color.BLUE);
-
+		new ColorSetting("旧区块颜色", Color.BLUE);
+	
 	private final CheckboxSetting logChunks = new CheckboxSetting("记录区块",
-			"在发现新/旧区块时写入日志文件。", false);;
-
+		"在发现新/旧区块时写入日志文件。", false);
+	
 	private final Set<ChunkPos> newChunks =
-			Collections.synchronizedSet(new HashSet<>());
+		Collections.synchronizedSet(new HashSet<>());
 	private final Set<ChunkPos> oldChunks =
-			Collections.synchronizedSet(new HashSet<>());
+		Collections.synchronizedSet(new HashSet<>());
 	private final Set<ChunkPos> dontCheckAgain =
-			Collections.synchronizedSet(new HashSet<>());
-
+		Collections.synchronizedSet(new HashSet<>());
+	
 	private final Set<BlockPos> newChunkReasons =
-			Collections.synchronizedSet(new HashSet<>());
+		Collections.synchronizedSet(new HashSet<>());
 	private final Set<BlockPos> oldChunkReasons =
-			Collections.synchronizedSet(new HashSet<>());
-
+		Collections.synchronizedSet(new HashSet<>());
+	
 	private final NewChunksRenderer renderer = new NewChunksRenderer(altitude,
-			opacity, newChunksColor, oldChunksColor);
+		opacity, newChunksColor, oldChunksColor);
 	private final NewChunksReasonsRenderer reasonsRenderer =
-			new NewChunksReasonsRenderer(drawDistance);
-
+		new NewChunksReasonsRenderer(drawDistance);
+	
 	private ChunkPos lastRegion;
-
+	
 	public NewChunksHack()
 	{
 		super("看哪个是新的 （区块");
@@ -103,7 +103,7 @@ public final class NewChunksHack extends Hack
 		addSetting(oldChunksColor);
 		addSetting(logChunks);
 	}
-
+	
 	@Override
 	protected void onEnable()
 	{
@@ -116,7 +116,7 @@ public final class NewChunksHack extends Hack
 		newChunkReasons.clear();
 		lastRegion = null;
 	}
-
+	
 	@Override
 	protected void onDisable()
 	{
@@ -124,80 +124,80 @@ public final class NewChunksHack extends Hack
 		EVENTS.remove(RenderListener.class, this);
 		renderer.closeBuffers();
 	}
-
+	
 	@Override
 	public String getRenderName()
 	{
 		if(!showCounter.isChecked())
 			return getName();
-
+		
 		return String.format("%s [%d/%d]", getName(), newChunks.size(),
-				oldChunks.size());
+			oldChunks.size());
 	}
-
+	
 	@Override
 	public void onUpdate()
 	{
 		renderer.closeBuffers();
-
+		
 		Show showSetting = show.getSelected();
 		int dd = drawDistance.getValueI();
 		NewChunksChunkRenderer chunkRenderer =
-				style.getSelected().getChunkRenderer();
-
+			style.getSelected().getChunkRenderer();
+		
 		if(showSetting.includesNew())
 		{
 			renderer.updateBuffer(0, chunkRenderer.buildBuffer(newChunks, dd));
-
+			
 			if(showReasons.isChecked())
 				renderer.updateBuffer(1,
-						reasonsRenderer.buildBuffer(newChunkReasons));
+					reasonsRenderer.buildBuffer(newChunkReasons));
 		}
-
+		
 		if(showSetting.includesOld())
 		{
 			renderer.updateBuffer(2, chunkRenderer.buildBuffer(oldChunks, dd));
-
+			
 			if(showReasons.isChecked())
 				renderer.updateBuffer(3,
-						reasonsRenderer.buildBuffer(oldChunkReasons));
+					reasonsRenderer.buildBuffer(oldChunkReasons));
 		}
 	}
-
+	
 	public void afterLoadChunk(int x, int z)
 	{
 		if(!isEnabled())
 			return;
-
+		
 		WorldChunk chunk = MC.world.getChunk(x, z);
 		new Thread(() -> checkLoadedChunk(chunk), "NewChunks " + chunk.getPos())
-				.start();
+			.start();
 	}
-
+	
 	private void checkLoadedChunk(WorldChunk chunk)
 	{
 		ChunkPos chunkPos = chunk.getPos();
 		if(newChunks.contains(chunkPos) || oldChunks.contains(chunkPos)
-				|| dontCheckAgain.contains(chunkPos))
+			|| dontCheckAgain.contains(chunkPos))
 			return;
-
+		
 		int minX = chunkPos.getStartX();
 		int minY = chunk.getBottomY();
 		int minZ = chunkPos.getStartZ();
 		int maxX = chunkPos.getEndX();
 		int maxY = ChunkUtils.getHighestNonEmptySectionYOffset(chunk) + 16;
 		int maxZ = chunkPos.getEndZ();
-
+		
 		for(int x = minX; x <= maxX; x++)
 			for(int y = minY; y <= maxY; y++)
 				for(int z = minZ; z <= maxZ; z++)
 				{
 					BlockPos pos = new BlockPos(x, y, z);
 					FluidState fluidState = chunk.getFluidState(pos);
-
+					
 					if(fluidState.isEmpty() || fluidState.isStill())
 						continue;
-
+						
 					// Liquid always generates still, the flowing happens later
 					// through block updates. Therefore any chunk that contains
 					// flowing liquids from the start should be an old chunk.
@@ -207,33 +207,33 @@ public final class NewChunksHack extends Hack
 						System.out.println("old chunk at " + chunkPos);
 					return;
 				}
-
+				
 		// If the whole loop ran through without finding anything, make sure it
 		// never runs again on that chunk, as that would be a huge waste of CPU
 		// time.
 		dontCheckAgain.add(chunkPos);
 	}
-
+	
 	public void afterUpdateBlock(BlockPos pos)
 	{
 		if(!isEnabled())
 			return;
-
+		
 		// Liquid starts flowing -> probably a new chunk
 		FluidState fluidState = BlockUtils.getState(pos).getFluidState();
 		if(fluidState.isEmpty() || fluidState.isStill())
 			return;
-
+		
 		ChunkPos chunkPos = new ChunkPos(pos);
 		if(newChunks.contains(chunkPos) || oldChunks.contains(chunkPos))
 			return;
-
+		
 		newChunks.add(chunkPos);
 		newChunkReasons.add(pos);
 		if(logChunks.isChecked())
 			System.out.println("new chunk at " + chunkPos);
 	}
-
+	
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
@@ -246,7 +246,7 @@ public final class NewChunksHack extends Hack
 			onUpdate();
 			lastRegion = region;
 		}
-
+		
 		renderer.render(matrixStack, partialTicks);
 	}
 }

@@ -35,7 +35,6 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	private final SliderSetting defaultGamma = new SliderSetting(
 		"默认亮度",
 		"当你关闭全亮时，全亮会将你的亮度滑块设置回这个值。",
-
 		0.5, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
 	private boolean wasGammaChanged;
