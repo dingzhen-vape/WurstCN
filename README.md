@@ -1,6 +1,6 @@
 # Wurst Hack端汉化版
 
-这是一个基本完成汉化的wurst hack端，基于wurst 7.35版本制作。
+这是一个基本完成汉化的wurst hack端，基于wurst最新版本制作。
 
 ## 特点
 
