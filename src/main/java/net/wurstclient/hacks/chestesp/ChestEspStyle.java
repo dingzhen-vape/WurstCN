@@ -9,9 +9,9 @@ package net.wurstclient.hacks.chestesp;
 
 public enum ChestEspStyle
 {
-	BOXES("Boxes only", true, false),
-	LINES("Lines only", false, true),
-	LINES_AND_BOXES("Lines and boxes", true, true);
+	BOXES("只有方框", true, false),
+	LINES("只有线条", false, true),
+	LINES_AND_BOXES("方框和线条", true, true);
 	
 	private final String name;
 	private final boolean boxes;

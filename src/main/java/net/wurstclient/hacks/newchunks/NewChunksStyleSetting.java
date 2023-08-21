@@ -14,13 +14,13 @@ public final class NewChunksStyleSetting
 {
 	public NewChunksStyleSetting()
 	{
-		super("Style", Style.values(), Style.OUTLINE);
+		super("样式", Style.values(), Style.OUTLINE);
 	}
 	
 	public static enum Style
 	{
-		OUTLINE("Outline", new NewChunksOutlineRenderer()),
-		SQUARE("Square", new NewChunksSquareRenderer());
+		OUTLINE("轮廓", new NewChunksOutlineRenderer()),
+		SQUARE("方形", new NewChunksSquareRenderer());
 		
 		private final String name;
 		private final NewChunksChunkRenderer chunkRenderer;

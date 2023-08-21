@@ -10,7 +10,6 @@ package net.wurstclient.hacks;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -45,24 +44,23 @@ public final class SpeedNukerHack extends Hack
 		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-			"""
-					§l普通§r模式只是破坏你周围的一切。
-					§lID§r模式只破坏选定的方块类型。左键点击一个方块来选择它。
-					§l多ID§r模式只破坏你的多ID列表中的方块类型。
-					§l平整§r模式把你周围的区域弄平，但不会向下挖。
-					§l粉碎§r模式只破坏可以立即被摧毁的方块（比如高草）。""",
+		"\u00a7l普通\u00a7r 模式简单地破坏你周围的一切。\n"
+			+ "\u00a7lID\u00a7r 模式只破坏选定的方块类型。左键点击一个方块来选择它。\n"
+			+ "\u00a7l多ID\u00a7r 模式只破坏你的多ID列表中的方块类型。\n"
+			+ "\u00a7l平整\u00a7r 模式平整你周围的区域,但不会挖下去。\n"
+			+ "\u00a7l粉碎\u00a7r 模式只破坏可以立即被摧毁的方块（例如高草）。",
 		Mode.values(), Mode.NORMAL);
 	
 	private final BlockSetting id =
-		new BlockSetting("ID", "在ID模式下要破坏的方块类型。\n"
-			+ "air = 不会破坏任何东西", "minecraft:air", true);
+		new BlockSetting("ID", "在ID模式中要破坏的方块类型。\n"
+			+ "air = won't break anything", "minecraft:air", true);
 	
 	private final CheckboxSetting lockId = new CheckboxSetting("锁定ID",
-		"防止通过点击方块或重启SpeedNuker来改变ID。",
+		"防止通过点击方块或重启快速核弹器来改变ID。",
 		false);
 	
 	private final BlockListSetting multiIdList = new BlockListSetting(
-		"MultiID List", "The types of blocks to break in MultiID mode.",
+		"多ID列表", "在多ID模式中要破坏的方块类型。",
 		"minecraft:ancient_debris", "minecraft:bone_block",
 		"minecraft:coal_ore", "minecraft:copper_ore",
 		"minecraft:deepslate_coal_ore", "minecraft:deepslate_copper_ore",
@@ -86,13 +84,13 @@ public final class SpeedNukerHack extends Hack
 		addSetting(lockId);
 		addSetting(multiIdList);
 	}
-
+	
 	@Override
 	public String getRenderName()
 	{
 		return mode.getSelected().renderName.apply(this);
 	}
-
+	
 	@Override
 	public void onEnable()
 	{
@@ -102,119 +100,120 @@ public final class SpeedNukerHack extends Hack
 		WURST.getHax().nukerHack.setEnabled(false);
 		WURST.getHax().nukerLegitHack.setEnabled(false);
 		WURST.getHax().tunnellerHack.setEnabled(false);
-
+		
 		// add listeners
 		EVENTS.add(LeftClickListener.class, this);
 		EVENTS.add(UpdateListener.class, this);
 	}
-
+	
 	@Override
 	public void onDisable()
 	{
 		// remove listeners
 		EVENTS.remove(LeftClickListener.class, this);
 		EVENTS.remove(UpdateListener.class, this);
-
+		
 		// resets
 		if(!lockId.isChecked())
 			id.setBlock(Blocks.AIR);
 	}
-
+	
 	@Override
 	public void onUpdate()
 	{
 		// abort if using IDNuker without an ID being set
 		if(mode.getSelected() == Mode.ID && id.getBlock() == Blocks.AIR)
 			return;
-
+		
 		// get valid blocks
 		Iterable<BlockPos> validBlocks = getValidBlocks(range.getValue(),
-				pos -> mode.getSelected().validator.test(this, pos));
-
+			pos -> mode.getSelected().validator.test(this, pos));
+		
 		Iterator<BlockPos> autoToolIterator = validBlocks.iterator();
 		if(autoToolIterator.hasNext())
 			WURST.getHax().autoToolHack.equipIfEnabled(autoToolIterator.next());
-
+		
 		// break all blocks
 		BlockBreaker.breakBlocksWithPacketSpam(validBlocks);
 	}
-
+	
 	private ArrayList<BlockPos> getValidBlocks(double range,
-											   Predicate<BlockPos> validator)
+		Predicate<BlockPos> validator)
 	{
 		Vec3d eyesVec = RotationUtils.getEyesPos().subtract(0.5, 0.5, 0.5);
 		double rangeSq = Math.pow(range + 0.5, 2);
 		int rangeI = (int)Math.ceil(range);
-
+		
 		BlockPos center = BlockPos.ofFloored(RotationUtils.getEyesPos());
 		BlockPos min = center.add(-rangeI, -rangeI, -rangeI);
 		BlockPos max = center.add(rangeI, rangeI, rangeI);
-
+		
 		return BlockUtils.getAllInBox(min, max).stream()
-				.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
-				.filter(BlockUtils::canBeClicked).filter(validator)
-				.sorted(Comparator.comparingDouble(
-						pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos))))
-				.collect(Collectors.toCollection(ArrayList::new));
+			.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
+			.filter(BlockUtils::canBeClicked).filter(validator)
+			.sorted(Comparator.comparingDouble(
+				pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos))))
+			.collect(Collectors.toCollection(ArrayList::new));
 	}
-
+	
 	@Override
 	public void onLeftClick(LeftClickEvent event)
 	{
 		// check mode
 		if(mode.getSelected() != Mode.ID)
 			return;
-
+		
 		if(lockId.isChecked())
 			return;
-
+		
 		// check hitResult
-		if(!(MC.crosshairTarget instanceof BlockHitResult))
+		if(MC.crosshairTarget == null
+			|| !(MC.crosshairTarget instanceof BlockHitResult))
 			return;
-
+		
 		// check pos
 		BlockPos pos = ((BlockHitResult)MC.crosshairTarget).getBlockPos();
 		if(pos == null || BlockUtils.getBlock(pos) == Blocks.AIR)
 			return;
-
+		
 		// set id
 		id.setBlockName(BlockUtils.getName(pos));
 	}
-
+	
 	private enum Mode
 	{
-		NORMAL("Normal", n -> "SpeedNuker", (n, pos) -> true),
-
+		NORMAL("普通", n -> "快速Nuker", (n, pos) -> true),
+		
 		ID("ID",
-				n -> "IDSpeedNuker ["
-						+ n.id.getBlockName().replace("minecraft:", "") + "]",
-				(n, pos) -> BlockUtils.getName(pos).equals(n.id.getBlockName())),
-
-		MULTI_ID("MultiID",
-				n -> "MultiIDNuker [" + n.multiIdList.getBlockNames().size()
-						+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
-						: " IDs]"),
-				(n, p) -> n.multiIdList.getBlockNames()
-						.contains(BlockUtils.getName(p))),
-
-		FLAT("Flat", n -> "FlatSpeedNuker",
-				(n, pos) -> pos.getY() >= Objects.requireNonNull(MC.player).getY()),
-
-		SMASH("Smash", n -> "SmashSpeedNuker",
-				(n, pos) -> BlockUtils.getHardness(pos) >= 1);
-
+			n -> "ID快速核弹器 ["
+				+ n.id.getBlockName().replace("minecraft:", "") + "]",
+			(n, pos) -> BlockUtils.getName(pos).equals(n.id.getBlockName())),
+		
+		MULTI_ID("多ID",
+			n -> "多ID快速核弹器 [" + n.multiIdList.getBlockNames().size()
+				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
+					: " IDs]"),
+			(n, p) -> n.multiIdList.getBlockNames()
+				.contains(BlockUtils.getName(p))),
+		
+		FLAT("平整", n -> "平整快速核弹器",
+			(n, pos) -> pos.getY() >= MC.player.getY()),
+		
+		SMASH("粉碎", n -> "粉碎快速核弹器",
+			(n, pos) -> BlockUtils.getHardness(pos) >= 1);
+		
 		private final String name;
 		private final Function<SpeedNukerHack, String> renderName;
 		private final BiPredicate<SpeedNukerHack, BlockPos> validator;
-
-		Mode(String name, Function<SpeedNukerHack, String> renderName,
-					 BiPredicate<SpeedNukerHack, BlockPos> validator)
+		
+		private Mode(String name, Function<SpeedNukerHack, String> renderName,
+			BiPredicate<SpeedNukerHack, BlockPos> validator)
 		{
 			this.name = name;
 			this.renderName = renderName;
 			this.validator = validator;
 		}
-
+		
 		@Override
 		public String toString()
 		{

@@ -24,8 +24,8 @@ public final class SetSliderCmd extends Command
 	public SetSliderCmd()
 	{
 		super("setslider",
-			"更改某个功能的滑块设置。允许你\n"
-				+ "通过快捷键移动滑块。",
+			"Changes a slider setting of a feature. Allows you to\n"
+				+ "move sliders through keybinds.",
 			".setslider <feature> <setting> <value>",
 			".setslider <feature> <setting> (more|less)");
 	}

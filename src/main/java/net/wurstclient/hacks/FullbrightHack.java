@@ -25,17 +25,16 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class FullbrightHack extends Hack implements UpdateListener
 {
 	private final EnumSetting<Method> method = new EnumSetting<>("方法",
-		"\u00a7l伽马\u00a7r 通过将你的亮度滑块设置超过100%来工作。与着色器包不兼容。\n\n"
-			+ "\u00a7l夜视\u00a7r 通过应用夜视效果来工作。这\u00a7o通常\u00a7r与着色器包兼容。",
+		"\u00a7lGamma\u00a7r通过将亮度滑块设置为超过100%来工作。与着色器包不兼容。\n\n"
+			+ "\u00a7 lNight Vision\u00a17r通过应用夜视效果来工作。此\u00a27ousally\u00a37r与着色器包一起工作。",
 		Method.values(), Method.GAMMA);
 	
-	private final CheckboxSetting fade = new CheckboxSetting("渐变",
-		"在亮度和黑暗之间缓慢渐变。", true);
+	private final CheckboxSetting fade = new CheckboxSetting("淡入",
+		"在亮度和暗度之间缓慢淡入。", true);
 	
 	private final SliderSetting defaultGamma = new SliderSetting(
 		"默认亮度",
-		"当你关闭全亮时，全亮会将你的亮度滑块设置回这个值。",
-
+		"Fullbright将亮度滑块设回此值w当你关闭它时。",
 		0.5, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
 	private boolean wasGammaChanged;
@@ -61,7 +60,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 			public void onUpdate()
 			{
 				double gamma = MC.options.getGamma().getValue();
-				System.out.println("亮度开始于 " + gamma);
+				System.out.println("亮度开始于" + gamma);
 				
 				if(gamma > 1)
 					wasGammaChanged = true;
@@ -100,9 +99,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 		wasGammaChanged = true;
 		
 		SimpleOption<Double> gammaOption = MC.options.getGamma();
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption2 =
-			(ISimpleOption<Double>)(Object)gammaOption;
+		ISimpleOption<Double> gammaOption2 = ISimpleOption.get(gammaOption);
 		double oldGammaValue = gammaOption.getValue();
 		
 		if(!fade.isChecked() || Math.abs(oldGammaValue - target) <= 0.5)
@@ -120,9 +117,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	private void resetGamma(double target)
 	{
 		SimpleOption<Double> gammaOption = MC.options.getGamma();
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption2 =
-			(ISimpleOption<Double>)(Object)gammaOption;
+		ISimpleOption<Double> gammaOption2 = ISimpleOption.get(gammaOption);
 		double oldGammaValue = gammaOption.getValue();
 		
 		if(!fade.isChecked() || Math.abs(oldGammaValue - target) <= 0.5)
@@ -168,10 +163,19 @@ public final class FullbrightHack extends Hack implements UpdateListener
 		return nightVisionStrength;
 	}
 	
+	/**
+	 * Returns the value of Fullbright's "默认亮度" slider. Used by
+	 * {@link XRayHack} to restore the gamma value when X-Ray is turned off.
+	 */
+	public double getDefaultGamma()
+	{
+		return defaultGamma.getValue();
+	}
+	
 	private static enum Method
 	{
-		GAMMA("伽马值"),
-		NIGHT_VISION("夜视效果");
+		GAMMA("Gamma"),
+		NIGHT_VISION("夜视");
 		
 		private final String name;
 		

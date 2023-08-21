@@ -61,7 +61,7 @@ public final class RadarHack extends Hack implements UpdateListener
 		addSetting(rotate);
 		entityFilters.forEach(this::addSetting);
 		
-		window = new Window("Radar");
+		window = new Window("雷达");
 		window.setPinned(true);
 		window.setInvisible(true);
 		window.add(new RadarComponent(this));

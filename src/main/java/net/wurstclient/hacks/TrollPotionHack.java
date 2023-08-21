@@ -37,7 +37,7 @@ public final class TrollPotionHack extends Hack
 	@Override
 	public void onEnable()
 	{
-		// 检查游戏模式
+		// check gamemode
 		if(!MC.player.getAbilities().creativeMode)
 		{
 			ChatUtils.error("只能在创造模式下使用。");
@@ -45,10 +45,10 @@ public final class TrollPotionHack extends Hack
 			return;
 		}
 		
-		// 生成药水
+		// generate potion
 		ItemStack stack = potionType.getSelected().createPotionStack();
 		
-		// 给药水
+		// give potion
 		if(placeStackInHotbar(stack))
 			ChatUtils.message("药水已创建。");
 		else

@@ -23,7 +23,7 @@ public final class FollowCmd extends Command
 {
 	public FollowCmd()
 	{
-		super("follow", "跟随给定的实体。", ".follow <entity>");
+		super("follow", "Follows the given entity.", ".follow <entity>");
 	}
 	
 	@Override

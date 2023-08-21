@@ -37,7 +37,7 @@ public final class RestockHack extends Hack implements UpdateListener
 			.collect(Collectors.toCollection(ArrayList::new));
 	
 	private ItemListSetting items = new ItemListSetting("物品",
-		"需要补充的物品。", "minecraft:minecart");
+		"Item(s) to be restocked.", "minecraft:minecart");
 	
 	private final SliderSetting restockSlot = new SliderSetting("槽位",
 		"补充到哪个槽位。", 0, -1, 9, 1,
@@ -45,14 +45,14 @@ public final class RestockHack extends Hack implements UpdateListener
 	
 	private final SliderSetting restockAmount = new SliderSetting(
 		"最小数量",
-		"手中物品的最小数量，低于这个数量时会触发补充。", 1, 1, 64, 1,
-		ValueDisplay.INTEGER);
+		"手中物品的最小数量，低于这个数量时会触发补充。",
+		1, 1, 64, 1, ValueDisplay.INTEGER);
 	
 	private final SliderSetting repairMode = new SliderSetting(
 		"工具修复模式",
 		"当工具的耐久度达到给定的阈值时，会自动换掉，以便在它们损坏之前修复它们。\n"
-			+ "可以从0（关闭）到100调整。", 0, 0, 100, 1,
-		ValueDisplay.INTEGER.withLabel(0, "关闭"));
+			+ "可以从0（关闭）到100调整。",
+		0, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "关闭"));
 	
 	public RestockHack()
 	{

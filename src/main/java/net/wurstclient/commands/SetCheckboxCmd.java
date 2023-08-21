@@ -23,8 +23,8 @@ public final class SetCheckboxCmd extends Command
 	public SetCheckboxCmd()
 	{
 		super("setcheckbox",
-			"更改某个功能的复选框设置。允许你\n"
-				+ "通过快捷键切换复选框。",
+			"Changes a checkbox setting of a feature. Allows you\n"
+				+ "to toggle checkboxes through keybinds.",
 			".setcheckbox <feature> <setting> (on|off)",
 			".setcheckbox <feature> <setting> toggle");
 	}

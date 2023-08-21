@@ -19,8 +19,8 @@ public final class DigCmd extends Command
 	public DigCmd()
 	{
 		super("dig",
-			"自动挖掘选定区域内的方块，\n"
-				+ "从前左上角开始。",
+			"Automatically digs out the selected area,\n"
+				+ "starting in the front-left-top corner.",
 			".dig <length> <width> <height>", ".dig stop");
 	}
 	

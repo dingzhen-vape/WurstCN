@@ -34,9 +34,9 @@ public final class GoToCmd extends Command
 	
 	public GoToCmd()
 	{
-		super("goto", "走或飞到指定的位置。",
+		super("goto", "Walks or flies you to a specific location.",
 			".goto <x> <y> <z>", ".goto <entity>", ".goto -path",
-			"关闭: .goto");
+			"Turn off: .goto");
 	}
 	
 	@Override

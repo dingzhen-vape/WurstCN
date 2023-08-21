@@ -14,9 +14,9 @@ public final class XrayCmd extends Command
 {
 	public XrayCmd()
 	{
-		super("xray", "用于'.blocklist X-Ray Ores'的快捷方式。",
+		super("xray", "Shortcut for '.blocklist X-Ray Ores'.",
 			".xray add <block>", ".xray remove <block>", ".xray list [<page>]",
-			".xray reset", "示例: .xray add gravel");
+			".xray reset", "Example: .xray add gravel");
 	}
 	
 	@Override

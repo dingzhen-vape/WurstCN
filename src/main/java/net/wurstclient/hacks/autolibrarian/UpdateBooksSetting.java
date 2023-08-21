@@ -15,19 +15,23 @@ public final class UpdateBooksSetting
 {
 	public UpdateBooksSetting()
 	{
-		super("更新书籍",
-			"当一个村民学会了出售你想要的书籍时，自动更新书籍列表。\n\n"
-				+ "\u00a7l关闭\u00a7r - 不要更新列表。\n\n"
-				+ "\u00a7l移除\u00a7r - 从列表中移除书籍，这样下一个村民会学习不同的书籍。\n\n"
-				+ "\u00a7l价格\u00a7r - 更新书籍的最高价格，这样下一个村民必须以更便宜的价格出售它。",
+		super("Update books",
+			"Automatically updates the list of wanted books when a villager"
+				+ " has learned to sell one of them.\n\n"
+				+ "\u00a7lOff\u00a7r - Don't update the list.\n\n"
+				+ "\u00a7lRemove\u00a7r - Remove the book from the list so"
+				+ " that the next villager will learn a different book.\n\n"
+				+ "\u00a7lPrice\u00a7r - Update the maximum price for the book"
+				+ " so that the next villager has to sell it for a cheaper"
+				+ " price.",
 			UpdateBooks.values(), UpdateBooks.REMOVE);
 	}
 	
 	public enum UpdateBooks
 	{
-		OFF("关闭"),
-		REMOVE("移除"),
-		PRICE("价格");
+		OFF("Off"),
+		REMOVE("Remove"),
+		PRICE("Price");
 		
 		private String name;
 		

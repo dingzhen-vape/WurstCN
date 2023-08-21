@@ -22,8 +22,8 @@ public final class VClipCmd extends Command
 	public VClipCmd()
 	{
 		super("vclip",
-			"让你垂直地穿过方块。\n"
-				+ "最大距离是10个方块。",
+			"Lets you clip through blocks vertically.\n"
+				+ "The maximum distance is 10 blocks.",
 			".vclip <height>", ".vclip (up|down)");
 	}
 	

@@ -23,8 +23,8 @@ public final class SetModeCmd extends Command
 	public SetModeCmd()
 	{
 		super("setmode",
-			"更改某个功能的模式设置。允许你\n"
-				+ "通过快捷键切换模式。",
+			"Changes a mode setting of a feature. Allows you to\n"
+				+ "switch modes through keybinds.",
 			".setmode <feature> <setting> <mode>",
 			".setmode <feature> <setting> (prev|next)");
 	}

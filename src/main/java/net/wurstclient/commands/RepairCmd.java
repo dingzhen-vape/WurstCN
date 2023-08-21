@@ -20,7 +20,7 @@ public final class RepairCmd extends Command
 {
 	public RepairCmd()
 	{
-		super("repair", "修复手中的物品。需要创造模式。",
+		super("repair", "Repairs the held item. Requires creative mode.",
 			".repair");
 	}
 	

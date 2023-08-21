@@ -21,10 +21,10 @@ public final class CopyItemCmd extends Command
 	public CopyItemCmd()
 	{
 		super("copyitem",
-			"允许你复制其他人手持或穿戴的物品。\n"
-				+ "需要创造模式。",
+			"Allows you to copy items that other people are holding\n"
+				+ "or wearing. Requires creative mode.",
 			".copyitem <player> <slot>",
-			"有效的槽位: hand, head, chest, legs, feet");
+			"Valid slots: hand, head, chest, legs, feet");
 	}
 	
 	@Override

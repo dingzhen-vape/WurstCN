@@ -18,7 +18,7 @@ public final class ExcavateCmd extends Command
 	public ExcavateCmd()
 	{
 		super("excavate",
-			"自动破坏选定区域内的所有方块。",
+			"Automatically destroys all blocks in the selected area.",
 			".excavate <x1> <y1> <z1> <x2> <y2> <z2>");
 	}
 	

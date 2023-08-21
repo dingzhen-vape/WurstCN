@@ -61,6 +61,7 @@ public final class BonemealAuraHack extends Hack implements UpdateListener
 		new CheckboxSetting("茎", "南瓜和西瓜。", true);
 	private final CheckboxSetting cocoa = new CheckboxSetting("可可", true);
 	private final CheckboxSetting other = new CheckboxSetting("其他", false);
+	
 	public BonemealAuraHack()
 	{
 		super("骨灰光环");

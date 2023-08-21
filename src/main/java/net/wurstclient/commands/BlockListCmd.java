@@ -1,9 +1,9 @@
 /*
- * 版权所有 (c) 2014-2023 Wurst-Imperium和贡献者。
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
- * 这个源代码受到GNU通用公共许可证的约束，
- * 版本3。如果没有随这个文件一起分发GPL的副本，
- * 你可以在这里获取一个: https://www.gnu.org/licenses/gpl-3.0.txt
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 package net.wurstclient.commands;
 
@@ -34,13 +34,13 @@ public final class BlockListCmd extends Command
 	public BlockListCmd()
 	{
 		super("blocklist",
-			"更改某个功能的BlockList设置。允许你\n"
-				+ "通过按键绑定来更改这些设置。",
+			"Changes a BlockList setting of a feature. Allows you\n"
+				+ "to change these settings through keybinds.",
 			".blocklist <feature> <setting> add <block>",
 			".blocklist <feature> <setting> remove <block>",
 			".blocklist <feature> <setting> list [<page>]",
 			".blocklist <feature> <setting> reset",
-			"示例: .blocklist Nuker MultiID_List add gravel");
+			"Example: .blocklist Nuker MultiID_List add gravel");
 	}
 	
 	@Override
@@ -87,14 +87,14 @@ public final class BlockListCmd extends Command
 		Block block = getBlockFromNameOrID(inputBlockName);
 		if(block == null)
 			throw new CmdSyntaxError(
-				"\"" + inputBlockName + "\"不是一个有效的方块。");
+				"\"" + inputBlockName + "\" is not a valid block.");
 		
 		String blockName = BlockUtils.getName(block);
 		int index =
 			Collections.binarySearch(setting.getBlockNames(), blockName);
 		if(index >= 0)
 			throw new CmdError(feature.getName() + " " + setting.getName()
-				+ "已经包含了" + blockName);
+				+ " already contains " + blockName);
 		
 		setting.add(block);
 	}
@@ -109,14 +109,14 @@ public final class BlockListCmd extends Command
 		Block block = getBlockFromNameOrID(inputBlockName);
 		if(block == null)
 			throw new CmdSyntaxError(
-				"\"" + inputBlockName + "\"不是一个有效的方块。");
+				"\"" + inputBlockName + "\" is not a valid block.");
 		
 		String blockName = BlockUtils.getName(block);
 		int index =
 			Collections.binarySearch(setting.getBlockNames(), blockName);
 		if(index < 0)
 			throw new CmdError(feature.getName() + " " + setting.getName()
-				+ "不包含" + blockName);
+				+ " does not contain " + blockName);
 		
 		setting.remove(index);
 	}
@@ -133,17 +133,17 @@ public final class BlockListCmd extends Command
 		pages = Math.max(pages, 1);
 		
 		if(page > pages || page < 1)
-			throw new CmdSyntaxError("无效的页数: " + page);
+			throw new CmdSyntaxError("Invalid page: " + page);
 		
-		String total = "总计: " + blocks.size() + "个方块";
-		total += blocks.size() != 1 ? "" : "";
+		String total = "Total: " + blocks.size() + " block";
+		total += blocks.size() != 1 ? "s" : "";
 		ChatUtils.message(total);
 		
 		int start = (page - 1) * 8;
 		int end = Math.min(page * 8, blocks.size());
 		
 		ChatUtils.message(feature.getName() + " " + setting.getName()
-			+ "(第" + page + "/" + pages + "页)");
+			+ " (page " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(blocks.get(i).toString());
 	}
@@ -154,7 +154,7 @@ public final class BlockListCmd extends Command
 			return 1;
 		
 		if(!MathUtils.isInteger(args[3]))
-			throw new CmdSyntaxError("不是一个数字: " + args[3]);
+			throw new CmdSyntaxError("Not a number: " + args[3]);
 		
 		return Integer.parseInt(args[3]);
 	}
@@ -164,7 +164,7 @@ public final class BlockListCmd extends Command
 	{
 		if(!(setting instanceof BlockListSetting))
 			throw new CmdError(feature.getName() + " " + setting.getName()
-				+ "不是一个BlockList设置。");
+				+ " is not a BlockList setting.");
 		
 		return (BlockListSetting)setting;
 	}
@@ -191,4 +191,3 @@ public final class BlockListCmd extends Command
 		}
 	}
 }
-

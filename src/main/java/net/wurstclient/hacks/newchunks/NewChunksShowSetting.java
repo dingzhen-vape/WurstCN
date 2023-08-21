@@ -14,14 +14,14 @@ public final class NewChunksShowSetting
 {
 	public NewChunksShowSetting()
 	{
-		super("Show", Show.values(), Show.NEW_CHUNKS);
+		super("显示", Show.values(), Show.NEW_CHUNKS);
 	}
 	
 	public static enum Show
 	{
-		NEW_CHUNKS("New Chunks", true, false),
-		OLD_CHUNKS("Old Chunks", false, true),
-		BOTH("Both", true, true);
+		NEW_CHUNKS("新区块", true, false),
+		OLD_CHUNKS("旧区块", false, true),
+		BOTH("两者都显示", true, true);
 		
 		private final String name;
 		private final boolean includeNew;

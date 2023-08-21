@@ -29,11 +29,11 @@ public final class SetBlockCmd extends Command
 	public SetBlockCmd()
 	{
 		super("setblock",
-			"更改某个功能的方块设置。允许你\n"
-				+ "通过快捷键更改这些设置。",
+			"Changes a block setting of a feature. Allows you\n"
+				+ "to change these settings through keybinds.",
 			".setblock <feature> <setting> <block>",
 			".setblock <feature> <setting> reset",
-			"示例: .setblock Nuker ID dirt");
+			"Example: .setblock Nuker ID dirt");
 	}
 	
 	@Override

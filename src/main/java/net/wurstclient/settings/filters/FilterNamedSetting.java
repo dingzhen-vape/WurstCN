@@ -28,4 +28,3 @@ public final class FilterNamedSetting extends EntityFilterCheckbox
 			checked);
 	}
 }
-

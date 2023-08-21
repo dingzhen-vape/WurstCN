@@ -16,22 +16,22 @@ import net.wurstclient.WurstClient;
 
 public enum SearchArea
 {
-	D3("3x3 chunks", 1),
-	D5("5x5 chunks", 2),
-	D7("7x7 chunks", 3),
-	D9("9x9 chunks", 4),
-	D11("11x11 chunks", 5),
-	D13("13x13 chunks", 6),
-	D15("15x15 chunks", 7),
-	D17("17x17 chunks", 8),
-	D19("19x19 chunks", 9),
-	D21("21x21 chunks", 10),
-	D23("23x23 chunks", 11),
-	D25("25x25 chunks", 12),
-	D27("27x27 chunks", 13),
-	D29("29x29 chunks", 14),
-	D31("31x31 chunks", 15),
-	D33("33x33 chunks", 16);
+	D3("3x3 区块", 1),
+	D5("5x5 区块", 2),
+	D7("7x7 区块", 3),
+	D9("9x9 区块", 4),
+	D11("11x11 区块", 5),
+	D13("13x13 区块", 6),
+	D15("15x15 区块", 7),
+	D17("17x17 区块", 8),
+	D19("19x19 区块", 9),
+	D21("21x21 区块", 10),
+	D23("23x23 区块", 11),
+	D25("25x25 区块", 12),
+	D27("27x27 区块", 13),
+	D29("29x29 区块", 14),
+	D31("31x31 区块", 15),
+	D33("33x33 区块", 16);
 	
 	private final String name;
 	private final int chunkRange;

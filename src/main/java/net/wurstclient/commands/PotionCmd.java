@@ -30,7 +30,7 @@ public final class PotionCmd extends Command
 {
 	public PotionCmd()
 	{
-		super("potion", "改变手持药水的效果。",
+		super("potion", "Changes the effects of the held potion.",
 			".potion add (<effect> <amplifier> <duration>)...",
 			".potion set (<effect> <amplifier> <duration>)...",
 			".potion remove <effect>");

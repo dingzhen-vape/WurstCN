@@ -143,7 +143,7 @@
   "description.wurst.hack.保持潜行": "让你自动保持潜行行走。",
   "description.wurst.hack.雪上行走": "允许你在细雪上行走。",
   "description.wurst.hack.速度黑客": "允许你以大约 2.5x 或更快的速度疾跑和跳跃。\n\n§6§l警告：§r只在反作弊版本低于 3.13.2 的服务器有效，如果你不知道服务器反作弊是哪个版本。\n输入 §l/ncp version§r 来查看反作弊版本。",
-  "description.wurst.hack.快速Nuker": "一个比 Nuker 更快的版本，但无法绕过反作弊。",
+  "description.wurst.hack.快速nuker": "一个比 Nuker 更快的版本，但无法绕过反作弊。",
   "description.wurst.hack.蜘蛛侠": "允许你像蜘蛛一样爬墙。",
   "description.wurst.hack.快速上楼": "允许你走上更高（取决于你的设定）的方块。（类似你走上半砖的效果）",
   "description.wurst.hack.多次使用": "多次使用你手中的物品，可以用于丢雪球、鸡蛋、刷怪蛋、矿车，诸如此类。\n\n会生成大量的数量，这会产生巨大的延迟且可能导致服务器崩溃。",

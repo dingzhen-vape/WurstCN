@@ -72,7 +72,7 @@ public final class FollowHack extends Hack
 	{
 		if(entity != null)
 			return "追随中 " + entity.getName().getString();
-		return "追随";
+		return "跟屁虫";
 	}
 	
 	@Override

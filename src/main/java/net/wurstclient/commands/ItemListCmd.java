@@ -31,13 +31,13 @@ public final class ItemListCmd extends Command
 	public ItemListCmd()
 	{
 		super("itemlist",
-			"更改某个功能的物品列表设置。允许你\n"
-				+ "通过快捷键更改这些设置。",
+			"Changes a ItemList setting of a feature. Allows you\n"
+				+ "to change these settings through keybinds.",
 			".itemlist <feature> <setting> add <item>",
 			".itemlist <feature> <setting> remove <item>",
 			".itemlist <feature> <setting> list [<page>]",
 			".itemlist <feature> <setting> reset",
-			"示例: .itemlist AutoDrop Items add dirt");
+			"Example: .itemlist AutoDrop Items add dirt");
 	}
 	
 	@Override

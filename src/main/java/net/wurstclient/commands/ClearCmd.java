@@ -15,7 +15,7 @@ public final class ClearCmd extends Command
 {
 	public ClearCmd()
 	{
-		super("clear", "清除聊天框中的所有内容。", ".clear");
+		super("clear", "Clears the chat completely.", ".clear");
 	}
 	
 	@Override

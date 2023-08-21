@@ -19,10 +19,10 @@ public final class DamageCmd extends Command
 {
 	public DamageCmd()
 	{
-		super("damage", "对你造成指定的伤害。",
-			".damage <amount>", "注意: 伤害值是以半颗心为单位的。",
-			"示例: .damage 7 (造成3.5颗心的伤害)",
-			"要造成更多的伤害，可以多次运行这个命令。");
+		super("damage", "Applies the given amount of damage.",
+			".damage <amount>", "Note: The amount is in half-hearts.",
+			"Example: .damage 7 (applies 3.5 hearts)",
+			"To apply more damage, run the command multiple times.");
 	}
 	
 	@Override
@@ -32,7 +32,7 @@ public final class DamageCmd extends Command
 			throw new CmdSyntaxError();
 		
 		if(MC.player.getAbilities().creativeMode)
-			throw new CmdError("不能在创造模式下受到伤害。");
+			throw new CmdError("Cannot damage in creative mode.");
 		
 		int amount = parseAmount(args[0]);
 		applyDamage(amount);

@@ -35,24 +35,26 @@ public final class AutoFishHack extends Hack
 {
 	private final SliderSetting validRange = new SliderSetting("有效范围",
 		"发生在这个范围之外的咬钩将被忽略。\n\n"
-			+ "如果咬钩没有被检测到，就增加你的范围，如果别人的咬钩被检测为你的，就减少你的范围。",
+			+ "如果咬钩没有被检测到,增加你的范围,如果"
+			+ "其他人的咬钩被检测为你的,减少它。",
 		1.5, 0.25, 8, 0.25, ValueDisplay.DECIMAL);
 	
 	private final SliderSetting catchDelay = new SliderSetting("收杆延迟",
-		"咬钩后AutoFish等待多久才收杆。", 0, 0, 60,
+		"咬钩后自动钓鱼等待多久才收杆。", 0, 0, 60,
 		1, ValueDisplay.INTEGER.withSuffix(" 刻"));
 	
 	private final SliderSetting retryDelay = new SliderSetting("重试延迟",
-		"如果抛竿或收杆失败，AutoFish会等待多久才再次尝试。",
+		"如果投掷或收回鱼竿失败,这是自动钓鱼"
+			+ "等待多久才再次尝试。",
 		15, 0, 100, 1, ValueDisplay.INTEGER.withSuffix(" 刻"));
 	
 	private final SliderSetting patience = new SliderSetting("耐心",
-		"如果没有咬钩，AutoFish会等待多久才收杆。",
+		"如果没有咬钩,自动钓鱼等待多久才收回鱼竿。",
 		60, 10, 120, 1, ValueDisplay.INTEGER.withSuffix("秒"));
 	
 	private final CheckboxSetting stopWhenInvFull = new CheckboxSetting(
 		"背包满时停止",
-		"如果启用，当你的背包满了时，AutoFish会自动关闭。",
+		"如果启用,当你的背包满了时,自动钓鱼会关闭自己。",
 		false);
 	
 	private final ShallowWaterWarningCheckbox shallowWaterWarning =
@@ -85,7 +87,7 @@ public final class AutoFishHack extends Hack
 	public String getRenderName()
 	{
 		if(!rodSelector.hasARod())
-			return getName() + " [out of rods]";
+			return getName() + " [没有鱼竿了]";
 		
 		return getName();
 	}
@@ -128,7 +130,7 @@ public final class AutoFishHack extends Hack
 			&& MC.player.getInventory().getEmptySlot() == -1)
 		{
 			ChatUtils.message(
-				"自动钓鱼已停止，因为你的背包已满");
+				"自动钓鱼已经停止,因为你的背包已经满了。");
 			setEnabled(false);
 			return;
 		}
