@@ -15,4 +15,4 @@
 - Bing chat
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=dingzhen-vape/WurstCN&type=Date)](https://star-history.com/#dingzhen-vape/WurstCN&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=dingzhen-vape/WurstCN&type=Timeline)](https://star-history.com/#dingzhen-vape/WurstCN&Timeline)
