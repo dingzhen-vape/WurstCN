@@ -13,3 +13,6 @@
 - 一切版权归属Alexander01998
 ## 特别感谢
 - Bing chat
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=dingzhen-vape/WurstCN&type=Date)](https://star-history.com/#dingzhen-vape/WurstCN&Date)
