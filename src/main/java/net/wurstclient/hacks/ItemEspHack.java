@@ -23,7 +23,6 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.wurstclient.Category;
@@ -34,6 +33,9 @@ import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.EspStyleSetting;
+import net.wurstclient.util.EntityUtils;
+import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
@@ -41,16 +43,15 @@ import net.wurstclient.util.RotationUtils;
 public final class ItemEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
-	private final EnumSetting<Style> style =
-		new EnumSetting<>("样式", Style.values(), Style.BOXES);
+	private final EspStyleSetting style = new EspStyleSetting();
 	
 	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("盒子大小",
-		"\u00a7l精确\u00a7r模式显示每个物品的准确碰撞箱。\n"
-			+ "\u00a7l花哨\u00a7r模式显示更大的盒子，看起来更好。",
+		"\u00a7l精确\u00a7r模式显示每个物品的准确碰撞盒。\n"
+			+ "\u00a7l华丽\u00a7r模式显示更大的盒子，看起来更好。",
 		BoxSize.values(), BoxSize.FANCY);
 	
 	private final ColorSetting color = new ColorSetting("颜色",
-		"物品将以这种颜色突出显示。", Color.YELLOW);
+		"物品会用这种颜色高亮显示。", Color.YELLOW);
 	
 	private final ArrayList<ItemEntity> items = new ArrayList<>();
 	
@@ -93,7 +94,7 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 	public void onCameraTransformViewBobbing(
 		CameraTransformViewBobbingEvent event)
 	{
-		if(style.getSelected().lines)
+		if(style.getSelected().hasLines())
 			event.cancel();
 	}
 	
@@ -105,15 +106,13 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		
 		matrixStack.push();
 		
-		BlockPos camPos = RenderUtils.getCameraBlockPos();
-		int regionX = (camPos.getX() >> 9) * 512;
-		int regionZ = (camPos.getZ() >> 9) * 512;
-		RenderUtils.applyRegionalRenderOffset(matrixStack, regionX, regionZ);
+		RegionPos region = RenderUtils.getCameraRegion();
+		RenderUtils.applyRegionalRenderOffset(matrixStack, region);
 		
-		renderBoxes(matrixStack, partialTicks, regionX, regionZ);
+		renderBoxes(matrixStack, partialTicks, region);
 		
-		if(style.getSelected().lines)
-			renderTracers(matrixStack, partialTicks, regionX, regionZ);
+		if(style.getSelected().hasLines())
+			renderTracers(matrixStack, partialTicks, region);
 		
 		matrixStack.pop();
 		
@@ -123,8 +122,8 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 	
-	private void renderBoxes(MatrixStack matrixStack, double partialTicks,
-		int regionX, int regionZ)
+	private void renderBoxes(MatrixStack matrixStack, float partialTicks,
+		RegionPos region)
 	{
 		float extraSize = boxSize.getSelected().extraSize;
 		
@@ -132,12 +131,11 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		{
 			matrixStack.push();
 			
-			matrixStack.translate(
-				e.prevX + (e.getX() - e.prevX) * partialTicks - regionX,
-				e.prevY + (e.getY() - e.prevY) * partialTicks,
-				e.prevZ + (e.getZ() - e.prevZ) * partialTicks - regionZ);
+			Vec3d lerpedPos = EntityUtils.getLerpedPos(e, partialTicks)
+				.subtract(region.toVec3d());
+			matrixStack.translate(lerpedPos.x, lerpedPos.y, lerpedPos.z);
 			
-			if(style.getSelected().boxes)
+			if(style.getSelected().hasBoxes())
 			{
 				matrixStack.push();
 				matrixStack.scale(e.getWidth() + extraSize,
@@ -158,8 +156,8 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		}
 	}
 	
-	private void renderTracers(MatrixStack matrixStack, double partialTicks,
-		int regionX, int regionZ)
+	private void renderTracers(MatrixStack matrixStack, float partialTicks,
+		RegionPos region)
 	{
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -171,18 +169,16 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		
+		Vec3d regionVec = region.toVec3d();
 		Vec3d start = RotationUtils.getClientLookVec()
-			.add(RenderUtils.getCameraPos()).subtract(regionX, 0, regionZ);
+			.add(RenderUtils.getCameraPos()).subtract(regionVec);
 		
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 			VertexFormats.POSITION);
 		for(ItemEntity e : items)
 		{
-			Vec3d end = e.getBoundingBox().getCenter()
-				.subtract(new Vec3d(e.getX(), e.getY(), e.getZ())
-					.subtract(e.prevX, e.prevY, e.prevZ)
-					.multiply(1 - partialTicks))
-				.subtract(regionX, 0, regionZ);
+			Vec3d end = EntityUtils.getLerpedBox(e, partialTicks).getCenter()
+				.subtract(regionVec);
 			
 			bufferBuilder
 				.vertex(matrix, (float)start.x, (float)start.y, (float)start.z)
@@ -194,34 +190,10 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		tessellator.draw();
 	}
 	
-	private enum Style
-	{
-		BOXES("仅盒子", true, false),
-		LINES("仅线条", false, true),
-		LINES_AND_BOXES("线条和盒子", true, true);
-		
-		private final String name;
-		private final boolean boxes;
-		private final boolean lines;
-		
-		private Style(String name, boolean boxes, boolean lines)
-		{
-			this.name = name;
-			this.boxes = boxes;
-			this.lines = lines;
-		}
-		
-		@Override
-		public String toString()
-		{
-			return name;
-		}
-	}
-	
 	private enum BoxSize
 	{
-		ACCURATE("精确", 0),
-		FANCY("花哨", 0.1F);
+		ACCURATE("精确的", 0),
+		FANCY("华丽的", 0.1F);
 		
 		private final String name;
 		private final float extraSize;

@@ -18,6 +18,7 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -35,7 +36,7 @@ public final class KeybindProfilesScreen extends Screen
 	
 	public KeybindProfilesScreen(Screen prevScreen)
 	{
-		super(Text.literal(""));
+		super(Text.literal("Edit"));
 		this.prevScreen = prevScreen;
 	}
 	
@@ -46,21 +47,21 @@ public final class KeybindProfilesScreen extends Screen
 			WurstClient.INSTANCE.getKeybinds().listProfiles());
 		
 		addDrawableChild(
-			ButtonWidget.builder(Text.literal("Open Folder"), b -> openFolder())
+			ButtonWidget.builder(Text.literal("NONE"), b -> openFolder())
 				.dimensions(8, 8, 100, 20).build());
 		
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("New Profile"),
+			.builder(Text.literal("Edit"),
 				b -> client.setScreen(
 					new EnterProfileNameScreen(this, this::newProfile)))
 			.dimensions(width / 2 - 154, height - 48, 100, 20).build());
 		
 		loadButton = addDrawableChild(
-			ButtonWidget.builder(Text.literal("Load"), b -> loadSelected())
+			ButtonWidget.builder(Text.literal("Change Key"), b -> loadSelected())
 				.dimensions(width / 2 - 50, height - 48, 100, 20).build());
 		
 		addDrawableChild(
-			ButtonWidget.builder(Text.literal("Cancel"), b -> openPrevScreen())
+			ButtonWidget.builder(Text.literal("Save"), b -> openPrevScreen())
 				.dimensions(width / 2 + 54, height - 48, 100, 20).build());
 	}
 	
@@ -72,8 +73,8 @@ public final class KeybindProfilesScreen extends Screen
 	
 	private void newProfile(String name)
 	{
-		if(!name.endsWith(".json"))
-			name += ".json";
+		if(!name.endsWith("Cancel"))
+			name += "Cancel";
 		
 		try
 		{
@@ -94,7 +95,7 @@ public final class KeybindProfilesScreen extends Screen
 		}
 		
 		Path path = listGui.list.get(listGui.selected);
-		String fileName = "" + path.getFileName();
+		String fileName = "Edit" + path.getFileName();
 		
 		try
 		{
@@ -144,11 +145,12 @@ public final class KeybindProfilesScreen extends Screen
 	}
 	
 	@Override
-	public boolean mouseScrolled(double double_1, double double_2,
-		double double_3)
+	public boolean mouseScrolled(double mouseX, double mouseY,
+		double horizontalAmount, double verticalAmount)
 	{
-		listGui.mouseScrolled(double_1, double_2, double_3);
-		return super.mouseScrolled(double_1, double_2, double_3);
+		listGui.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+		return super.mouseScrolled(mouseX, mouseY, horizontalAmount,
+			verticalAmount);
 	}
 	
 	@Override
@@ -173,17 +175,18 @@ public final class KeybindProfilesScreen extends Screen
 	public void render(DrawContext context, int mouseX, int mouseY,
 		float partialTicks)
 	{
-		renderBackground(context);
+		renderBackground(context, mouseX, mouseY, partialTicks);
 		listGui.render(context, mouseX, mouseY, partialTicks);
 		
 		context.drawCenteredTextWithShadow(client.textRenderer,
-			"Keybind Profiles", width / 2, 12, 0xffffff);
+			"Add", width / 2, 12, 0xffffff);
 		
-		super.render(context, mouseX, mouseY, partialTicks);
+		for(Drawable drawable : drawables)
+			drawable.render(context, mouseX, mouseY, partialTicks);
 		
 		if(loadButton.isSelected() && !loadButton.active)
 			context.drawTooltip(textRenderer,
-				Arrays.asList(Text.literal("You must first select a file.")),
+				Arrays.asList(Text.literal(" Keybind")),
 				mouseX, mouseY);
 	}
 	
@@ -242,15 +245,15 @@ public final class KeybindProfilesScreen extends Screen
 			TextRenderer tr = mc.textRenderer;
 			
 			Path path = list.get(index);
-			// tr.draw(matrixStack, "" + path.getFileName(), x + 28, y,
+			// tr.draw(matrixStack, "Edit" + path.getFileName(), x + 28, y,
 			// 0xf0f0f0);
-			context.drawTextWithShadow(tr, "" + path.getFileName(), x + 28, y,
+			context.drawTextWithShadow(tr, "Edit" + path.getFileName(), x + 28, y,
 				0xf0f0f0);
-			// tr.draw(matrixStack, "" +
+			// tr.draw(matrixStack, "Edit" +
 			// client.runDirectory.toPath().relativize(path), x + 28, y + 9,
 			// 0xa0a0a0);
 			context.drawTextWithShadow(tr,
-				"" + client.runDirectory.toPath().relativize(path), x + 28,
+				"Edit" + client.runDirectory.toPath().relativize(path), x + 28,
 				y + 9, 0xa0a0a0);
 		}
 	}

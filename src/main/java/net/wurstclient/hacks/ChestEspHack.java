@@ -33,85 +33,83 @@ import net.wurstclient.hacks.chestesp.ChestEspBlockGroup;
 import net.wurstclient.hacks.chestesp.ChestEspEntityGroup;
 import net.wurstclient.hacks.chestesp.ChestEspGroup;
 import net.wurstclient.hacks.chestesp.ChestEspRenderer;
-import net.wurstclient.hacks.chestesp.ChestEspStyle;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.ColorSetting;
-import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.EspStyleSetting;
 import net.wurstclient.util.ChunkUtils;
 import net.wurstclient.util.RenderUtils;
 
 public class ChestEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
-	private final EnumSetting<ChestEspStyle> style =
-		new EnumSetting<>("样式", ChestEspStyle.values(), ChestEspStyle.BOXES);
+	private final EspStyleSetting style = new EspStyleSetting();
 	
 	private final ChestEspBlockGroup basicChests = new ChestEspBlockGroup(
-		new ColorSetting("箱子颜色",
-			"普通箱子将以这种颜色突出显示。", Color.GREEN),
+		new ColorSetting("胸部颜色",
+			"普通箱子会用这种颜色高亮显示。", Color.GREEN),
 		null);
 	
 	private final ChestEspBlockGroup trapChests = new ChestEspBlockGroup(
 		new ColorSetting("陷阱箱颜色",
-			"陷阱箱将以这种颜色突出显示。",
+			"陷阱箱会用这种颜色高亮显示。",
 			new Color(0xFF8000)),
 		new CheckboxSetting("包括陷阱箱", true));
 	
 	private final ChestEspBlockGroup enderChests = new ChestEspBlockGroup(
-		new ColorSetting("末影箱颜色",
-			"末影箱将以这种颜色突出显示。", Color.CYAN),
+		new ColorSetting("末影颜色",
+			"末影箱会用这种颜色高亮显示。", Color.CYAN),
 		new CheckboxSetting("包括末影箱", true));
 	
 	private final ChestEspEntityGroup chestCarts =
 		new ChestEspEntityGroup(
 			new ColorSetting("箱子车颜色",
-				"带有箱子的矿车将以这种颜色突出显示。",
+				"装有箱子的矿车会用这种颜色高亮显示。",
 				Color.YELLOW),
 			new CheckboxSetting("包括箱子车", true));
 	
 	private final ChestEspEntityGroup chestBoats =
 		new ChestEspEntityGroup(
 			new ColorSetting("箱子船颜色",
-				"带有箱子的船只将以这种颜色突出显示。",
+				"装有箱子的船会用这种颜色高亮显示。",
 				Color.YELLOW),
 			new CheckboxSetting("包括箱子船", true));
 	
 	private final ChestEspBlockGroup barrels = new ChestEspBlockGroup(
 		new ColorSetting("桶颜色",
-			"桶将以这种颜色突出显示。", Color.GREEN),
+			"桶会用这种颜色高亮显示。", Color.GREEN),
 		new CheckboxSetting("包括桶", true));
 	
 	private final ChestEspBlockGroup shulkerBoxes = new ChestEspBlockGroup(
 		new ColorSetting("潜影盒颜色",
-			"潜影盒将以这种颜色突出显示。", Color.MAGENTA),
+			"潜影盒会用这种颜色高亮显示。", Color.MAGENTA),
 		new CheckboxSetting("包括潜影盒", true));
 	
 	private final ChestEspBlockGroup hoppers = new ChestEspBlockGroup(
 		new ColorSetting("漏斗颜色",
-			"漏斗将以这种颜色突出显示。", Color.WHITE),
+			"漏斗会用这种颜色高亮显示。", Color.WHITE),
 		new CheckboxSetting("包括漏斗", false));
 	
 	private final ChestEspEntityGroup hopperCarts =
 		new ChestEspEntityGroup(
 			new ColorSetting("漏斗车颜色",
-				"带有漏斗的矿车将以这种颜色突出显示。",
+				"装有漏斗的矿车会用这种颜色高亮显示。",
 				Color.YELLOW),
 			new CheckboxSetting("包括漏斗车", false));
 	
 	private final ChestEspBlockGroup droppers = new ChestEspBlockGroup(
 		new ColorSetting("投掷器颜色",
-			"投掷器将以这种颜色突出显示。", Color.WHITE),
+			"投掷器会用这种颜色高亮显示。", Color.WHITE),
 		new CheckboxSetting("包括投掷器", false));
 	
 	private final ChestEspBlockGroup dispensers = new ChestEspBlockGroup(
 		new ColorSetting("发射器颜色",
-			"发射器将以这种颜色突出显示。",
+			"发射器会用这种颜色高亮显示。",
 			new Color(0xFF8000)),
 		new CheckboxSetting("包括发射器", false));
 	
 	private final ChestEspBlockGroup furnaces =
 		new ChestEspBlockGroup(new ColorSetting("熔炉颜色",
-			"熔炉、烟熏炉和高炉将以这种颜色突出显示。",
+			"熔炉，烟熏炉，和高炉会用这种颜色高亮显示。",
 			Color.RED), new CheckboxSetting("包括熔炉", false));
 	
 	private final List<ChestEspGroup> groups = Arrays.asList(basicChests,

@@ -20,7 +20,6 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.wurstclient.WurstClient;
@@ -32,8 +31,7 @@ import net.wurstclient.hacks.FullbrightHack;
 import net.wurstclient.mixinterface.IGameRenderer;
 
 @Mixin(GameRenderer.class)
-public abstract class GameRendererMixin
-	implements AutoCloseable, SynchronousResourceReloader, IGameRenderer
+public abstract class GameRendererMixin implements AutoCloseable, IGameRenderer
 {
 	private boolean cancelNextBobView;
 	
@@ -92,10 +90,10 @@ public abstract class GameRendererMixin
 			opcode = Opcodes.GETFIELD,
 			ordinal = 0),
 		method = "renderWorld(FJLnet/minecraft/client/util/math/MatrixStack;)V")
-	private void onRenderWorld(float partialTicks, long finishTimeNano,
-		MatrixStack matrixStack, CallbackInfo ci)
+	private void onRenderWorld(float tickDelta, long limitTime,
+		MatrixStack matrices, CallbackInfo ci)
 	{
-		RenderEvent event = new RenderEvent(matrixStack, partialTicks);
+		RenderEvent event = new RenderEvent(matrices, tickDelta);
 		EventManager.fire(event);
 	}
 	
@@ -113,9 +111,9 @@ public abstract class GameRendererMixin
 		target = "Lnet/minecraft/entity/Entity;getCameraPosVec(F)Lnet/minecraft/util/math/Vec3d;",
 		opcode = Opcodes.INVOKEVIRTUAL,
 		ordinal = 0), method = "updateTargetedEntity(F)V")
-	private void onHitResultRayTrace(float float_1, CallbackInfo ci)
+	private void onHitResultRayTrace(float tickDelta, CallbackInfo ci)
 	{
-		HitResultRayTraceEvent event = new HitResultRayTraceEvent(float_1);
+		HitResultRayTraceEvent event = new HitResultRayTraceEvent(tickDelta);
 		EventManager.fire(event);
 	}
 	
@@ -124,10 +122,10 @@ public abstract class GameRendererMixin
 			target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F",
 			ordinal = 0),
 		method = "renderWorld(FJLnet/minecraft/client/util/math/MatrixStack;)V")
-	private float wurstNauseaLerp(float delta, float first, float second)
+	private float wurstNauseaLerp(float delta, float start, float end)
 	{
 		if(!WurstClient.INSTANCE.getHax().antiWobbleHack.isEnabled())
-			return MathHelper.lerp(delta, first, second);
+			return MathHelper.lerp(delta, start, end);
 		
 		return 0;
 	}
@@ -135,8 +133,8 @@ public abstract class GameRendererMixin
 	@Inject(at = @At("HEAD"),
 		method = "getNightVisionStrength(Lnet/minecraft/entity/LivingEntity;F)F",
 		cancellable = true)
-	private static void onGetNightVisionStrength(LivingEntity livingEntity,
-		float f, CallbackInfoReturnable<Float> cir)
+	private static void onGetNightVisionStrength(LivingEntity entity,
+		float tickDelta, CallbackInfoReturnable<Float> cir)
 	{
 		FullbrightHack fullbright =
 			WurstClient.INSTANCE.getHax().fullbrightHack;
@@ -148,17 +146,11 @@ public abstract class GameRendererMixin
 	@Inject(at = @At("HEAD"),
 		method = "tiltViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V",
 		cancellable = true)
-	private void onTiltViewWhenHurt(MatrixStack matrixStack, float f,
+	private void onTiltViewWhenHurt(MatrixStack matrices, float tickDelta,
 		CallbackInfo ci)
 	{
 		if(WurstClient.INSTANCE.getHax().noHurtcamHack.isEnabled())
 			ci.cancel();
-	}
-	
-	@Shadow
-	private void bobView(MatrixStack matrixStack, float partalTicks)
-	{
-		
 	}
 	
 	@Override

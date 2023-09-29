@@ -10,7 +10,6 @@ package net.wurstclient;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,6 +22,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.InputUtil;
 import net.wurstclient.altmanager.AltManager;
+import net.wurstclient.altmanager.Encryption;
 import net.wurstclient.analytics.WurstAnalytics;
 import net.wurstclient.clickgui.ClickGui;
 import net.wurstclient.command.CmdList;
@@ -45,6 +45,8 @@ import net.wurstclient.navigator.Navigator;
 import net.wurstclient.other_feature.OtfList;
 import net.wurstclient.other_feature.OtherFeature;
 import net.wurstclient.settings.SettingsFile;
+import net.wurstclient.update.ProblematicResourcePackDetector;
+import net.wurstclient.update.WurstUpdater;
 import net.wurstclient.util.json.JsonException;
 
 public enum WurstClient
@@ -55,7 +57,7 @@ public enum WurstClient
 	public static IMinecraftClient IMC;
 	
 	public static final String VERSION = "7.37";
-	public static final String MC_VERSION = "1.20.1";
+	public static final String MC_VERSION = "1.20.2";
 	
 	private WurstAnalytics analytics;
 	private EventManager eventManager;
@@ -75,6 +77,8 @@ public enum WurstClient
 	
 	private boolean enabled = true;
 	private static boolean guiInitialized;
+	private WurstUpdater updater;
+	private ProblematicResourcePackDetector problematicPackDetector;
 	private Path wurstFolder;
 	
 	private KeyBinding zoomKey;
@@ -133,16 +137,19 @@ public enum WurstClient
 		rotationFaker = new RotationFaker();
 		eventManager.add(PreMotionListener.class, rotationFaker);
 		eventManager.add(PostMotionListener.class, rotationFaker);
-
+		
+		updater = new WurstUpdater();
+		eventManager.add(UpdateListener.class, updater);
+		
+		problematicPackDetector = new ProblematicResourcePackDetector();
+		problematicPackDetector.start();
 		
 		Path altsFile = wurstFolder.resolve("alts.encrypted_json");
-		Path encFolder =
-			Paths.get(System.getProperty("user.home"), ".Wurst encryption")
-				.normalize();
+		Path encFolder = Encryption.chooseEncryptionFolder();
 		altManager = new AltManager(altsFile, encFolder);
 		
 		zoomKey = new KeyBinding("key.wurst.zoom", InputUtil.Type.KEYSYM,
-			GLFW.GLFW_KEY_V, "Zoom");
+			GLFW.GLFW_KEY_V, KeyBinding.MISC_CATEGORY);
 		KeyBindingHelper.registerKeyBinding(zoomKey);
 		
 		analytics.trackPageView("/mc" + MC_VERSION + "/v" + VERSION,
@@ -309,7 +316,17 @@ public enum WurstClient
 			hax.panicHack.onUpdate();
 		}
 	}
-
+	
+	public WurstUpdater getUpdater()
+	{
+		return updater;
+	}
+	
+	public ProblematicResourcePackDetector getProblematicPackDetector()
+	{
+		return problematicPackDetector;
+	}
+	
 	public Path getWurstFolder()
 	{
 		return wurstFolder;

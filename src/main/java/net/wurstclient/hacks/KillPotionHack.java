@@ -25,7 +25,7 @@ import net.wurstclient.util.ChatUtils;
 public final class KillPotionHack extends Hack
 {
 	private final EnumSetting<PotionType> potionType =
-		new EnumSetting<>("药水类型", "要生成的药水的类型。",
+		new EnumSetting<>("Potion type", "The type of potion to generate.",
 			PotionType.values(), PotionType.SPLASH);
 	
 	public KillPotionHack()
@@ -42,7 +42,7 @@ public final class KillPotionHack extends Hack
 		// check gamemode
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("只有创造模式可用");
+			ChatUtils.error("Creative mode only.");
 			setEnabled(false);
 			return;
 		}
@@ -52,9 +52,9 @@ public final class KillPotionHack extends Hack
 		
 		// give potion
 		if(placeStackInHotbar(stack))
-			ChatUtils.message("已生成.");
+			ChatUtils.message("Potion created.");
 		else
-			ChatUtils.error("请清空你的快捷栏中的一个槽。");
+			ChatUtils.error("Please clear a slot in your hotbar.");
 		
 		setEnabled(false);
 	}
@@ -76,14 +76,14 @@ public final class KillPotionHack extends Hack
 	
 	private enum PotionType
 	{
-		NORMAL("普通", "药水", Items.POTION),
+		NORMAL("Normal", "Potion", Items.POTION),
 		
-		SPLASH("喷溅", "喷溅药水", Items.SPLASH_POTION),
+		SPLASH("Splash", "Splash Potion", Items.SPLASH_POTION),
 		
-		LINGERING("滞留", "滞留药水", Items.LINGERING_POTION);
+		LINGERING("Lingering", "Lingering Potion", Items.LINGERING_POTION);
 		
 		// does not work
-		// ARROW("箭", "箭", Items.TIPPED_ARROW);
+		// ARROW("Arrow", "Arrow", Items.TIPPED_ARROW);
 		
 		private final String name;
 		private final String itemName;
@@ -107,19 +107,19 @@ public final class KillPotionHack extends Hack
 			ItemStack stack = new ItemStack(item);
 			
 			NbtCompound effect = new NbtCompound();
-			effect.putInt("Amplifier", 125);
-			effect.putInt("Duration", 2000);
-			effect.putInt("Id", 6);
+			effect.putInt("amplifier", 125);
+			effect.putInt("duration", 2000);
+			effect.putString("id", "instant_health");
 			
 			NbtList effects = new NbtList();
 			effects.add(effect);
 			
 			NbtCompound nbt = new NbtCompound();
-			nbt.put("CustomPotionEffects", effects);
+			nbt.put("custom_potion_effects", effects);
 			stack.setNbt(nbt);
 			
 			String name =
-				"\u00a7f" + itemName + " of \u00a74\u00a7l瞬间死亡";
+				"\u00a7f" + itemName + " of \u00a74\u00a7lINSTANT DEATH";
 			stack.setCustomName(Text.literal(name));
 			
 			return stack;
