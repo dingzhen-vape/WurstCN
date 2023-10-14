@@ -2,7 +2,8 @@
 
 这是一个基本完成汉化的wurst hack端，基于wurst最新版本制作。
 - 当wurst更新的时候，这个仓库可能不会更新
-
+##汉化作者
+https://space.bilibili.com/432060575/article
 ## 下载和安装
 
 - 你可以在[这里](https://wwfb.lanzoue.com/b032gu5re)下载最新的wurst cn端汉化版,密码:6398
