@@ -8,6 +8,7 @@
 package net.wurstclient.settings.filters;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.ShulkerEntity;
 import net.minecraft.entity.passive.GolemEntity;
 
 public final class FilterGolemsSetting extends EntityFilterCheckbox
@@ -20,12 +21,18 @@ public final class FilterGolemsSetting extends EntityFilterCheckbox
 	@Override
 	public boolean test(Entity e)
 	{
-		return !(e instanceof GolemEntity);
+		return !(e instanceof GolemEntity) || e instanceof ShulkerEntity;
 	}
 	
 	public static FilterGolemsSetting genericCombat(boolean checked)
 	{
 		return new FilterGolemsSetting(
-			"不会攻击铁傀儡，雪傀儡和潜影贝。", checked);
+			"不会攻击铁傀儡和雪傀儡。", checked);
+	}
+	
+	public static FilterGolemsSetting genericVision(boolean checked)
+	{
+		return new FilterGolemsSetting(
+			"不会显示铁傀儡和雪傀儡。", checked);
 	}
 }

@@ -27,4 +27,9 @@ public final class FilterPlayersSetting extends EntityFilterCheckbox
 	{
 		return new FilterPlayersSetting("不会攻击其他玩家。", checked);
 	}
+	
+	public static FilterPlayersSetting genericVision(boolean checked)
+	{
+		return new FilterPlayersSetting("不会显示其他玩家。", checked);
+	}
 }

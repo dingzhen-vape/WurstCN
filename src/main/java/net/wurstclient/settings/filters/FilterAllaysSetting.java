@@ -27,4 +27,9 @@ public final class FilterAllaysSetting extends EntityFilterCheckbox
 	{
 		return new FilterAllaysSetting("不会攻击盟友。", checked);
 	}
+	
+	public static FilterAllaysSetting genericVision(boolean checked)
+	{
+		return new FilterAllaysSetting("不会显示盟友。", checked);
+	}
 }
