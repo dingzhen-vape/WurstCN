@@ -14,6 +14,8 @@ https://space.bilibili.com/432060575/article
 - 一切版权归属Alexander01998
 ## 特别感谢
 - Bing chat
+## 注意!
+- WurstCN使用大量ai翻译!!!
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=dingzhen-vape/WurstCN&type=Timeline)](https://star-history.com/#dingzhen-vape/WurstCN&Timeline)
