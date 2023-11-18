@@ -10,6 +10,7 @@ package net.wurstclient.hacks;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.StringHelper;
@@ -19,6 +20,10 @@ import net.wurstclient.events.ChatInputListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.DontSaveState;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.CheckboxSetting;
+import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.TextFieldSetting;
 import net.wurstclient.util.ChatUtils;
 
 @SearchTags({"mass tpa"})
@@ -26,9 +31,36 @@ import net.wurstclient.util.ChatUtils;
 public final class MassTpaHack extends Hack
 	implements UpdateListener, ChatInputListener
 {
+	private static final Pattern ALLOWED_COMMANDS =
+		Pattern.compile("^/+[a-zA-Z0-9_\\-]+$");
+	
+	private final TextFieldSetting commandSetting =
+		new TextFieldSetting("命令",
+			"用于传送的命令。\n"
+				+ "例子: /tp, /tpa, /tpahere, /tpo",
+			"/tpa",
+			s -> s.length() < 64 && ALLOWED_COMMANDS.matcher(s).matches());
+	
+	private final SliderSetting delay = new SliderSetting("延迟",
+		"每次传送请求之间的延迟。", 20, 1, 200, 1,
+		ValueDisplay.INTEGER.withSuffix(" 刻").withLabel(1, "1刻"));
+	
+	private final CheckboxSetting ignoreErrors =
+		new CheckboxSetting("忽略错误",
+			"是否忽略服务器告诉你的消息，说"
+				+ "传送命令无效或者你没有"
+				+ "使用它的权限。",
+			false);
+	
+	private final CheckboxSetting stopWhenAccepted = new CheckboxSetting(
+		"当被接受时停止", "是否在有人接受你的传送"
+			+ "请求时停止发送更多的传送请求。",
+		true);
+	
 	private final Random random = new Random();
 	private final ArrayList<String> players = new ArrayList<>();
 	
+	private String command;
 	private int index;
 	private int timer;
 	
@@ -36,17 +68,25 @@ public final class MassTpaHack extends Hack
 	{
 		super("tpa光环");
 		setCategory(Category.CHAT);
+		addSetting(commandSetting);
+		addSetting(delay);
+		addSetting(ignoreErrors);
+		addSetting(stopWhenAccepted);
 	}
 	
 	@Override
 	public void onEnable()
 	{
-		index = 0;
-		timer = -1;
-		
+		// reset state
 		players.clear();
-		String playerName = MC.getSession().getUsername();
+		index = 0;
+		timer = 0;
 		
+		// cache command in case the setting is changed mid-run
+		command = commandSetting.getValue().substring(1);
+		
+		// collect player names
+		String playerName = MC.getSession().getUsername();
 		for(PlayerListEntry info : MC.player.networkHandler.getPlayerList())
 		{
 			String name = info.getProfile().getName();
@@ -65,7 +105,7 @@ public final class MassTpaHack extends Hack
 		
 		if(players.isEmpty())
 		{
-			ChatUtils.error("找不到任何玩家");
+			ChatUtils.error("找不到任何玩家。");
 			setEnabled(false);
 		}
 	}
@@ -80,7 +120,7 @@ public final class MassTpaHack extends Hack
 	@Override
 	public void onUpdate()
 	{
-		if(timer > -1)
+		if(timer > 0)
 		{
 			timer--;
 			return;
@@ -92,9 +132,11 @@ public final class MassTpaHack extends Hack
 			return;
 		}
 		
-		MC.getNetworkHandler().sendChatCommand("tpa " + players.get(index));
+		MC.getNetworkHandler()
+			.sendChatCommand(command + " " + players.get(index));
+		
 		index++;
-		timer = 20;
+		timer = delay.getValueI() - 1;
 	}
 	
 	@Override
@@ -104,17 +146,25 @@ public final class MassTpaHack extends Hack
 		if(message.startsWith("\u00a7c[\u00a76wurst\u00a7c]"))
 			return;
 		
-		if(message.contains("/help") || message.contains("permission"))
+		if(message.contains("/help") || message.contains("权限"))
 		{
+			if(ignoreErrors.isChecked())
+				return;
+			
 			event.cancel();
-			ChatUtils.error("这个服务器没有TPA。");
+			ChatUtils.error("这个服务器没有 "
+				+ command.toUpperCase() + " 命令。");
 			setEnabled(false);
 			
-		}else if(message.contains("accepted") && message.contains("request")
-			|| message.contains("akzeptiert") && message.contains("anfrage"))
+		}else if(message.contains("接受") && message.contains("请求")
+			|| message.contains("接受") && message.contains("请求"))
 		{
+			if(!stopWhenAccepted.isChecked())
+				return;
+			
 			event.cancel();
-			ChatUtils.message("有人接受了你的TPA请求。停止。");
+			ChatUtils.message("有人接受了你的 " + command.toUpperCase()
+				+ " 请求。停止。");
 			setEnabled(false);
 		}
 	}

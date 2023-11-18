@@ -15,14 +15,17 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.wurstclient.Category;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.settings.filters.*;
+import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.EntityUtils;
 import net.wurstclient.util.RotationUtils;
 import net.wurstclient.util.RotationUtils.Rotation;
@@ -31,29 +34,43 @@ public final class AimAssistHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range =
-		new SliderSetting("范围", 4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("Range", 4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final SliderSetting rotationSpeed =
-		new SliderSetting("旋转速度", 600, 10, 3600, 10,
+		new SliderSetting("Rotation Speed", 600, 10, 3600, 10,
 			ValueDisplay.DEGREES.withSuffix("/s"));
 	
-	private final SliderSetting fov = new SliderSetting("视野",
-		"视野 - 实体距离你的准星多远时会被忽略。\n"
-			+ "360\u00b0 = 瞄准你周围的所有实体。",
+	private final SliderSetting fov = new SliderSetting("FOV",
+		"Field Of View - how far away from your crosshair an entity can be before it's ignored.\n"
+			+ "360\u00b0 = aims at entities all around you.",
 		120, 30, 360, 10, ValueDisplay.DEGREES);
+	
+	private final CheckboxSetting checkLOS = new CheckboxSetting(
+		"Check line of sight", "Won't aim at entities behind blocks.", true);
 	
 	private final EntityFilterList entityFilters =
 		new EntityFilterList(FilterPlayersSetting.genericCombat(false),
 			FilterSleepingSetting.genericCombat(false),
 			FilterFlyingSetting.genericCombat(0),
-			FilterMonstersSetting.genericCombat(false),
-			FilterPigmenSetting.genericCombat(false),
-			FilterEndermenSetting.genericCombat(false),
-			FilterAnimalsSetting.genericCombat(true),
+			FilterHostileSetting.genericCombat(false),
+			FilterNeutralSetting
+				.genericCombat(AttackDetectingEntityFilter.Mode.OFF),
+			FilterPassiveSetting.genericCombat(true),
+			FilterPassiveWaterSetting.genericCombat(true),
 			FilterBabiesSetting.genericCombat(true),
+			FilterBatsSetting.genericCombat(true),
+			FilterSlimesSetting.genericCombat(true),
 			FilterPetsSetting.genericCombat(true),
-			FilterTradersSetting.genericCombat(true),
+			FilterVillagersSetting.genericCombat(true),
+			FilterZombieVillagersSetting.genericCombat(true),
 			FilterGolemsSetting.genericCombat(false),
+			FilterPiglinsSetting
+				.genericCombat(AttackDetectingEntityFilter.Mode.OFF),
+			FilterZombiePiglinsSetting
+				.genericCombat(AttackDetectingEntityFilter.Mode.OFF),
+			FilterEndermenSetting
+				.genericCombat(AttackDetectingEntityFilter.Mode.OFF),
+			FilterShulkersSetting.genericCombat(false),
 			FilterInvisibleSetting.genericCombat(true),
 			FilterNamedSetting.genericCombat(false),
 			FilterShulkerBulletSetting.genericCombat(false),
@@ -72,6 +89,7 @@ public final class AimAssistHack extends Hack
 		addSetting(range);
 		addSetting(rotationSpeed);
 		addSetting(fov);
+		addSetting(checkLOS);
 		
 		entityFilters.forEach(this::addSetting);
 	}
@@ -87,7 +105,6 @@ public final class AimAssistHack extends Hack
 		WURST.getHax().killauraLegitHack.setEnabled(false);
 		WURST.getHax().multiAuraHack.setEnabled(false);
 		WURST.getHax().protectHack.setEnabled(false);
-		WURST.getHax().triggerBotHack.setEnabled(false);
 		WURST.getHax().tpAuraHack.setEnabled(false);
 		
 		EVENTS.add(UpdateListener.class, this);
@@ -125,6 +142,13 @@ public final class AimAssistHack extends Hack
 			.orElse(null);
 		if(target == null)
 			return;
+		
+		Vec3d hitVec = target.getBoundingBox().getCenter();
+		if(checkLOS.isChecked() && !BlockUtils.hasLineOfSight(hitVec))
+		{
+			target = null;
+			return;
+		}
 		
 		WURST.getHax().autoSwordHack.setSlot();
 		faceEntityClient(target);

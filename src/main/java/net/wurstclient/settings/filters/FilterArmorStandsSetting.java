@@ -28,4 +28,10 @@ public final class FilterArmorStandsSetting extends EntityFilterCheckbox
 		return new FilterArmorStandsSetting("不会攻击盔甲架。",
 			checked);
 	}
+	
+	public static FilterArmorStandsSetting genericVision(boolean checked)
+	{
+		return new FilterArmorStandsSetting("不会显示盔甲架。",
+			checked);
+	}
 }

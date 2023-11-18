@@ -56,79 +56,70 @@ import net.wurstclient.util.BlockBreaker.BlockBreakingParams;
 import net.wurstclient.util.BlockPlacer.BlockPlacingParams;
 
 @SearchTags({"auto librarian", "AutoVillager", "auto villager",
-	"VillagerTrainer", "villager trainer", "LibrarianTrainer",
-	"librarian trainer", "AutoHmmm", "auto hmmm"})
+		"VillagerTrainer", "villager trainer", "LibrarianTrainer",
+		"librarian trainer", "AutoHmmm", "auto hmmm"})
 public final class AutoLibrarianHack extends Hack
-	implements UpdateListener, RenderListener
+		implements UpdateListener, RenderListener
 {
 	private final BookOffersSetting wantedBooks = new BookOffersSetting(
-		"想要的书籍",
-		"你希望村民出售的附魔书的列表。\n\n"
-			+ "AutoLibrarian会在当前的村民学会出售这些书中的任何一本后停止训练它。\n\n"
-			+ "你也可以为每本书设置一个最高价格，以防你已经有一个村民出售它，但你想要一个更便宜的价格。"
-			+ "锁定交易"
-			+ "在村民学会出售你想要的书后，自动从村民那里买点东西。这可以防止村民以后改变它的交易报价。\n\n"
-			+ "使用这个功能时，请确保你的背包里至少有24张纸和9个绿宝石。或者，1本书和64个绿宝石也可以。",
-		"minecraft:depth_strider", "minecraft:efficiency",
-		"minecraft:feather_falling", "minecraft:fortune", "minecraft:looting",
-		"minecraft:mending", "minecraft:protection", "minecraft:respiration",
-		"minecraft:sharpness", "minecraft:silk_touch", "minecraft:unbreaking");
-	
+			"想要的书籍",
+			"你想让你的村民出售的附魔书的列表。\n\n"
+					+ "一旦当前的村民学会了出售这些书中的一本，"
+					+ "AutoLibrarian 就会停止训练它。\n\n"
+					+ "你也可以为每本书设置一个最高价格，以防你"
+					+ "已经有一个村民出售它，但你想要一个"
+					+ "更便宜的价格。",
+			"minecraft:depth_strider", "minecraft:efficiency",
+			"minecraft:feather_falling", "minecraft:fortune", "minecraft:looting",
+			"minecraft:mending", "minecraft:protection", "minecraft:respiration",
+			"minecraft:sharpness", "minecraft:silk_touch", "minecraft:unbreaking");
+
 	private final CheckboxSetting lockInTrade = new CheckboxSetting(
-		"范围",
-		"如何面向村民和工作站。\n\n"
-			+ "§l关闭§r - 不要面向村民。会被反作弊插件检测到。\n\n"
-			+ "§l服务器端§r - 在服务器端面向村民，同时在客户端自由地移动摄像头。\n\n"
-			+ "§l客户端§r - 通过在客户端移动摄像头来面向村民。这是最合法的选项，但可能让人看着不舒服。"
-			+ "如何挥动手臂来与村民和工作站互动。\n\n"
-			+ "§l关闭§r - 不要挥动手臂。会被反作弊插件检测到。\n\n",
-		false);
-	
+			"锁定交易",
+			"一旦村民学会了出售你想要的书，就自动从村民那里买点东西。这样可以防止村民"
+					+ "以后改变它的交易报价。\n\n"
+					+ "使用这个功能时，请确保你的背包里至少有24张纸和9颗绿宝石。或者，1本书和"
+					+ "64颗绿宝石也可以。",
+			false);
+
 	private final UpdateBooksSetting updateBooks = new UpdateBooksSetting();
-	
+
 	private final SliderSetting range =
-		new SliderSetting("§l服务器端§r - 在服务器端挥动手臂，而不在客户端播放动画。\n\n", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
-	
+			new SliderSetting("距离", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+
 	private final FacingSetting facing = FacingSetting
-		.withoutPacketSpam("§l客户端§r - 在客户端挥动手臂。这是最合法的选项。"
-			+ "修复模式"
-			+ "防止AutoLibrarian在你的斧头的耐久度达到给定的阈值时使用它，这样你可以在它坏掉之前修复它。\n"
-			+ "可以从0（关闭）到100调整。"
-			+ "关闭"
-			+ "村民超出范围了。考虑困住"
-			+ "试图同时放置和打破工作站。出了点问题。"
-			+ "位于 "
-			+ " 的村民已经有经验了，意味着它不能再被训练了。");
-	
+			.withoutPacketSpam("如何面对村民和工作站。\n\n"
+					+ "\u00a7lOff\u00a7r - 不要面对村民。会被反作弊插件检测到。\n\n"
+					+ "\u00a7lServer-side\u00a7r - 在服务器端面对村民，同时在客户端自由移动相机。\n\n"
+					+ "\u00a7lClient-side\u00a7r - 通过在客户端移动相机来面对村民。这是最合法的选项，但"
+					+ "可能会让你感到不适。");
+
 	private final SwingHandSetting swingHand =
-		new SwingHandSetting("寻找另一个村民…"
-			+ "村民没有出售附魔书。"
-			+ "打破工作站…"
-			+ "村民出售 "
-			+ " 价格为 "
-			+ "是"
-			+ "打破工作站…"
-			+ "完成！");
-	
-	private final SliderSetting repairMode = new SliderSetting("工作站为空。",
-		"工作站已经被打破了。替换中…"
-			+ "工作站为空。"
-			+ "工作站已经被放置了。",
-		1, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "在工作站发现错误的方块。打破中…"));
-	
+			new SwingHandSetting("如何挥动手臂与村民和工作站互动。\n\n"
+					+ "\u00a7lOff\u00a7r - 不要挥动手臂。会被反作弊插件检测到。\n\n"
+					+ "\u00a7lServer-side\u00a7r - 在服务器端挥动手臂，而不在客户端播放动画。\n\n"
+					+ "\u00a7lClient-side\u00a7r - 在客户端挥动手臂。这是最合法的选项。");
+
+	private final SliderSetting repairMode = new SliderSetting("修复模式",
+			"当你的斧头的耐久度达到给定的阈值时，防止 AutoLibrarian 使用你的斧头，这样你可以在它"
+					+ "损坏之前修复它。\n"
+					+ "可以从 0 (关闭) 到 100 调整。",
+
+			1, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "off"));
+
 	private final OverlayRenderer overlay = new OverlayRenderer();
 	private final HashSet<VillagerEntity> experiencedVillagers =
-		new HashSet<>();
-	
+			new HashSet<>();
+
 	private VillagerEntity villager;
 	private BlockPos jobSite;
-	
+
 	private boolean placingJobSite;
 	private boolean breakingJobSite;
-	
+
 	public AutoLibrarianHack()
 	{
-		super("自动图书馆管理员");
+		super("自动图书管理员");
 		setCategory(Category.OTHER);
 		addSetting(wantedBooks);
 		addSetting(lockInTrade);
@@ -138,27 +129,27 @@ public final class AutoLibrarianHack extends Hack
 		addSetting(swingHand);
 		addSetting(repairMode);
 	}
-	
+
 	@Override
 	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(RenderListener.class, this);
 	}
-	
+
 	@Override
 	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
-		
+
 		if(breakingJobSite)
 		{
 			MC.interactionManager.breakingBlock = true;
 			MC.interactionManager.cancelBlockBreaking();
 			breakingJobSite = false;
 		}
-		
+
 		overlay.resetProgress();
 		villager = null;
 		jobSite = null;
@@ -166,7 +157,7 @@ public final class AutoLibrarianHack extends Hack
 		breakingJobSite = false;
 		experiencedVillagers.clear();
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
@@ -175,77 +166,77 @@ public final class AutoLibrarianHack extends Hack
 			setTargetVillager();
 			return;
 		}
-		
+
 		if(jobSite == null)
 		{
 			setTargetJobSite();
 			return;
 		}
-		
+
 		if(placingJobSite && breakingJobSite)
 			throw new IllegalStateException(
-				" 村民，以免它走开了。");
-		
+					"Trying to place and break job site at the same time. Something is wrong.");
+
 		if(placingJobSite)
 		{
 			placeJobSite();
 			return;
 		}
-		
+
 		if(breakingJobSite)
 		{
 			breakJobSite();
 			return;
 		}
-		
+
 		if(!(MC.currentScreen instanceof MerchantScreen tradeScreen))
 		{
 			openTradeScreen();
 			return;
 		}
-		
+
 		// Can't see experience until the trade screen is open, so we have to
 		// check it here and start over if the villager is already experienced.
 		int experience = tradeScreen.getScreenHandler().getExperience();
 		if(experience > 0)
 		{
-			ChatUtils.warning(" 的讲台"
-				+ villager.getBlockPos().toShortString()
-				+ "等级");
-			ChatUtils.message("发现无效的附魔书报价。\n");
+			ChatUtils.warning("Villager at "
+					+ villager.getBlockPos().toShortString()
+					+ " is already experienced, meaning it can't be trained anymore.");
+			ChatUtils.message("Looking for another villager...");
 			experiencedVillagers.add(villager);
 			villager = null;
 			jobSite = null;
 			closeTradeScreen();
 			return;
 		}
-		
+
 		// check which book the villager is selling
 		BookOffer bookOffer =
-			findEnchantedBookOffer(tradeScreen.getScreenHandler().getRecipes());
-		
+				findEnchantedBookOffer(tradeScreen.getScreenHandler().getRecipes());
+
 		if(bookOffer == null)
 		{
-			ChatUtils.message("NBT数据: ");
+			ChatUtils.message("Villager is not selling an enchanted book.");
 			closeTradeScreen();
 			breakingJobSite = true;
-			System.out.println("找不到附近的图书管理员。");
+			System.out.println("Breaking job site...");
 			return;
 		}
-		
+
 		ChatUtils.message(
-			"(除了 " + bookOffer.getEnchantmentNameWithLevel()
-				+ " 那 " + bookOffer.getFormattedPrice() + "是");
-		
+				"Villager is selling " + bookOffer.getEnchantmentNameWithLevel()
+						+ " for " + bookOffer.getFormattedPrice() + ".");
+
 		// if wrong enchantment, break job site and start over
 		if(!wantedBooks.isWanted(bookOffer))
 		{
 			breakingJobSite = true;
-			System.out.println("找不到附近的图书管理员。");
+			System.out.println("Breaking job site...");
 			closeTradeScreen();
 			return;
 		}
-		
+
 		// lock in the trade, if enabled
 		if(lockInTrade.isChecked())
 		{
@@ -253,95 +244,95 @@ public final class AutoLibrarianHack extends Hack
 			tradeScreen.getScreenHandler().setRecipeIndex(0);
 			tradeScreen.getScreenHandler().switchTo(0);
 			MC.getNetworkHandler()
-				.sendPacket(new SelectMerchantTradeC2SPacket(0));
-			
+					.sendPacket(new SelectMerchantTradeC2SPacket(0));
+
 			// buy whatever the villager is selling
 			MC.interactionManager.clickSlot(
-				tradeScreen.getScreenHandler().syncId, 2, 0,
-				SlotActionType.PICKUP, MC.player);
-			
+					tradeScreen.getScreenHandler().syncId, 2, 0,
+					SlotActionType.PICKUP, MC.player);
+
 			// close the trade screen
 			closeTradeScreen();
 		}
-		
+
 		// update wanted books based on the user's settings
 		updateBooks.getSelected().update(wantedBooks, bookOffer);
-		
-		ChatUtils.message("请确保图书管理员和讲台");
+
+		ChatUtils.message("Done!");
 		setEnabled(false);
 	}
-	
+
 	private void breakJobSite()
 	{
 		if(jobSite == null)
-			throw new IllegalStateException("都能从你站立的地方到达。");
-		
+			throw new IllegalStateException("Job site is null.");
+
 		BlockBreakingParams params =
-			BlockBreaker.getBlockBreakingParams(jobSite);
-		
+				BlockBreaker.getBlockBreakingParams(jobSite);
+
 		if(params == null || BlockUtils.getState(jobSite).isReplaceable())
 		{
-			System.out.println("找到位于 ");
+			System.out.println("Job site has been broken. Replacing...");
 			breakingJobSite = false;
 			placingJobSite = true;
 			return;
 		}
-		
+
 		// equip tool
 		WURST.getHax().autoToolHack.equipBestTool(jobSite, false, true,
-			repairMode.getValueI());
-		
+				repairMode.getValueI());
+
 		// face block
 		facing.getSelected().face(params.hitVec());
-		
+
 		// damage block and swing hand
 		if(MC.interactionManager.updateBlockBreakingProgress(jobSite,
-			params.side()))
+				params.side()))
 			swingHand.getSelected().swing(Hand.MAIN_HAND);
-		
+
 		// update progress
 		overlay.updateProgress();
 	}
-	
+
 	private void placeJobSite()
 	{
 		if(jobSite == null)
-			throw new IllegalStateException("都能从你站立的地方到达。");
-		
+			throw new IllegalStateException("Job site is null.");
+
 		if(!BlockUtils.getState(jobSite).isReplaceable())
 		{
 			if(BlockUtils.getBlock(jobSite) == Blocks.LECTERN)
 			{
-				System.out.println("找不到图书管理员的讲台。");
+				System.out.println("Job site has been placed.");
 				placingJobSite = false;
-				
+
 			}else
 			{
 				System.out
-					.println("请确保图书管理员和讲台");
+						.println("Found wrong block at job site. Breaking...");
 				breakingJobSite = true;
 				placingJobSite = false;
 			}
-			
+
 			return;
 		}
-		
+
 		// check if holding a lectern
 		if(!MC.player.isHolding(Items.LECTERN))
 		{
 			InventoryUtils.selectItem(Items.LECTERN, 36);
 			return;
 		}
-		
+
 		// get the hand that is holding the lectern
 		Hand hand = MC.player.getMainHandStack().isOf(Items.LECTERN)
-			? Hand.MAIN_HAND : Hand.OFF_HAND;
-		
+				? Hand.MAIN_HAND : Hand.OFF_HAND;
+
 		// sneak-place to avoid activating trapdoors/chests/etc.
 		MC.options.sneakKey.setPressed(true);
 		if(!MC.player.isSneaking())
 			return;
-		
+
 		// get block placing params
 		BlockPlacingParams params = BlockPlacer.getBlockPlacingParams(jobSite);
 		if(params == null)
@@ -349,70 +340,70 @@ public final class AutoLibrarianHack extends Hack
 			((IKeyBinding)MC.options.sneakKey).resetPressedState();
 			return;
 		}
-		
+
 		// face block
 		facing.getSelected().face(params.hitVec());
-		
+
 		// place block
 		ActionResult result = MC.interactionManager.interactBlock(MC.player,
-			hand, params.toHitResult());
-		
+				hand, params.toHitResult());
+
 		// swing hand
 		if(result.isAccepted() && result.shouldSwingHand())
 			swingHand.getSelected().swing(hand);
-		
+
 		// reset sneak
 		((IKeyBinding)MC.options.sneakKey).resetPressedState();
 	}
-	
+
 	private void openTradeScreen()
 	{
 		if(MC.itemUseCooldown > 0)
 			return;
-		
+
 		ClientPlayerInteractionManager im = MC.interactionManager;
 		ClientPlayerEntity player = MC.player;
-		
+
 		if(player.squaredDistanceTo(villager) > range.getValueSq())
 		{
-			ChatUtils.error("都能从你站立的地方到达。"
-				+ "找到位于 ");
+			ChatUtils.error("Villager is out of range. Consider trapping"
+					+ " the villager so it doesn't wander away.");
 			setEnabled(false);
 			return;
 		}
-		
+
 		// create realistic hit result
 		Box box = villager.getBoundingBox();
 		Vec3d start = RotationUtils.getEyesPos();
 		Vec3d end = box.getCenter();
 		Vec3d hitVec = box.raycast(start, end).orElse(start);
 		EntityHitResult hitResult = new EntityHitResult(villager, hitVec);
-		
+
 		// face end vector
 		facing.getSelected().face(end);
-		
+
 		// click on villager
 		Hand hand = Hand.MAIN_HAND;
 		ActionResult actionResult =
-			im.interactEntityAtLocation(player, villager, hitResult, hand);
-		
+				im.interactEntityAtLocation(player, villager, hitResult, hand);
+
 		if(!actionResult.isAccepted())
 			im.interactEntity(player, villager, hand);
-		
+
 		// swing hand
 		if(actionResult.isAccepted() && actionResult.shouldSwingHand())
 			swingHand.getSelected().swing(hand);
-		
+
 		// set cooldown
 		MC.itemUseCooldown = 4;
 	}
-	
+
 	private void closeTradeScreen()
 	{
 		MC.player.closeHandledScreen();
 		MC.itemUseCooldown = 4;
 	}
-	
+
 	private BookOffer findEnchantedBookOffer(TradeOfferList tradeOffers)
 	{
 		for(TradeOffer tradeOffer : tradeOffers)
@@ -420,98 +411,98 @@ public final class AutoLibrarianHack extends Hack
 			ItemStack stack = tradeOffer.getSellItem();
 			if(!(stack.getItem() instanceof EnchantedBookItem book))
 				continue;
-			
+
 			NbtList enchantmentNbt = EnchantedBookItem.getEnchantmentNbt(stack);
 			if(enchantmentNbt.isEmpty())
 				continue;
-			
+
 			NbtList bookNbt = EnchantedBookItem.getEnchantmentNbt(stack);
-			String enchantment = bookNbt.getCompound(0).getString(" 的讲台");
+			String enchantment = bookNbt.getCompound(0).getString("id");
 			int level = bookNbt.getCompound(0).getInt("lvl");
 			int price = tradeOffer.getAdjustedFirstBuyItem().getCount();
 			BookOffer bookOffer = new BookOffer(enchantment, level, price);
-			
+
 			if(!bookOffer.isValid())
 			{
 				System.out.println("Found invalid enchanted book offer.\n"
-					+ "NBT data: " + stack.getNbt());
+						+ "NBT data: " + stack.getNbt());
 				continue;
 			}
-			
+
 			return bookOffer;
 		}
-		
+
 		return null;
 	}
-	
+
 	private void setTargetVillager()
 	{
 		ClientPlayerEntity player = MC.player;
 		double rangeSq = range.getValueSq();
-		
+
 		Stream<VillagerEntity> stream =
-			StreamSupport.stream(MC.world.getEntities().spliterator(), true)
-				.filter(e -> !e.isRemoved())
-				.filter(e -> e instanceof VillagerEntity)
-				.map(e -> (VillagerEntity)e).filter(e -> e.getHealth() > 0)
-				.filter(e -> player.squaredDistanceTo(e) <= rangeSq)
-				.filter(e -> e.getVillagerData()
-					.getProfession() == VillagerProfession.LIBRARIAN)
-				.filter(e -> e.getVillagerData().getLevel() == 1)
-				.filter(e -> !experiencedVillagers.contains(e));
-		
+				StreamSupport.stream(MC.world.getEntities().spliterator(), true)
+						.filter(e -> !e.isRemoved())
+						.filter(VillagerEntity.class::isInstance)
+						.map(e -> (VillagerEntity)e).filter(e -> e.getHealth() > 0)
+						.filter(e -> player.squaredDistanceTo(e) <= rangeSq)
+						.filter(e -> e.getVillagerData()
+								.getProfession() == VillagerProfession.LIBRARIAN)
+						.filter(e -> e.getVillagerData().getLevel() == 1)
+						.filter(e -> !experiencedVillagers.contains(e));
+
 		villager = stream
-			.min(Comparator.comparingDouble(e -> player.squaredDistanceTo(e)))
-			.orElse(null);
-		
+				.min(Comparator.comparingDouble(e -> player.squaredDistanceTo(e)))
+				.orElse(null);
+
 		if(villager == null)
 		{
 			String errorMsg = "Couldn't find a nearby librarian.";
 			int numExperienced = experiencedVillagers.size();
 			if(numExperienced > 0)
 				errorMsg += " (Except for " + numExperienced + " that "
-					+ (numExperienced == 1 ? "is" : "are")
-					+ " already experienced.)";
-			
+						+ (numExperienced == 1 ? "is" : "are")
+						+ " already experienced.)";
+
 			ChatUtils.error(errorMsg);
 			ChatUtils.message("Make sure both the librarian and the lectern"
-				+ " are reachable from where you are standing.");
+					+ " are reachable from where you are standing.");
 			setEnabled(false);
 			return;
 		}
-		
+
 		System.out.println("Found villager at " + villager.getBlockPos());
 	}
-	
+
 	private void setTargetJobSite()
 	{
 		Vec3d eyesVec = RotationUtils.getEyesPos();
 		double rangeSq = range.getValueSq();
-		
+
 		Stream<BlockPos> stream = BlockUtils
-			.getAllInBoxStream(BlockPos.ofFloored(eyesVec),
-				range.getValueCeil())
-			.filter(pos -> eyesVec
-				.squaredDistanceTo(Vec3d.ofCenter(pos)) <= rangeSq)
-			.filter(pos -> BlockUtils.getBlock(pos) == Blocks.LECTERN);
-		
+				.getAllInBoxStream(BlockPos.ofFloored(eyesVec),
+						range.getValueCeil())
+				.filter(pos -> eyesVec
+						.squaredDistanceTo(Vec3d.ofCenter(pos)) <= rangeSq)
+				.filter(pos -> BlockUtils.getBlock(pos) == Blocks.LECTERN);
+
 		jobSite = stream
-			.min(Comparator.comparingDouble(
-				pos -> villager.squaredDistanceTo(Vec3d.ofCenter(pos))))
-			.orElse(null);
-		
+				.min(Comparator.comparingDouble(
+						pos -> villager.squaredDistanceTo(Vec3d.ofCenter(pos))))
+				.orElse(null);
+
 		if(jobSite == null)
 		{
 			ChatUtils.error("Couldn't find the librarian's lectern.");
 			ChatUtils.message("Make sure both the librarian and the lectern"
-				+ " are reachable from where you are standing.");
+					+ " are reachable from where you are standing.");
 			setEnabled(false);
 			return;
 		}
-		
+
 		System.out.println("Found lectern at " + jobSite);
 	}
-	
+
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
@@ -520,39 +511,39 @@ public final class AutoLibrarianHack extends Hack
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		
+
 		matrixStack.push();
-		
+
 		RegionPos region = RenderUtils.getCameraRegion();
 		RenderUtils.applyRegionalRenderOffset(matrixStack, region);
 		Vec3d regionOffset = region.negate().toVec3d();
-		
+
 		RenderSystem.setShaderColor(0, 1, 0, 0.75F);
-		
+
 		if(villager != null)
 			RenderUtils.drawOutlinedBox(
-				villager.getBoundingBox().offset(regionOffset), matrixStack);
-		
+					villager.getBoundingBox().offset(regionOffset), matrixStack);
+
 		if(jobSite != null)
 			RenderUtils.drawOutlinedBox(new Box(jobSite).offset(regionOffset),
-				matrixStack);
-		
+					matrixStack);
+
 		RenderSystem.setShaderColor(1, 0, 0, 0.75F);
-		
+
 		for(VillagerEntity villager : experiencedVillagers)
 		{
 			Box box = villager.getBoundingBox().offset(regionOffset);
 			RenderUtils.drawOutlinedBox(box, matrixStack);
 			RenderUtils.drawCrossBox(box, matrixStack);
 		}
-		
+
 		matrixStack.pop();
-		
+
 		// GL resets
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
-		
+
 		if(breakingJobSite)
 			overlay.render(matrixStack, partialTicks, jobSite);
 	}

@@ -8,28 +8,35 @@
 package net.wurstclient.settings.filters;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
 
 public final class FilterSleepingSetting extends EntityFilterCheckbox
 {
 	public FilterSleepingSetting(String description, boolean checked)
 	{
-		super("过滤睡眠", description, checked);
+		super("过滤睡觉的", description, checked);
 	}
 	
 	@Override
 	public boolean test(Entity e)
 	{
-		if(!(e instanceof PlayerEntity))
+		if(!(e instanceof PlayerEntity pe))
 			return true;
 		
-		return !((PlayerEntity)e).isSleeping();
+		return !pe.isSleeping() && pe.getPose() != EntityPose.SLEEPING;
 	}
 	
 	public static FilterSleepingSetting genericCombat(boolean checked)
 	{
-		return new FilterSleepingSetting("不会攻击睡眠的玩家。\n\n"
-			+ "对于像Mineplex这样的服务器很有用，它们会把睡眠的玩家放在地上，让他们看起来像尸体。",
+		return new FilterSleepingSetting("不会攻击睡觉的玩家。 "
+			+ "适用于像Mineplex这样的服务器，它们将睡觉的玩家放在"
+			+ "地面上，让他们看起来像尸体。", checked);
+	}
+	
+	public static FilterSleepingSetting genericVision(boolean checked)
+	{
+		return new FilterSleepingSetting("不会显示睡觉的玩家。",
 			checked);
 	}
 }

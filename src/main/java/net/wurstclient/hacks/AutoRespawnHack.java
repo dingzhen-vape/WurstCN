@@ -9,16 +9,23 @@ package net.wurstclient.hacks;
 
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
+import net.wurstclient.WurstClient;
 import net.wurstclient.events.DeathListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.CheckboxSetting;
 
 @SearchTags({"auto respawn", "AutoRevive", "auto revive"})
 public final class AutoRespawnHack extends Hack implements DeathListener
 {
+	private final CheckboxSetting button =
+		new CheckboxSetting("死亡屏幕按钮", "在死亡"
+			+ "屏幕上显示一个按钮，让你快速启用AutoRespawn。", true);
+	
 	public AutoRespawnHack()
 	{
 		super("自动重生");
 		setCategory(Category.COMBAT);
+		addSetting(button);
 	}
 	
 	@Override
@@ -38,5 +45,11 @@ public final class AutoRespawnHack extends Hack implements DeathListener
 	{
 		MC.player.requestRespawn();
 		MC.setScreen(null);
+	}
+	
+	public boolean shouldShowButton()
+	{
+		return WurstClient.INSTANCE.isEnabled() && !isEnabled()
+			&& button.isChecked();
 	}
 }

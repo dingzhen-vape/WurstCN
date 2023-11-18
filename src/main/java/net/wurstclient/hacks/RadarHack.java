@@ -27,11 +27,7 @@ import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.settings.filterlists.EntityFilterList;
-import net.wurstclient.settings.filters.FilterAnimalsSetting;
-import net.wurstclient.settings.filters.FilterInvisibleSetting;
-import net.wurstclient.settings.filters.FilterMonstersSetting;
-import net.wurstclient.settings.filters.FilterPlayersSetting;
-import net.wurstclient.settings.filters.FilterSleepingSetting;
+import net.wurstclient.settings.filters.*;
 import net.wurstclient.util.FakePlayerEntity;
 
 @SearchTags({"MiniMap", "mini map"})
@@ -40,17 +36,20 @@ public final class RadarHack extends Hack implements UpdateListener
 	private final Window window;
 	private final ArrayList<Entity> entities = new ArrayList<>();
 	
-	private final SliderSetting radius = new SliderSetting("半径",
-		"以方块为单位的半径。", 100, 1, 100, 1, ValueDisplay.INTEGER);
+	private final SliderSetting radius = new SliderSetting("Radius",
+		"Radius in blocks.", 100, 1, 100, 1, ValueDisplay.INTEGER);
 	private final CheckboxSetting rotate =
-		new CheckboxSetting("随玩家旋转", true);
+		new CheckboxSetting("跟随玩家旋转", true);
 	
-	private final EntityFilterList entityFilters = new EntityFilterList(
-		new FilterPlayersSetting("不显示其他玩家。", false),
-		new FilterSleepingSetting("不显示睡觉的玩家。", false),
-		new FilterMonstersSetting("不显示僵尸，苦力怕等。", false),
-		new FilterAnimalsSetting("不显示猪，牛等。", false),
-		new FilterInvisibleSetting("不显示隐形的实体。", false));
+	private final EntityFilterList entityFilters =
+		new EntityFilterList(FilterPlayersSetting.genericVision(false),
+			FilterSleepingSetting.genericVision(false),
+			FilterHostileSetting.genericVision(false),
+			FilterPassiveSetting.genericVision(false),
+			FilterPassiveWaterSetting.genericVision(false),
+			FilterBatsSetting.genericVision(true),
+			FilterSlimesSetting.genericVision(false),
+			FilterInvisibleSetting.genericVision(false));
 	
 	public RadarHack()
 	{
@@ -92,7 +91,7 @@ public final class RadarHack extends Hack implements UpdateListener
 			StreamSupport.stream(world.getEntities().spliterator(), true)
 				.filter(e -> !e.isRemoved() && e != player)
 				.filter(e -> !(e instanceof FakePlayerEntity))
-				.filter(e -> e instanceof LivingEntity)
+				.filter(LivingEntity.class::isInstance)
 				.filter(e -> ((LivingEntity)e).getHealth() > 0);
 		
 		stream = entityFilters.applyTo(stream);

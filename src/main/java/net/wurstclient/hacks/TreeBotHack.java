@@ -15,23 +15,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.WurstClient;
@@ -43,14 +34,16 @@ import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.DontSaveState;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.hacks.treebot.Tree;
+import net.wurstclient.hacks.treebot.TreeBotUtils;
+import net.wurstclient.settings.FacingSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
-import net.wurstclient.treebot.Tree;
-import net.wurstclient.treebot.TreeBotUtils;
+import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.util.BlockBreaker;
+import net.wurstclient.util.BlockBreaker.BlockBreakingParams;
 import net.wurstclient.util.BlockUtils;
-import net.wurstclient.util.RegionPos;
-import net.wurstclient.util.RenderUtils;
-import net.wurstclient.util.RotationUtils;
+import net.wurstclient.util.OverlayRenderer;
 
 @SearchTags({"tree bot"})
 @DontSaveState
@@ -58,8 +51,28 @@ public final class TreeBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range = new SliderSetting("范围",
-		"TreeBot能够破坏方块的距离。", 4.5, 1, 6, 0.05,
+		"TreeBot会伸手多远来打破方块。", 4.5, 1, 6, 0.05,
 		ValueDisplay.DECIMAL);
+	
+	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
+		"打破原木和树叶时如何面对它们。\n\n"
+			+ "\u00a7l关闭\u00a7r - 不要面对方块。会被"
+			+ "反作弊插件检测到。\n\n"
+			+ "\u00a7l服务器端\u00a7r - 在"
+			+ "服务器端面对方块，同时让你在"
+			+ "客户端自由地移动相机。\n\n"
+			+ "\u00a7l客户端\u00a7r - 通过移动你的"
+			+ "相机在客户端面对方块。这是最合法的选项，但"
+			+ "看起来可能会让人头晕。");
+	
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		"TreeBot在打破原木和树叶时应该如何挥动你的手。\n\n"
+			+ "\u00a7l关闭\u00a7r - 不要挥动你的手。会被检测到"
+			+ "反作弊插件。\n\n"
+			+ "\u00a7l服务器端\u00a7r - 在服务器端挥动你的手，"
+			+ "不在客户端播放动画。\n\n"
+			+ "\u00a7l客户端\u00a7r - 在客户端挥动你的手。"
+			+ "这是最合法的选项。");
 	
 	private TreeFinder treeFinder;
 	private AngleFinder angleFinder;
@@ -67,27 +80,28 @@ public final class TreeBotHack extends Hack
 	private Tree tree;
 	
 	private BlockPos currentBlock;
-	private float progress;
-	private float prevProgress;
+	private final OverlayRenderer overlay = new OverlayRenderer();
 	
 	public TreeBotHack()
 	{
 		super("砍树机器人");
 		setCategory(Category.BLOCKS);
 		addSetting(range);
+		addSetting(facing);
+		addSetting(swingHand);
 	}
 	
 	@Override
 	public String getRenderName()
 	{
 		if(treeFinder != null && !treeFinder.isDone() && !treeFinder.isFailed())
-			return getName() + " [Searching]";
+			return getName() + " [搜索]";
 		
 		if(processor != null && !processor.isDone())
-			return getName() + " [Going]";
+			return getName() + " [前往]";
 		
 		if(tree != null && !tree.getLogs().isEmpty())
-			return getName() + " [Chopping]";
+			return getName() + " [砍伐]";
 		
 		return getName();
 	}
@@ -124,6 +138,8 @@ public final class TreeBotHack extends Hack
 			MC.interactionManager.cancelBlockBreaking();
 			currentBlock = null;
 		}
+		
+		overlay.resetProgress();
 	}
 	
 	@Override
@@ -157,13 +173,8 @@ public final class TreeBotHack extends Hack
 			return;
 		}
 		
-		ArrayList<BlockPos> logsInRange = getLogsInRange();
-		
-		if(!logsInRange.isEmpty())
-		{
-			breakBlocks(logsInRange);
+		if(breakBlocks(tree.getLogs()))
 			return;
-		}
 		
 		if(angleFinder == null)
 			angleFinder = new AngleFinder();
@@ -211,69 +222,38 @@ public final class TreeBotHack extends Hack
 		angleFinder = null;
 	}
 	
-	private ArrayList<BlockPos> getLogsInRange()
+	private boolean breakBlocks(ArrayList<BlockPos> blocks)
 	{
-		Vec3d eyesVec = RotationUtils.getEyesPos().subtract(0.5, 0.5, 0.5);
-		double rangeSq = Math.pow(range.getValue(), 2);
-		
-		return tree.getLogs().stream()
-			.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
-			.filter(TreeBotUtils::hasLineOfSight)
-			.collect(Collectors.toCollection(ArrayList::new));
-	}
-	
-	private void breakBlocks(ArrayList<BlockPos> blocksInRange)
-	{
-		for(BlockPos pos : blocksInRange)
+		for(BlockPos pos : blocks)
 			if(breakBlock(pos))
 			{
-				WURST.getHax().autoToolHack.equipBestTool(pos, false, true, 0);
 				currentBlock = pos;
-				break;
+				return true;
 			}
 		
-		if(currentBlock == null)
-			MC.interactionManager.cancelBlockBreaking();
-		
-		if(currentBlock != null && BlockUtils.getHardness(currentBlock) < 1)
-		{
-			prevProgress = progress;
-			progress = MC.interactionManager.currentBreakingProgress;
-			
-			if(progress < prevProgress)
-				prevProgress = progress;
-			
-		}else
-		{
-			progress = 1;
-			prevProgress = 1;
-		}
+		return false;
 	}
 	
 	private boolean breakBlock(BlockPos pos)
 	{
-		Direction side =
-			TreeBotUtils.getLineOfSightSide(RotationUtils.getEyesPos(), pos);
-		
-		Vec3d relCenter = BlockUtils.getBoundingBox(pos)
-			.offset(-pos.getX(), -pos.getY(), -pos.getZ()).getCenter();
-		Vec3d center = Vec3d.of(pos).add(relCenter);
-		
-		Vec3i dirVec = side.getVector();
-		Vec3d relHitVec = new Vec3d(relCenter.x * dirVec.getX(),
-			relCenter.y * dirVec.getY(), relCenter.z * dirVec.getZ());
-		Vec3d hitVec = center.add(relHitVec);
-		
-		// face block
-		WURST.getRotationFaker().faceVectorPacket(hitVec);
-		
-		// damage block
-		if(!MC.interactionManager.updateBlockBreakingProgress(pos, side))
+		BlockBreakingParams params = BlockBreaker.getBlockBreakingParams(pos);
+		if(params == null || !params.lineOfSight()
+			|| params.distanceSq() > range.getValueSq())
 			return false;
 		
-		// swing arm
-		MC.player.networkHandler
-			.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
+		// select tool
+		WURST.getHax().autoToolHack.equipBestTool(pos, false, true, 0);
+		
+		// face block
+		facing.getSelected().face(params.hitVec());
+		
+		// damage block and swing hand
+		if(MC.interactionManager.updateBlockBreakingProgress(pos,
+			params.side()))
+			swingHand.getSelected().swing(Hand.MAIN_HAND);
+		
+		// update progress
+		overlay.updateProgress();
 		
 		return true;
 	}
@@ -292,71 +272,10 @@ public final class TreeBotHack extends Hack
 			angleFinder.renderPath(matrixStack, pathCmd.isDebugMode(),
 				pathCmd.isDepthTest());
 		
-		// GL settings
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		
 		if(tree != null)
-			drawTree(matrixStack);
+			tree.draw(matrixStack);
 		
-		if(currentBlock != null)
-			drawCurrentBlock(matrixStack, partialTicks);
-		
-		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glDisable(GL11.GL_BLEND);
-	}
-	
-	private void drawTree(MatrixStack matrixStack)
-	{
-		RenderSystem.setShaderColor(0, 1, 0, 0.5F);
-		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack,
-			MC.world.getChunk(tree.getStump()));
-		
-		Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
-		Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
-		ShaderProgram shader = RenderSystem.getShader();
-		
-		tree.getVertexBuffer().bind();
-		tree.getVertexBuffer().draw(viewMatrix, projMatrix, shader);
-		VertexBuffer.unbind();
-		
-		matrixStack.pop();
-	}
-	
-	private void drawCurrentBlock(MatrixStack matrixStack, float partialTicks)
-	{
-		matrixStack.push();
-		
-		RegionPos region = RenderUtils.getCameraRegion();
-		RenderUtils.applyRegionalRenderOffset(matrixStack, region);
-		
-		Box box = new Box(BlockPos.ORIGIN);
-		float p = prevProgress + (progress - prevProgress) * partialTicks;
-		float red = p * 2F;
-		float green = 2 - red;
-		
-		matrixStack.translate(currentBlock.getX() - region.x(),
-			currentBlock.getY(), currentBlock.getZ() - region.z());
-		if(p < 1)
-		{
-			matrixStack.translate(0.5, 0.5, 0.5);
-			matrixStack.scale(p, p, p);
-			matrixStack.translate(-0.5, -0.5, -0.5);
-		}
-		
-		RenderSystem.setShaderColor(red, green, 0, 0.25F);
-		RenderUtils.drawSolidBox(box, matrixStack);
-		
-		RenderSystem.setShaderColor(red, green, 0, 0.5F);
-		RenderUtils.drawOutlinedBox(box, matrixStack);
-		
-		matrixStack.pop();
+		overlay.render(matrixStack, partialTicks, currentBlock);
 	}
 	
 	private ArrayList<BlockPos> getNeighbors(BlockPos pos)
@@ -419,28 +338,19 @@ public final class TreeBotHack extends Hack
 				return;
 			}
 			
-			ArrayList<BlockPos> leaves = getLeavesInRange(pathFinder.getPath());
-			if(!leaves.isEmpty())
-			{
-				breakBlocks(leaves);
+			if(processor.canBreakBlocks() && breakBlocks(getLeavesOnPath()))
 				return;
-			}
 			
 			processor.process();
 		}
 		
-		private ArrayList<BlockPos> getLeavesInRange(List<PathPos> path)
+		private ArrayList<BlockPos> getLeavesOnPath()
 		{
-			Vec3d eyesVec = RotationUtils.getEyesPos().subtract(0.5, 0.5, 0.5);
-			double rangeSq = Math.pow(range.getValue(), 2);
-			
+			List<PathPos> path = pathFinder.getPath();
 			path = path.subList(processor.getIndex(), path.size());
 			
 			return path.stream().flatMap(pos -> Stream.of(pos, pos.up()))
 				.distinct().filter(TreeBotUtils::isLeaves)
-				.filter(
-					pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
-				.filter(TreeBotUtils::hasLineOfSight)
 				.collect(Collectors.toCollection(ArrayList::new));
 		}
 		
@@ -557,19 +467,18 @@ public final class TreeBotHack extends Hack
 		
 		private boolean hasAngle(PathPos pos)
 		{
+			double rangeSq = range.getValueSq();
 			ClientPlayerEntity player = WurstClient.MC.player;
 			Vec3d eyes = Vec3d.ofBottomCenter(pos).add(0,
 				player.getEyeHeight(player.getPose()), 0);
 			
-			Vec3d eyesVec = eyes.subtract(0.5, 0.5, 0.5);
-			double rangeSq = Math.pow(range.getValue(), 2);
-			
 			for(BlockPos log : tree.getLogs())
 			{
-				if(eyesVec.squaredDistanceTo(Vec3d.of(log)) > rangeSq)
-					continue;
+				BlockBreakingParams params =
+					BlockBreaker.getBlockBreakingParams(eyes, log);
 				
-				if(TreeBotUtils.getLineOfSightSide(eyes, log) != null)
+				if(params != null && params.lineOfSight()
+					&& params.distanceSq() <= rangeSq)
 					return true;
 			}
 			

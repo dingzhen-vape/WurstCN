@@ -76,7 +76,7 @@ public final class SettingsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("Couldn't load " + path.getFileName());
+			System.out.println("无法加载 " + path.getFileName());
 			e.printStackTrace();
 		}
 		
@@ -143,7 +143,7 @@ public final class SettingsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("Couldn't save " + path.getFileName());
+			System.out.println("无法保存 " + path.getFileName());
 			e.printStackTrace();
 		}
 	}

@@ -1,7 +1,7 @@
 {
   "description.wurst.hack.空中放置": "允许您在空中放置方块。",
   "description.wurst.hack.自动爆炸重生锚": "自动放置（可选），充能，引爆重生锚并击杀你附近的实体。",
-  "description.wurst.hack.防止挂机提出": "随机走动，用于避免服务器挂机检测。\n需要至少有 3x3 的区域可以走动。",
+  "description.wurst.hack.防止挂机踢出": "随机走动，用于避免服务器挂机检测。\n需要至少有 3x3 的区域可以走动。",
   "description.wurst.hack.阻止失明": "防止失明和黑暗效果。\n与 OptiFine 不兼容。",
   "description.wurst.hack.反仙人掌": "保护你免受仙人掌伤害。",
   "description.wurst.hack.减少饥饿": "在你走路时减缓你的饥饿状态。",
@@ -26,7 +26,7 @@
   "description.wurst.setting.自动食物.allow_hunger": "食用腐肉会带来一个无害的“饥饿“效果。\n将腐肉作为应急食物安全又有用。",
   "description.wurst.setting.自动食物.allow_poison": "食用有毒的食物会带来持续伤害。\n不推荐。",
   "description.wurst.setting.自动食物.allow_chorus": "食用紫颂果会将你随机传送。\n不推荐。",
-  "description.wurst.hack.自动图书馆管理员":"自动训练一个村民成为一个出售特定附魔书的图书管理员。你可以用这个hack来快速建立一个交易厅。",
+  "description.wurst.hack.自动图书管理员":"自动训练一个村民成为一个出售特定附魔书的图书管理员。你可以用这个hack来快速建立一个交易厅。",
   "description.wurst.hack.辅助瞄准":"帮助你瞄准附近的实体。",
   "description.wurst.hack.自动农场": "自动种植与收获农作物。\n有效作物为小麦、胡萝卜、马铃薯、甜菜根、南瓜、西瓜、仙人掌、甘蔗、海带、竹子、地狱疣和可可豆。",
   "description.wurst.hack.自动钓鱼": "当你在钓鱼的时切换到最好的鱼竿并自动钓鱼。",
@@ -75,7 +75,7 @@
   "description.wurst.hack.关闭水下重力": "关闭水底的重力，使你可以像鱼一样游泳。",
   "description.wurst.hack.让你飞起来": "允许你飞天。\n\n§c§l警告：§r 如果你不使用 NoFall，依然会受到摔落伤害。",
   "description.wurst.hack.跟屁虫": "自动跟随最近的实体。\n非常恼人。\n\n使用 .follow 指令跟随特定的实体。",
-  "description.wurst.hack.破解账号（authME": "破解 AuthMe 登录插件密码。\n一般用于获得 OP。（PS：只是跑密码的软件）",
+  "description.wurst.hack.破解账号(authME": "破解 AuthMe 登录插件密码。\n一般用于获得 OP。（PS：只是跑密码的软件）",
   "description.wurst.hack.灵魂出窍": "允许在不移动你角色的情况下自由移动摄像机。（效果类似灵魂出窍）",
   "description.wurst.hack.黑暗视觉": "可以在黑暗中看的一清二楚。",
   "description.wurst.hack.缓降": "使你缓慢掉落。\n\n§c§l警告：§r 如果你不使用 NoFall，依然会受到摔落伤害。",
@@ -102,7 +102,7 @@
   "description.wurst.hack.蹲起嘲讽": "类似疯狂按 Shift 潜行。",
   "description.wurst.hack.生物透视": "高亮附近的生物。",
   "description.wurst.hack.怪物刷新区": "高亮生物可以生成的区域。\n§e黄色§r 可以在夜间生成\n§c红色§r - 可以在任意时候生成",
-  "description.wurst.hack.千手观音（杀戮plus": "比 Killaura 更高级，能同时攻击多个实体。",
+  "description.wurst.hack.千手观音(杀戮plus": "比 Killaura 更高级，能同时攻击多个实体。",
   "description.wurst.hack.隐藏玩家名字": "隐藏所有玩家的名字。",
   "description.wurst.hack.名字标签": "改变名字大小使你更容易看到他们，同时也能让你看到那些潜行玩家的名字。",
   "description.wurst.hack.navigator": "一个可以搜索功能的 GUI，会随着时间的推移了解您的偏好。",
@@ -126,7 +126,7 @@
   "description.wurst.hack.一键绿玩": "瞬间关闭所有的作弊功能。\n请小心使用！",
   "description.wurst.hack.简单跑酷": "当你到达方块边缘时自动跳起。\n适用于跑酷或部分需要跑跳的场景。",
   "description.wurst.hack.玩家透视": "高亮透视附近的玩家。\n你的好友会显示蓝色框框。",
-  "description.wurst.hack.传送门GUI": "允许你在传送门内打开 GUI。",
+  "description.wurst.hack.传送门gui": "允许你在传送门内打开 GUI。",
   "description.wurst.hack.冻结药水": "当你站着不动时冻结所有的药水效果时间。",
   "description.wurst.hack.躲猫猫透视": "在躲猫猫小游戏中知道哪些是人扮的方块。\n用于 Mineplex 服务器的 Prophunt（躲猫猫），其他服务器未必奏效。",
   "description.wurst.hack.保护": "使用 AI 模式保护最近的实体，并保护它免受其他实体的伤害。\n使用指令 .protect 来保护指定的实体，而不是最近的一个。",
@@ -187,5 +187,6 @@
   "description.wurst.没有聊天举报.message_is_reportable": "此消息有一个有效的签名，因此容易受到欺诈性聊天报告的伤害。",
   "gui.wurst.generic.allcaps_blocked": "黑名单",
   "gui.wurst.generic.allcaps_allowed": "已允许",
-  "key.wurst.zoom": "缩放"
+  "key.wurst.zoom": "缩放",
+  "description.wurst.hack.kono_yalu翻译": "翻译了114514年,原作者可以在b站找到(原作者→食我压路"
 }

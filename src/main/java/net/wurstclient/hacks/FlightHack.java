@@ -28,27 +28,28 @@ public final class FlightHack extends Hack
 	
 	public final SliderSetting verticalSpeed = new SliderSetting(
 		"垂直速度",
-		"\u00a7c\u00a7l警告:\u00a7r 设置这个太高可能会造成摔落伤害，即使有防摔。",
+		"\u00a7c\u00a7l警告：\u00a7r设置过高可能会造成摔落伤害，即使有NoFall。",
 		1, 0.05, 5, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting slowSneaking = new CheckboxSetting(
 		"慢速潜行",
-		"在你潜行时降低你的水平速度，以防止你出现故障。",
+		"在你潜行时减少你的水平速度，以防止你出现故障。",
 		true);
 	
 	private final CheckboxSetting antiKick = new CheckboxSetting("防踢",
-		"让你每隔一段时间稍微下降一点，以防止你被踢出。",
+		"每隔一段时间让你稍微掉落一点，以防止你被踢出。",
 		false);
 	
 	private final SliderSetting antiKickInterval =
 		new SliderSetting("防踢间隔",
-			"防踢应该多久阻止你被踢出一次。\n"
-				+ "大多数服务器会在80个刻后踢出你。",
-			30, 5, 80, 1, ValueDisplay.INTEGER.withSuffix(" 刻"));
+			"防踢阻止你被踢出的频率。\n"
+				+ "大多数服务器会在80刻后踢你。",
+			30, 5, 80, 1,
+			ValueDisplay.INTEGER.withSuffix(" 刻").withLabel(1, "1刻"));
 	
 	private final SliderSetting antiKickDistance = new SliderSetting(
 		"防踢距离",
-		"防踢应该让你下降多远。\n"
+		"防踢让你掉落的距离。\n"
 			+ "大多数服务器至少需要0.032米才能阻止你被踢出。",
 		0.07, 0.01, 0.2, 0.001, ValueDisplay.DECIMAL.withSuffix("米"));
 	

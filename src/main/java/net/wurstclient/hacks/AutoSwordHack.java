@@ -23,6 +23,7 @@ import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.util.EntityUtils;
 import net.wurstclient.util.ItemUtils;
 
 @SearchTags({"auto sword"})
@@ -32,14 +33,15 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 		new EnumSetting<>("优先级", Priority.values(), Priority.SPEED);
 	
 	private final CheckboxSetting switchBack = new CheckboxSetting(
-		"切换回去",
-		"在\u00a7l释放时间\u00a7r过后，从武器切换回之前选择的槽位。",
+		"切换回来",
+		"在\u00a7l释放时间\u00a7r过去后，从武器切换回之前选择的槽。",
 		true);
 	
 	private final SliderSetting releaseTime = new SliderSetting("释放时间",
-		"AutoSword从武器切换回之前选择的槽位的时间。\n\n"
-			+ "只有当\u00a7l切换回去\u00a7r被勾选时才有效。",
-		10, 1, 200, 1, ValueDisplay.INTEGER.withSuffix(" 刻"));
+		"AutoSword从武器切换回之前选择的槽的时间。\n\n"
+			+ "只有当\u00a7l切换回来\u00a7r被勾选时才有效。",
+		10, 1, 200, 1,
+		ValueDisplay.INTEGER.withSuffix(" 刻").withLabel(1, "1刻"));
 	
 	private int oldSlot;
 	private int timer;
@@ -77,7 +79,7 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 			Entity entity = ((EntityHitResult)MC.crosshairTarget).getEntity();
 			
 			if(entity instanceof LivingEntity
-				&& ((LivingEntity)entity).getHealth() > 0)
+				&& EntityUtils.IS_ATTACKABLE.test(entity))
 				setSlot();
 		}
 		
@@ -176,7 +178,7 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 	private enum Priority
 	{
 		SPEED("速度 (剑)"),
-		DAMAGE("伤害 (斧头)");
+		DAMAGE("伤害 (斧)");
 		
 		private final String name;
 		

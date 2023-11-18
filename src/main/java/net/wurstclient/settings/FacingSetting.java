@@ -29,7 +29,7 @@ public final class FacingSetting extends EnumSetting<FacingSetting.Facing>
 	
 	public static FacingSetting withoutPacketSpam(String description)
 	{
-		return withoutPacketSpam("Facing", description, Facing.SERVER);
+		return withoutPacketSpam("朝向", description, Facing.SERVER);
 	}
 	
 	public static FacingSetting withoutPacketSpam(String name,
@@ -47,15 +47,15 @@ public final class FacingSetting extends EnumSetting<FacingSetting.Facing>
 	
 	public enum Facing
 	{
-		OFF("Off", v -> {}),
+		OFF("关闭", v -> {}),
 		
-		SERVER("Server-side",
+		SERVER("服务器端",
 			v -> WURST.getRotationFaker().faceVectorPacket(v)),
 		
-		CLIENT("Client-side",
+		CLIENT("客户端",
 			v -> WURST.getRotationFaker().faceVectorClient(v)),
 		
-		SPAM("Packet spam", v -> {
+		SPAM("数据包垃圾邮件", v -> {
 			Rotation rotation = RotationUtils.getNeededRotations(v);
 			PlayerMoveC2SPacket.LookAndOnGround packet =
 				new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
