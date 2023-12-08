@@ -45,76 +45,87 @@ public class ChestEspHack extends Hack implements UpdateListener,
 	private final EspStyleSetting style = new EspStyleSetting();
 	
 	private final ChestEspBlockGroup basicChests = new ChestEspBlockGroup(
-		new ColorSetting("胸部颜色",
-			"普通箱子会用这种颜色高亮显示。", Color.GREEN),
+		new ColorSetting("箱子颜色",
+			"普通箱子会以这种颜色突出显示。", Color.GREEN),
 		null);
 	
 	private final ChestEspBlockGroup trapChests = new ChestEspBlockGroup(
 		new ColorSetting("陷阱箱颜色",
-			"陷阱箱会用这种颜色高亮显示。",
+			"陷阱箱会以这种颜色突出显示。",
 			new Color(0xFF8000)),
 		new CheckboxSetting("包括陷阱箱", true));
 	
 	private final ChestEspBlockGroup enderChests = new ChestEspBlockGroup(
-		new ColorSetting("末影颜色",
-			"末影箱会用这种颜色高亮显示。", Color.CYAN),
+		new ColorSetting("末影箱颜色",
+			"末影箱会以这种颜色突出显示。", Color.CYAN),
 		new CheckboxSetting("包括末影箱", true));
 	
 	private final ChestEspEntityGroup chestCarts =
 		new ChestEspEntityGroup(
 			new ColorSetting("箱子车颜色",
-				"装有箱子的矿车会用这种颜色高亮显示。",
+				"装有箱子的矿车会以这种颜色突出显示。",
 				Color.YELLOW),
 			new CheckboxSetting("包括箱子车", true));
 	
 	private final ChestEspEntityGroup chestBoats =
 		new ChestEspEntityGroup(
 			new ColorSetting("箱子船颜色",
-				"装有箱子的船会用这种颜色高亮显示。",
+				"装有箱子的船会以这种颜色突出显示。",
 				Color.YELLOW),
 			new CheckboxSetting("包括箱子船", true));
 	
 	private final ChestEspBlockGroup barrels = new ChestEspBlockGroup(
 		new ColorSetting("桶颜色",
-			"桶会用这种颜色高亮显示。", Color.GREEN),
+			"桶会以这种颜色突出显示。", Color.GREEN),
 		new CheckboxSetting("包括桶", true));
+	
+	private final ChestEspBlockGroup pots = new ChestEspBlockGroup(
+		new ColorSetting("盆颜色",
+			"装饰过的盆会以这种颜色突出显示。", Color.GREEN),
+		new CheckboxSetting("包括盆", false));
 	
 	private final ChestEspBlockGroup shulkerBoxes = new ChestEspBlockGroup(
 		new ColorSetting("潜影盒颜色",
-			"潜影盒会用这种颜色高亮显示。", Color.MAGENTA),
+			"潜影盒会以这种颜色突出显示。", Color.MAGENTA),
 		new CheckboxSetting("包括潜影盒", true));
 	
 	private final ChestEspBlockGroup hoppers = new ChestEspBlockGroup(
 		new ColorSetting("漏斗颜色",
-			"漏斗会用这种颜色高亮显示。", Color.WHITE),
+			"漏斗会以这种颜色突出显示。", Color.WHITE),
 		new CheckboxSetting("包括漏斗", false));
 	
 	private final ChestEspEntityGroup hopperCarts =
 		new ChestEspEntityGroup(
 			new ColorSetting("漏斗车颜色",
-				"装有漏斗的矿车会用这种颜色高亮显示。",
+				"装有漏斗的矿车会以这种颜色突出显示。",
 				Color.YELLOW),
 			new CheckboxSetting("包括漏斗车", false));
 	
 	private final ChestEspBlockGroup droppers = new ChestEspBlockGroup(
 		new ColorSetting("投掷器颜色",
-			"投掷器会用这种颜色高亮显示。", Color.WHITE),
+			"投掷器会以这种颜色突出显示。", Color.WHITE),
 		new CheckboxSetting("包括投掷器", false));
 	
 	private final ChestEspBlockGroup dispensers = new ChestEspBlockGroup(
 		new ColorSetting("发射器颜色",
-			"发射器会用这种颜色高亮显示。",
+			"发射器会以这种颜色突出显示。",
 			new Color(0xFF8000)),
 		new CheckboxSetting("包括发射器", false));
 	
+	private final ChestEspBlockGroup crafters = new ChestEspBlockGroup(
+		new ColorSetting("合成器颜色",
+			"合成器会以这种颜色突出显示。", Color.WHITE),
+		new CheckboxSetting("包括合成器", false));
+	
 	private final ChestEspBlockGroup furnaces =
 		new ChestEspBlockGroup(new ColorSetting("熔炉颜色",
-			"熔炉，烟熏炉，和高炉会用这种颜色高亮显示。",
+			"熔炉，烟熏炉，和高炉会以这种颜色突出显示。",
 			Color.RED), new CheckboxSetting("包括熔炉", false));
 	
-	private final List<ChestEspGroup> groups = Arrays.asList(basicChests,
-		trapChests, enderChests, chestCarts, chestBoats, barrels, shulkerBoxes,
-		hoppers, hopperCarts, droppers, dispensers, furnaces);
+	private final List<ChestEspGroup> groups =
+		Arrays.asList(basicChests, trapChests, enderChests, chestCarts,
+			chestBoats, barrels, pots, shulkerBoxes, hoppers, hopperCarts,
+			droppers, dispensers, crafters, furnaces);
 	
 	private final List<ChestEspEntityGroup> entityGroups =
 		Arrays.asList(chestCarts, chestBoats, hopperCarts);
@@ -170,12 +181,16 @@ public class ChestEspHack extends Hack implements UpdateListener,
 				shulkerBoxes.add(blockEntity);
 			else if(blockEntity instanceof BarrelBlockEntity)
 				barrels.add(blockEntity);
+			else if(blockEntity instanceof DecoratedPotBlockEntity)
+				pots.add(blockEntity);
 			else if(blockEntity instanceof HopperBlockEntity)
 				hoppers.add(blockEntity);
 			else if(blockEntity instanceof DropperBlockEntity)
 				droppers.add(blockEntity);
 			else if(blockEntity instanceof DispenserBlockEntity)
 				dispensers.add(blockEntity);
+			else if(blockEntity instanceof CrafterBlockEntity)
+				crafters.add(blockEntity);
 			else if(blockEntity instanceof AbstractFurnaceBlockEntity)
 				furnaces.add(blockEntity);
 			

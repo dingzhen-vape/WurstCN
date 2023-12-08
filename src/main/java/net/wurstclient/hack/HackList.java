@@ -36,6 +36,7 @@ public final class HackList implements UpdateListener
 	public final AntiCactusHack antiCactusHack = new AntiCactusHack();
 	public final AntiEntityPushHack antiEntityPushHack =
 		new AntiEntityPushHack();
+	public final BarrierEspHack barrierEspHack = new BarrierEspHack();
 	public final AntiHungerHack antiHungerHack = new AntiHungerHack();
 	public final AntiKnockbackHack antiKnockbackHack = new AntiKnockbackHack();
 	public final AntiSpamHack antiSpamHack = new AntiSpamHack();
@@ -166,7 +167,6 @@ public final class HackList implements UpdateListener
 	public final SnowShoeHack snowShoeHack = new SnowShoeHack();
 	public final SpeedHackHack speedHackHack = new SpeedHackHack();
 	public final SpeedNukerHack speedNukerHack = new SpeedNukerHack();
-	public final BarrierEspHack barrierEspHack = new BarrierEspHack();
 	public final SpiderHack spiderHack = new SpiderHack();
 	public final StepHack stepHack = new StepHack();
 	public final ThrowHack throwHack = new ThrowHack();
@@ -192,7 +192,7 @@ public final class HackList implements UpdateListener
 	
 	private final EventManager eventManager =
 		WurstClient.INSTANCE.getEventManager();
-
+	
 	public HackList(Path enabledHacksFile)
 	{
 		this.enabledHacksFile = new EnabledHacksFile(enabledHacksFile);
