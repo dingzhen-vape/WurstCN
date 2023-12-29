@@ -11,21 +11,29 @@ import net.minecraft.util.math.Box;
 import net.wurstclient.Category;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 public final class ParkourHack extends Hack implements UpdateListener
 {
 	private final SliderSetting minDepth = new SliderSetting("最小深度",
-		"如果一个坑不够深，就不会跳过去。\n"
-			+ "增加这个值可以阻止Parkour从楼梯上跳下来。\n"
-			+ "减少这个值可以让Parkour在地毯的边缘跳起来。",
-		0.5, 0.05, 10, 0.05, ValueDisplay.DECIMAL.withSuffix("m"));
+		"如果坑不够深，就不会跳过去。\n"
+			+ "增加这个值可以阻止 Parkour 从楼梯跳下去。\n"
+			+ "减少这个值可以让 Parkour 在地毯边缘跳跃。",
+		0.5, 0.05, 10, 0.05, ValueDisplay.DECIMAL.withSuffix("米"));
 	
 	private final SliderSetting edgeDistance =
 		new SliderSetting("边缘距离",
-			"Parkour会让你离边缘多近才跳起来。",
-			0.001, 0.001, 0.25, 0.001, ValueDisplay.DECIMAL.withSuffix("m"));
+			"Parkour 在跳跃前让你离边缘有多近。",
+			0.001, 0.001, 0.25, 0.001, ValueDisplay.DECIMAL.withSuffix("米"));
+	
+	private final CheckboxSetting sneak = new CheckboxSetting(
+		"潜行时跳跃",
+		"即使你在潜行，也保持 Parkour 活跃。\n"
+			+ "使用这个选项时，你可能想要增加 \u00a7l边缘 \u00a7l距离\u00a7r"
+			+ " 滑块的值。",
+		false);
 	
 	public ParkourHack()
 	{
@@ -33,6 +41,7 @@ public final class ParkourHack extends Hack implements UpdateListener
 		setCategory(Category.MOVEMENT);
 		addSetting(minDepth);
 		addSetting(edgeDistance);
+		addSetting(sneak);
 	}
 	
 	@Override
@@ -54,7 +63,8 @@ public final class ParkourHack extends Hack implements UpdateListener
 		if(!MC.player.isOnGround() || MC.options.jumpKey.isPressed())
 			return;
 		
-		if(MC.player.isSneaking() || MC.options.sneakKey.isPressed())
+		if(!sneak.isChecked()
+			&& (MC.player.isSneaking() || MC.options.sneakKey.isPressed()))
 			return;
 		
 		Box box = MC.player.getBoundingBox();

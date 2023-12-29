@@ -59,6 +59,7 @@
   "description.wurst.hack.扳机（瞄准攻击": "当瞄准的时候。自动攻击你附近有效的实体\n\n§c§l警告：§r 此功能通常来说比 Killaura 更加容易被发现或检测，因此推荐使用 Killaura 或者 TriggerBot 代替。",
   "description.wurst.hack.clickgui": "基于窗口的点击式 GUI（有分类）。",
   "description.wurst.hack.箱子透视": "高亮箱子",
+  "description.wurst.hack.无雾": "去除迷雾",
   "description.wurst.hack.崩溃箱子": "生成一个箱子，当玩家复制大量的箱子在他们背包里面时容易被封禁。 §c§l警告：§r §c这无法撤销，请小心使用！§r\n\n如果这个箱子被复制出来放在箱子里，无论谁打开箱子都会被踢出服务器（只需放一个）。",
   "description.wurst.hack.创造飞行": "类似创造模式的飞行（即双击空格起飞）。\n\n§c§l警告：§r 如果你不使用 NoFall，依然会受到摔落伤害。",
   "description.wurst.hack.刀刀暴击": "使你每次攻击都打出暴击。",
@@ -190,5 +191,7 @@
   "gui.wurst.generic.allcaps_blocked": "黑名单",
   "gui.wurst.generic.allcaps_allowed": "已允许",
   "key.wurst.zoom": "缩放",
+  "description.wurst.hack.传送门esp": "高亮传送门",
+  "description.wurst.hack.无盾牌覆盖": "把盾牌降低，让它占据你的屏幕更少的空间。",
   "description.wurst.hack.kono_yalu翻译": "翻译了114514年,原作者可以在b站找到(原作者→食我压路"
 }
