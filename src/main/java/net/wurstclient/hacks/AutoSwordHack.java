@@ -36,17 +36,13 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 	private final EnumSetting<Priority> priority =
 		new EnumSetting<>("优先级", Priority.values(), Priority.SPEED);
 	
-	private final CheckboxSetting switchBack = new CheckboxSetting(
-		"切换回", "在 \u00a7l释放时间\u00a7r 过后，切换回之前选择的槽位。"
-			+ "释放时间",
-		true);
+	private final CheckboxSetting switchBack = new CheckboxSetting("切换回",
+		"在 \u00a7l释放时间\u00a7r 过后，切换回之前选择的槽位。" + "释放时间", true);
 	
-	private final SliderSetting releaseTime = new SliderSetting("AutoSword 从武器切换回之前选择的槽位的时间。\n\n",
-		"只有当 \u00a7l切换回\u00a7r 被勾选时才有效。"
-			+ " 刻"
-			+ "1 刻",
-		10, 1, 200, 1,
-		ValueDisplay.INTEGER.withSuffix("伤害 (斧)").withLabel(1, "速度 (剑)"));
+	private final SliderSetting releaseTime =
+		new SliderSetting("AutoSword 从武器切换回之前选择的槽位的时间。\n\n",
+			"只有当 \u00a7l切换回\u00a7r 被勾选时才有效。" + " 刻" + "1 刻", 10, 1, 200, 1,
+			ValueDisplay.INTEGER.withSuffix("伤害 (斧)").withLabel(1, "速度 (剑)"));
 	
 	private int oldSlot;
 	private int timer;

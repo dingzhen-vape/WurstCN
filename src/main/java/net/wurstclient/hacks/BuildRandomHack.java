@@ -43,58 +43,40 @@ public final class BuildRandomHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private SliderSetting maxAttempts = new SliderSetting("最大尝试次数",
-		"BuildRandom在一次tick中尝试放置一个方块的最大随机位置数。\n\n"
-			+ "更高的值可以加快建造过程，但是会增加"
-			+ "延迟。"
-			+ "检查手持物品",
+	private SliderSetting maxAttempts = new SliderSetting(
+		"最大尝试次数", "BuildRandom在一次tick中尝试放置一个方块的最大随机位置数。\n\n"
+			+ "更高的值可以加快建造过程，但是会增加" + "延迟。" + "检查手持物品",
 		128, 1, 1024, 1, ValueDisplay.INTEGER);
 	
 	private final CheckboxSetting checkItem =
 		new CheckboxSetting("只有当你真正拿着一个方块时才会建造。\n",
-			"关闭这个选项可以用火，水，岩浆，刷怪蛋，"
-				+ "或者如果你只想用空手在随机的地方右键点击"
-				+ "就可以建造。"
-				+ "检查视线",
+			"关闭这个选项可以用火，水，岩浆，刷怪蛋，" + "或者如果你只想用空手在随机的地方右键点击" + "就可以建造。" + "检查视线",
 			true);
 	
-	private final CheckboxSetting checkLOS =
-		new CheckboxSetting("确保BuildRandom不会尝试在墙后放置方块。",
-			"BuildRandom应该如何面向随机放置的方块。\n\n",
-			false);
+	private final CheckboxSetting checkLOS = new CheckboxSetting(
+		"确保BuildRandom不会尝试在墙后放置方块。", "BuildRandom应该如何面向随机放置的方块。\n\n", false);
 	
-	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
-		"\u00a7lOff\u00a7r - 不要面向方块。会被反作弊插件检测到。\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在服务器端面向方块，同时在"
-			+ "客户端自由地移动摄像头。\n\n"
+	private final FacingSetting facing = FacingSetting
+		.withoutPacketSpam("\u00a7lOff\u00a7r - 不要面向方块。会被反作弊插件检测到。\n\n"
+			+ "\u00a7lServer-side\u00a7r - 在服务器端面向方块，同时在" + "客户端自由地移动摄像头。\n\n"
 			+ "\u00a7lClient-side\u00a7r - 通过在客户端移动摄像头来面向方块。这是最合法的选项，但是"
-			+ "看起来非常令人眼花缭乱。"
-			+ "BuildRandom应该如何挥动手臂来放置方块。\n\n"
-			+ "\u00a7lOff\u00a7r - 不要挥动手臂。会被反作弊插件检测到"
-			+ "。\n\n"
+			+ "看起来非常令人眼花缭乱。" + "BuildRandom应该如何挥动手臂来放置方块。\n\n"
+			+ "\u00a7lOff\u00a7r - 不要挥动手臂。会被反作弊插件检测到" + "。\n\n"
 			+ "\u00a7lServer-side\u00a7r - 在服务器端挥动手臂，");
 	
 	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"而不在客户端播放动画。\n\n"
-			+ "\u00a7lClient-side\u00a7r - 在客户端挥动手臂。这是最合法的选项。"
-			+ "始终启用FastPlace"
-			+ "即使没有启用FastPlace，也会像启用了一样建造。"
-			+ "边破坏边放置"
-			+ "即使你正在破坏一个方块，也会继续建造。\n"
-			+ "使用外挂可以做到，但是在原版中不行。可能看起来很可疑。");
+		"而不在客户端播放动画。\n\n" + "\u00a7lClient-side\u00a7r - 在客户端挥动手臂。这是最合法的选项。"
+			+ "始终启用FastPlace" + "即使没有启用FastPlace，也会像启用了一样建造。" + "边破坏边放置"
+			+ "即使你正在破坏一个方块，也会继续建造。\n" + "使用外挂可以做到，但是在原版中不行。可能看起来很可疑。");
 	
 	private final CheckboxSetting fastPlace =
-		new CheckboxSetting("边骑乘边放置",
-			"即使你正在骑乘一个载具，也会继续建造。\n", false);
+		new CheckboxSetting("边骑乘边放置", "即使你正在骑乘一个载具，也会继续建造。\n", false);
 	
-	private final CheckboxSetting placeWhileBreaking = new CheckboxSetting(
-		"使用外挂可以做到，但是在原版中不行。可能看起来很可疑。",
-		"指示器"
-			+ "显示BuildRandom正在放置方块的位置。",
-		false);
+	private final CheckboxSetting placeWhileBreaking =
+		new CheckboxSetting("使用外挂可以做到，但是在原版中不行。可能看起来很可疑。",
+			"指示器" + "显示BuildRandom正在放置方块的位置。", false);
 	
-	private final CheckboxSetting placeWhileRiding = new CheckboxSetting(
-		"随机建造",
+	private final CheckboxSetting placeWhileRiding = new CheckboxSetting("随机建造",
 		"Builds even while you are riding a vehicle.\n"
 			+ "显示BuildRandom正在放置方块的位置。",
 		false);

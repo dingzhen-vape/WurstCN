@@ -46,31 +46,21 @@ import net.wurstclient.util.RotationUtils;
 public final class CrystalAuraHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range = new SliderSetting("范围",
-		"决定CrystalAura放置和引爆水晶的距离。",
-		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		"决定CrystalAura放置和引爆水晶的距离。", 6, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting autoPlace = new CheckboxSetting(
-		"自动放置水晶",
-		"启用后，CrystalAura会自动在有效的实体附近放置水晶。\n"
-			+ "禁用后，CrystalAura只会引爆手动放置的水晶。",
+	private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置水晶",
+		"启用后，CrystalAura会自动在有效的实体附近放置水晶。\n" + "禁用后，CrystalAura只会引爆手动放置的水晶。",
 		true);
 	
-	private final FacingSetting faceBlocks =
-		FacingSetting.withPacketSpam("面向水晶",
-			"CrystalAura在放置和左击末影水晶时是否应该面向正确的方向。\n\n"
-				+ "速度较慢，但是可以帮助应对反作弊插件。"
-				+ "检查视线",
-			Facing.OFF);
+	private final FacingSetting faceBlocks = FacingSetting
+		.withPacketSpam("面向水晶", "CrystalAura在放置和左击末影水晶时是否应该面向正确的方向。\n\n"
+			+ "速度较慢，但是可以帮助应对反作弊插件。" + "检查视线", Facing.OFF);
 	
 	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"确保你不会在放置或左击末影水晶时穿过方块。\n\n",
-		"速度较慢，但是可以帮助应对反作弊插件。"
-			+ "检查视线",
-		false);
+		"确保你不会在放置或左击末影水晶时穿过方块。\n\n", "速度较慢，但是可以帮助应对反作弊插件。" + "检查视线", false);
 	
-	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
-		new EnumSetting<>("在哪里寻找末影水晶。", "快捷栏",
-			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
+	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
+		"在哪里寻找末影水晶。", "快捷栏", TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final EntityFilterList entityFilters =
 		CrystalAuraFilterList.create();

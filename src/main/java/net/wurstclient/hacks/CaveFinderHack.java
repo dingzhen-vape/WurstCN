@@ -55,20 +55,18 @@ public final class CaveFinderHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final ChunkAreaSetting area = new ChunkAreaSetting("['区域']",
-		"['玩家周围要搜索的区域。\\n']"
-			+ "['更高的值需要更快的计算机。']");
+		"['玩家周围要搜索的区域。\\n']" + "['更高的值需要更快的计算机。']");
 	
-	private final SliderSetting limit = new SliderSetting("['限制']",
-		"['要显示的最大块数。\\n']"
-			+ "['更高的值需要更快的计算机。']",
-		5, 3, 6, 1, ValueDisplay.LOGARITHMIC);
+	private final SliderSetting limit =
+		new SliderSetting("['限制']", "['要显示的最大块数。\\n']" + "['更高的值需要更快的计算机。']", 5,
+			3, 6, 1, ValueDisplay.LOGARITHMIC);
 	
-	private final ColorSetting color = new ColorSetting("['颜色']",
-		"['洞穴将以这种颜色突出显示。']", Color.RED);
+	private final ColorSetting color =
+		new ColorSetting("['颜色']", "['洞穴将以这种颜色突出显示。']", Color.RED);
 	
-	private final SliderSetting opacity = new SliderSetting("['不透明度']",
-		"['突出显示应该有多不透明。\\n']" + "['0 = 呼吸动画']", 0,
-		0, 1, 0.01, ValueDisplay.PERCENTAGE.withLabel(0, "['呼吸']"));
+	private final SliderSetting opacity =
+		new SliderSetting("['不透明度']", "['突出显示应该有多不透明。\\n']" + "['0 = 呼吸动画']", 0,
+			0, 1, 0.01, ValueDisplay.PERCENTAGE.withLabel(0, "['呼吸']"));
 	
 	private int prevLimit;
 	private boolean notify;
@@ -243,8 +241,8 @@ public final class CaveFinderHack extends Hack
 		else if(notify)
 		{
 			ChatUtils.warning("['洞穴探测器发现了\\u00a7l很多\\u00a7r的方块！']"
-				+ "['为了防止卡顿，它只会显示最近的\\u00a76']"
-				+ limit.getValueString() + "['\\u00a7r结果。']");
+				+ "['为了防止卡顿，它只会显示最近的\\u00a76']" + limit.getValueString()
+				+ "['\\u00a7r结果。']");
 			notify = false;
 		}
 		

@@ -21,13 +21,12 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
-@SearchTags({"自动嗑药", "auto potion", "AutoSplashPotion",
-	"auto splash potion"})
+@SearchTags({"自动嗑药", "auto potion", "AutoSplashPotion", "auto splash potion"})
 public final class AutoPotionHack extends Hack implements UpdateListener
 {
-	private final SliderSetting health = new SliderSetting("生命值",
-		"当你的生命值达到或低于这个值时，扔一个药水。",
-		6, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" 颗心"));
+	private final SliderSetting health =
+		new SliderSetting("生命值", "当你的生命值达到或低于这个值时，扔一个药水。", 6, 0.5, 9.5, 0.5,
+			ValueDisplay.DECIMAL.withSuffix(" 颗心"));
 	
 	private int timer;
 	

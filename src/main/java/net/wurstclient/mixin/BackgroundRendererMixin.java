@@ -30,30 +30,30 @@ public abstract class BackgroundRendererMixin
 	 * effectively removing it.
 	 */
 	@Inject(at = @At("HEAD"),
-			method = "applyFog(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/BackgroundRenderer$FogType;FZF)V")
+		method = "applyFog(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/BackgroundRenderer$FogType;FZF)V")
 	private static void onApplyFog(Camera camera,
-								   BackgroundRenderer.FogType fogType, float viewDistance,
-								   boolean thickFog, float tickDelta, CallbackInfo ci)
+		BackgroundRenderer.FogType fogType, float viewDistance,
+		boolean thickFog, float tickDelta, CallbackInfo ci)
 	{
 		if(!WurstClient.INSTANCE.getHax().noFogHack.isEnabled())
 			return;
-
+		
 		CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
 		if(cameraSubmersionType != CameraSubmersionType.NONE)
 			return;
-
+		
 		Entity entity = camera.getFocusedEntity();
 		if(BackgroundRenderer.getFogModifier(entity, tickDelta) != null)
 			return;
-
+		
 		RenderSystem.setShaderFogColor(0, 0, 0, 0);
 	}
-
+	
 	@Inject(at = @At("HEAD"),
-			method = "getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;",
-			cancellable = true)
+		method = "getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;",
+		cancellable = true)
 	private static void onGetFogModifier(Entity entity, float tickDelta,
-										 CallbackInfoReturnable<StatusEffectFogModifier> ci)
+		CallbackInfoReturnable<StatusEffectFogModifier> ci)
 	{
 		if(WurstClient.INSTANCE.getHax().antiBlindHack.isEnabled())
 			ci.setReturnValue(null);

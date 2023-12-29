@@ -13,8 +13,8 @@ import net.minecraft.entity.passive.TadpoleEntity;
 
 public final class FilterBabiesSetting extends EntityFilterCheckbox
 {
-	private static final String EXCEPTIONS_TEXT = "这个过滤器不会"
-		+ "影响僵尸宝宝和其他敌对的宝宝生物。";
+	private static final String EXCEPTIONS_TEXT =
+		"这个过滤器不会" + "影响僵尸宝宝和其他敌对的宝宝生物。";
 	
 	public FilterBabiesSetting(String description, boolean checked)
 	{
@@ -37,7 +37,6 @@ public final class FilterBabiesSetting extends EntityFilterCheckbox
 	
 	public static FilterBabiesSetting genericCombat(boolean checked)
 	{
-		return new FilterBabiesSetting(
-			"不会攻击小猪，小村民等。", checked);
+		return new FilterBabiesSetting("不会攻击小猪，小村民等。", checked);
 	}
 }

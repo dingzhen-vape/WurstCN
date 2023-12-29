@@ -51,28 +51,19 @@ public final class TreeBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range = new SliderSetting("范围",
-		"TreeBot会伸手多远来打破方块。", 4.5, 1, 6, 0.05,
-		ValueDisplay.DECIMAL);
+		"TreeBot会伸手多远来打破方块。", 4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
-		"打破原木和树叶时如何面对它们。\n\n"
-			+ "\u00a7l关闭\u00a7r - 不要面对方块。会被"
-			+ "反作弊插件检测到。\n\n"
-			+ "\u00a7l服务器端\u00a7r - 在"
-			+ "服务器端面对方块，同时让你在"
-			+ "客户端自由地移动相机。\n\n"
-			+ "\u00a7l客户端\u00a7r - 通过移动你的"
-			+ "相机在客户端面对方块。这是最合法的选项，但"
+		"打破原木和树叶时如何面对它们。\n\n" + "\u00a7l关闭\u00a7r - 不要面对方块。会被" + "反作弊插件检测到。\n\n"
+			+ "\u00a7l服务器端\u00a7r - 在" + "服务器端面对方块，同时让你在" + "客户端自由地移动相机。\n\n"
+			+ "\u00a7l客户端\u00a7r - 通过移动你的" + "相机在客户端面对方块。这是最合法的选项，但"
 			+ "看起来可能会让人头晕。");
 	
-	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"TreeBot在打破原木和树叶时应该如何挥动你的手。\n\n"
-			+ "\u00a7l关闭\u00a7r - 不要挥动你的手。会被检测到"
-			+ "反作弊插件。\n\n"
-			+ "\u00a7l服务器端\u00a7r - 在服务器端挥动你的手，"
-			+ "不在客户端播放动画。\n\n"
-			+ "\u00a7l客户端\u00a7r - 在客户端挥动你的手。"
-			+ "这是最合法的选项。");
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting("TreeBot在打破原木和树叶时应该如何挥动你的手。\n\n"
+			+ "\u00a7l关闭\u00a7r - 不要挥动你的手。会被检测到" + "反作弊插件。\n\n"
+			+ "\u00a7l服务器端\u00a7r - 在服务器端挥动你的手，" + "不在客户端播放动画。\n\n"
+			+ "\u00a7l客户端\u00a7r - 在客户端挥动你的手。" + "这是最合法的选项。");
 	
 	private TreeFinder treeFinder;
 	private AngleFinder angleFinder;

@@ -13,8 +13,7 @@ import net.minecraft.entity.mob.SlimeEntity;
 
 public final class FilterSlimesSetting extends EntityFilterCheckbox
 {
-	private static final String EXCEPTIONS_TEXT =
-		"这个过滤器不会影响岩浆怪。";
+	private static final String EXCEPTIONS_TEXT = "这个过滤器不会影响岩浆怪。";
 	
 	public FilterSlimesSetting(String description, boolean checked)
 	{

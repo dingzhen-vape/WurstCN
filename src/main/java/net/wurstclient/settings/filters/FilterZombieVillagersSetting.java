@@ -25,13 +25,11 @@ public final class FilterZombieVillagersSetting extends EntityFilterCheckbox
 	
 	public static FilterZombieVillagersSetting genericCombat(boolean checked)
 	{
-		return new FilterZombieVillagersSetting(
-			"不会攻击僵尸村民。", checked);
+		return new FilterZombieVillagersSetting("不会攻击僵尸村民。", checked);
 	}
 	
 	public static FilterZombieVillagersSetting genericVision(boolean checked)
 	{
-		return new FilterZombieVillagersSetting(
-			"不会显示僵尸村民。", checked);
+		return new FilterZombieVillagersSetting("不会显示僵尸村民。", checked);
 	}
 }

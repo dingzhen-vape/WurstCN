@@ -16,9 +16,8 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 @SearchTags({"no fire overlay"})
 public final class NoFireOverlayHack extends Hack
 {
-	private final SliderSetting offset =
-		new SliderSetting("偏移量", "降低火焰覆盖的量。",
-			0.6, 0.01, 0.6, 0.01, ValueDisplay.DECIMAL);
+	private final SliderSetting offset = new SliderSetting("偏移量", "降低火焰覆盖的量。",
+		0.6, 0.01, 0.6, 0.01, ValueDisplay.DECIMAL);
 	
 	public NoFireOverlayHack()
 	{

@@ -17,8 +17,8 @@ import net.wurstclient.settings.CheckboxSetting;
 @SearchTags({"auto sprint"})
 public final class AutoSprintHack extends Hack implements UpdateListener
 {
-	private final CheckboxSetting hungry = new CheckboxSetting("饥饿冲刺",
-		"即使在低饥饿时也能冲刺。", false);
+	private final CheckboxSetting hungry =
+		new CheckboxSetting("饥饿冲刺", "即使在低饥饿时也能冲刺。", false);
 	
 	public AutoSprintHack()
 	{

@@ -51,23 +51,18 @@ import net.wurstclient.util.RotationUtils;
 public final class FeedAuraHack extends Hack
 	implements UpdateListener, PostMotionListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围",
-		"决定喂养光环喂养动物的最远距离。\n"
-			+ "超过指定值的动物不会被喂养。",
-		5, 1, 10, 0.05, ValueDisplay.DECIMAL);
+	private final SliderSetting range =
+		new SliderSetting("范围", "决定喂养光环喂养动物的最远距离。\n" + "超过指定值的动物不会被喂养。", 5, 1,
+			10, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FilterBabiesSetting filterBabies =
-		new FilterBabiesSetting("不会喂养幼年动物。\n"
-			+ "节省食物，但不会加速幼年动物的成长。", true);
+		new FilterBabiesSetting("不会喂养幼年动物。\n" + "节省食物，但不会加速幼年动物的成长。", true);
 	
 	private final CheckboxSetting filterUntamed =
-		new CheckboxSetting("过滤未驯服的",
-			"不会喂养还没有被驯服的可驯服动物。", false);
+		new CheckboxSetting("过滤未驯服的", "不会喂养还没有被驯服的可驯服动物。", false);
 	
-	private final CheckboxSetting filterHorses = new CheckboxSetting(
-		"过滤马类动物",
-		"不会喂养马、羊驼、驴等。\n"
-			+ "由于Minecraft bug MC-233276，这些动物会无限消耗物品，所以推荐这样做。",
+	private final CheckboxSetting filterHorses = new CheckboxSetting("过滤马类动物",
+		"不会喂养马、羊驼、驴等。\n" + "由于Minecraft bug MC-233276，这些动物会无限消耗物品，所以推荐这样做。",
 		true);
 	
 	private final Random random = new Random();

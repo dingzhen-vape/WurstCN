@@ -41,73 +41,69 @@ public final class PortalEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
 	private final EspStyleSetting style = new EspStyleSetting();
-
+	
 	private final PortalEspBlockGroup netherPortal =
-			new PortalEspBlockGroup(Blocks.NETHER_PORTAL,
-					new ColorSetting("下界传送门颜色",
-						"下界传送门将以这种颜色突出显示。", Color.RED),
-					new CheckboxSetting("包括下界传送门", true));
-
+		new PortalEspBlockGroup(Blocks.NETHER_PORTAL,
+			new ColorSetting("下界传送门颜色", "下界传送门将以这种颜色突出显示。", Color.RED),
+			new CheckboxSetting("包括下界传送门", true));
+	
 	private final PortalEspBlockGroup endPortal =
-			new PortalEspBlockGroup(Blocks.END_PORTAL,
-					new ColorSetting("末地传送门颜色",
-						"末地传送门将以这种颜色突出显示。", Color.GREEN),
-					new CheckboxSetting("包括末地传送门", true));
-
-	private final PortalEspBlockGroup endPortalFrame = new PortalEspBlockGroup(
-		Blocks.END_PORTAL_FRAME,
-		new ColorSetting("末地传送门框架颜色",
-			"末地传送门框架将以这种颜色突出显示。", Color.BLUE),
-		new CheckboxSetting("包括末地传送门框架", true));
-
+		new PortalEspBlockGroup(Blocks.END_PORTAL,
+			new ColorSetting("末地传送门颜色", "末地传送门将以这种颜色突出显示。", Color.GREEN),
+			new CheckboxSetting("包括末地传送门", true));
+	
+	private final PortalEspBlockGroup endPortalFrame =
+		new PortalEspBlockGroup(Blocks.END_PORTAL_FRAME,
+			new ColorSetting("末地传送门框架颜色", "末地传送门框架将以这种颜色突出显示。", Color.BLUE),
+			new CheckboxSetting("包括末地传送门框架", true));
+	
 	private final PortalEspBlockGroup endGateway = new PortalEspBlockGroup(
-			Blocks.END_GATEWAY,
-			new ColorSetting("End gateway color",
-					"End gateways will be highlighted in this color.", Color.YELLOW),
-			new CheckboxSetting("Include end gateways", true));
-
+		Blocks.END_GATEWAY,
+		new ColorSetting("End gateway color",
+			"End gateways will be highlighted in this color.", Color.YELLOW),
+		new CheckboxSetting("Include end gateways", true));
+	
 	private final List<PortalEspBlockGroup> groups =
 		Arrays.asList(netherPortal, endPortal, endPortalFrame, endGateway);
-
-	private final ChunkAreaSetting area = new ChunkAreaSetting("区域",
-		"玩家周围要搜索的区域。\n"
-			+ "更高的值需要更快的电脑。");
-
+	
+	private final ChunkAreaSetting area =
+		new ChunkAreaSetting("区域", "玩家周围要搜索的区域。\n" + "更高的值需要更快的电脑。");
+	
 	private final BiPredicate<BlockPos, BlockState> query =
 		(pos, state) -> state.getBlock() == Blocks.NETHER_PORTAL
 			|| state.getBlock() == Blocks.END_PORTAL
 			|| state.getBlock() == Blocks.END_PORTAL_FRAME
 			|| state.getBlock() == Blocks.END_GATEWAY;
-
+	
 	private final ChunkSearcherCoordinator coordinator =
 		new ChunkSearcherCoordinator(query, area);
-
+	
 	private boolean groupsUpToDate;
-
+	
 	public PortalEspHack()
 	{
 		super("传送门ESP");
 		setCategory(Category.RENDER);
-
+		
 		addSetting(style);
 		groups.stream().flatMap(PortalEspBlockGroup::getSettings)
 			.forEach(this::addSetting);
 		addSetting(area);
 	}
-
+	
 	@Override
 	public void onEnable()
 	{
 		groupsUpToDate = false;
-
+		
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(PacketInputListener.class, coordinator);
 		EVENTS.add(CameraTransformViewBobbingListener.class, this);
 		EVENTS.add(RenderListener.class, this);
-
+		
 		PortalEspRenderer.prepareBuffers();
 	}
-
+	
 	@Override
 	public void onDisable()
 	{
@@ -115,12 +111,12 @@ public final class PortalEspHack extends Hack implements UpdateListener,
 		EVENTS.remove(PacketInputListener.class, coordinator);
 		EVENTS.remove(CameraTransformViewBobbingListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
-
+		
 		coordinator.reset();
 		groups.forEach(PortalEspBlockGroup::clear);
 		PortalEspRenderer.closeBuffers();
 	}
-
+	
 	@Override
 	public void onCameraTransformViewBobbing(
 		CameraTransformViewBobbingEvent event)
@@ -128,18 +124,18 @@ public final class PortalEspHack extends Hack implements UpdateListener,
 		if(style.getSelected().hasLines())
 			event.cancel();
 	}
-
+	
 	@Override
 	public void onUpdate()
 	{
 		boolean searchersChanged = coordinator.update();
 		if(searchersChanged)
 			groupsUpToDate = false;
-
+		
 		if(!groupsUpToDate && coordinator.isDone())
 			updateGroupBoxes();
 	}
-
+	
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
@@ -148,42 +144,42 @@ public final class PortalEspHack extends Hack implements UpdateListener,
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-
+		
 		matrixStack.push();
 		RenderUtils.applyRegionalRenderOffset(matrixStack);
-
+		
 		PortalEspRenderer espRenderer =
 			new PortalEspRenderer(matrixStack, partialTicks);
-
+		
 		if(style.getSelected().hasBoxes())
 		{
 			RenderSystem.setShader(GameRenderer::getPositionProgram);
 			groups.stream().filter(PortalEspBlockGroup::isEnabled)
 				.forEach(espRenderer::renderBoxes);
 		}
-
+		
 		if(style.getSelected().hasLines())
 		{
 			RenderSystem.setShader(GameRenderer::getPositionProgram);
 			groups.stream().filter(PortalEspBlockGroup::isEnabled)
 				.forEach(espRenderer::renderLines);
 		}
-
+		
 		matrixStack.pop();
-
+		
 		// GL resets
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 	}
-
+	
 	private void updateGroupBoxes()
 	{
 		groups.forEach(PortalEspBlockGroup::clear);
 		coordinator.getMatches().forEach(this::addToGroupBoxes);
 		groupsUpToDate = true;
 	}
-
+	
 	private void addToGroupBoxes(Result result)
 	{
 		for(PortalEspBlockGroup group : groups)

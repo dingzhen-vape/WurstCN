@@ -20,8 +20,7 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class MileyCyrusHack extends Hack implements UpdateListener
 {
 	private final SliderSetting twerkSpeed = new SliderSetting("扭动速度",
-		"我像一颗破坏球一样冲进来...", 5, 1, 10, 1,
-		ValueDisplay.INTEGER);
+		"我像一颗破坏球一样冲进来...", 5, 1, 10, 1, ValueDisplay.INTEGER);
 	
 	private int timer;
 	

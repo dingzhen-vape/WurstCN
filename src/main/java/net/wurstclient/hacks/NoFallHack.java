@@ -18,12 +18,9 @@ import net.wurstclient.settings.CheckboxSetting;
 @SearchTags({"no fall"})
 public final class NoFallHack extends Hack implements UpdateListener
 {
-	private final CheckboxSetting allowElytra = new CheckboxSetting(
-		"允许鞘翅",
-		"在你使用鞘翅飞行时也尝试防止摔落伤害。\n\n"
-			+ "\u00a7c\u00a7l警告:\u00a7r 这有时会导致你"
-			+ "意外地停止飞行。",
-		false);
+	private final CheckboxSetting allowElytra =
+		new CheckboxSetting("允许鞘翅", "在你使用鞘翅飞行时也尝试防止摔落伤害。\n\n"
+			+ "\u00a7c\u00a7l警告:\u00a7r 这有时会导致你" + "意外地停止飞行。", false);
 	
 	public NoFallHack()
 	{

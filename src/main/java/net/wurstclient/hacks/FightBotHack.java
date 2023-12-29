@@ -42,16 +42,14 @@ import net.wurstclient.util.EntityUtils;
 public final class FightBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围",
-		"攻击范围（类似杀戮光环）", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
+	private final SliderSetting range = new SliderSetting("范围", "攻击范围（类似杀戮光环）",
+		4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
 	private final SliderSetting distance = new SliderSetting("距离",
-		"跟随目标的紧密程度。\n"
-			+ "这个值应该设置得比范围小。",
-		3, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		"跟随目标的紧密程度。\n" + "这个值应该设置得比范围小。", 3, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting useAi =
 		new CheckboxSetting("使用AI（实验性）", false);

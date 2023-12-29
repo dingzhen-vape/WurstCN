@@ -29,14 +29,13 @@ public final class FilterSleepingSetting extends EntityFilterCheckbox
 	
 	public static FilterSleepingSetting genericCombat(boolean checked)
 	{
-		return new FilterSleepingSetting("不会攻击睡觉的玩家。 "
-			+ "适用于像Mineplex这样的服务器，它们将睡觉的玩家放在"
-			+ "地面上，让他们看起来像尸体。", checked);
+		return new FilterSleepingSetting(
+			"不会攻击睡觉的玩家。 " + "适用于像Mineplex这样的服务器，它们将睡觉的玩家放在" + "地面上，让他们看起来像尸体。",
+			checked);
 	}
 	
 	public static FilterSleepingSetting genericVision(boolean checked)
 	{
-		return new FilterSleepingSetting("不会显示睡觉的玩家。",
-			checked);
+		return new FilterSleepingSetting("不会显示睡觉的玩家。", checked);
 	}
 }

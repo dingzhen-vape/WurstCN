@@ -18,17 +18,13 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 	"no knockback", "AntiKB", "anti kb"})
 public final class AntiKnockbackHack extends Hack implements KnockbackListener
 {
-	private final SliderSetting hStrength =
-		new SliderSetting("水平强度",
-			"减少水平击退的距离。\n"
-				+ "100% = 没有击退\n" + ">100% = 反向击退",
-			1, 0.01, 2, 0.01, ValueDisplay.PERCENTAGE);
+	private final SliderSetting hStrength = new SliderSetting("水平强度",
+		"减少水平击退的距离。\n" + "100% = 没有击退\n" + ">100% = 反向击退", 1, 0.01, 2, 0.01,
+		ValueDisplay.PERCENTAGE);
 	
-	private final SliderSetting vStrength =
-		new SliderSetting("垂直强度",
-			"减少垂直击退的距离。\n" + "100% = 没有击退\n"
-				+ ">100% = 反向击退",
-			1, 0.01, 2, 0.01, ValueDisplay.PERCENTAGE);
+	private final SliderSetting vStrength = new SliderSetting("垂直强度",
+		"减少垂直击退的距离。\n" + "100% = 没有击退\n" + ">100% = 反向击退", 1, 0.01, 2, 0.01,
+		ValueDisplay.PERCENTAGE);
 	
 	public AntiKnockbackHack()
 	{

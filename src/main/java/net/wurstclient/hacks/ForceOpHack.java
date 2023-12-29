@@ -98,7 +98,8 @@ public final class ForceOpHack extends Hack implements ChatInputListener
 			String[] args = msg.split(" ");
 			int delay = Integer.parseInt(args[1]);
 			boolean waitForMsg = Boolean.parseBoolean(args[2]);
-			new Thread(() -> runForceOP(delay, waitForMsg), "破解账号（AuthME").start();
+			new Thread(() -> runForceOP(delay, waitForMsg), "破解账号（AuthME")
+				.start();
 			return;
 		}
 		

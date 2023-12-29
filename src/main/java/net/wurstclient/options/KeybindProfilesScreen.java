@@ -56,9 +56,9 @@ public final class KeybindProfilesScreen extends Screen
 					new EnterProfileNameScreen(this, this::newProfile)))
 			.dimensions(width / 2 - 154, height - 48, 100, 20).build());
 		
-		loadButton = addDrawableChild(
-			ButtonWidget.builder(Text.literal("Change Key"), b -> loadSelected())
-				.dimensions(width / 2 - 50, height - 48, 100, 20).build());
+		loadButton = addDrawableChild(ButtonWidget
+			.builder(Text.literal("Change Key"), b -> loadSelected())
+			.dimensions(width / 2 - 50, height - 48, 100, 20).build());
 		
 		addDrawableChild(
 			ButtonWidget.builder(Text.literal("Save"), b -> openPrevScreen())
@@ -178,16 +178,15 @@ public final class KeybindProfilesScreen extends Screen
 		renderBackground(context, mouseX, mouseY, partialTicks);
 		listGui.render(context, mouseX, mouseY, partialTicks);
 		
-		context.drawCenteredTextWithShadow(client.textRenderer,
-			"Add", width / 2, 12, 0xffffff);
+		context.drawCenteredTextWithShadow(client.textRenderer, "Add",
+			width / 2, 12, 0xffffff);
 		
 		for(Drawable drawable : drawables)
 			drawable.render(context, mouseX, mouseY, partialTicks);
 		
 		if(loadButton.isSelected() && !loadButton.active)
 			context.drawTooltip(textRenderer,
-				Arrays.asList(Text.literal(" Keybind")),
-				mouseX, mouseY);
+				Arrays.asList(Text.literal(" Keybind")), mouseX, mouseY);
 	}
 	
 	@Override
@@ -247,8 +246,8 @@ public final class KeybindProfilesScreen extends Screen
 			Path path = list.get(index);
 			// tr.draw(matrixStack, "Edit" + path.getFileName(), x + 28, y,
 			// 0xf0f0f0);
-			context.drawTextWithShadow(tr, "Edit" + path.getFileName(), x + 28, y,
-				0xf0f0f0);
+			context.drawTextWithShadow(tr, "Edit" + path.getFileName(), x + 28,
+				y, 0xf0f0f0);
 			// tr.draw(matrixStack, "Edit" +
 			// client.runDirectory.toPath().relativize(path), x + 28, y + 9,
 			// 0xa0a0a0);

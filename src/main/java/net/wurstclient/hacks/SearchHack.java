@@ -56,14 +56,12 @@ public final class SearchHack extends Hack
 		"The type of block to search for.", "minecraft:diamond_ore", false);
 	private Block lastBlock;
 	
-	private final ChunkAreaSetting area = new ChunkAreaSetting("区域",
-		"玩家周围要搜索的区域。\n"
-			+ "更大的值需要更快的电脑。");
+	private final ChunkAreaSetting area =
+		new ChunkAreaSetting("区域", "玩家周围要搜索的区域。\n" + "更大的值需要更快的电脑。");
 	
-	private final SliderSetting limit = new SliderSetting("限制",
-		"要显示的方块的最大数量。\n"
-			+ "更大的值需要更快的电脑。",
-		4, 3, 6, 1, ValueDisplay.LOGARITHMIC);
+	private final SliderSetting limit =
+		new SliderSetting("限制", "要显示的方块的最大数量。\n" + "更大的值需要更快的电脑。", 4, 3, 6, 1,
+			ValueDisplay.LOGARITHMIC);
 	private int prevLimit;
 	private boolean notify;
 	

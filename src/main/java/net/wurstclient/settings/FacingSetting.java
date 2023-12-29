@@ -49,11 +49,9 @@ public final class FacingSetting extends EnumSetting<FacingSetting.Facing>
 	{
 		OFF("关闭", v -> {}),
 		
-		SERVER("服务器端",
-			v -> WURST.getRotationFaker().faceVectorPacket(v)),
+		SERVER("服务器端", v -> WURST.getRotationFaker().faceVectorPacket(v)),
 		
-		CLIENT("客户端",
-			v -> WURST.getRotationFaker().faceVectorClient(v)),
+		CLIENT("客户端", v -> WURST.getRotationFaker().faceVectorClient(v)),
 		
 		SPAM("数据包垃圾邮件", v -> {
 			Rotation rotation = RotationUtils.getNeededRotations(v);

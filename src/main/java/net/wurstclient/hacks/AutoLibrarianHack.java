@@ -61,26 +61,18 @@ import net.wurstclient.util.BlockPlacer.BlockPlacingParams;
 public final class AutoLibrarianHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final BookOffersSetting wantedBooks = new BookOffersSetting(
-		"想要的书",
-		"你想让你的村民出售的附魔书的列表。\n\n"
-			+ "AutoLibrarian会停止训练当前的村民"
-			+ "一旦它学会了出售这些书中的一本。\n\n"
-			+ "你也可以为每本书设置一个最高价格，以防你"
-			+ "已经有一个村民出售它，但你想要一个"
-			+ "更便宜的价格。",
+	private final BookOffersSetting wantedBooks = new BookOffersSetting("想要的书",
+		"你想让你的村民出售的附魔书的列表。\n\n" + "AutoLibrarian会停止训练当前的村民"
+			+ "一旦它学会了出售这些书中的一本。\n\n" + "你也可以为每本书设置一个最高价格，以防你"
+			+ "已经有一个村民出售它，但你想要一个" + "更便宜的价格。",
 		"minecraft:depth_strider", "minecraft:efficiency",
 		"minecraft:feather_falling", "minecraft:fortune", "minecraft:looting",
 		"minecraft:mending", "minecraft:protection", "minecraft:respiration",
 		"minecraft:sharpness", "minecraft:silk_touch", "minecraft:unbreaking");
 	
-	private final CheckboxSetting lockInTrade = new CheckboxSetting(
-		"锁定交易",
-		"一旦村民学会了出售你想要的书，就自动从村民那里买点东西。这样可以防止村民"
-			+ "以后改变它的交易报价。\n\n"
-			+ "使用这个功能时，请确保你的"
-			+ "库存中至少有24张纸和9个绿宝石。或者，1本书和"
-			+ "64个绿宝石也可以。"
+	private final CheckboxSetting lockInTrade = new CheckboxSetting("锁定交易",
+		"一旦村民学会了出售你想要的书，就自动从村民那里买点东西。这样可以防止村民" + "以后改变它的交易报价。\n\n"
+			+ "使用这个功能时，请确保你的" + "库存中至少有24张纸和9个绿宝石。或者，1本书和" + "64个绿宝石也可以。"
 			+ "范围",
 		false);
 	
@@ -90,29 +82,19 @@ public final class AutoLibrarianHack extends Hack
 		new SliderSetting("距离\n\n", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FacingSetting facing = FacingSetting
-		.withoutPacketSpam("\u00a7lOff\u00a7r - 根本不要面对村民。会被"
-			+ "反作弊插件检测到。\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在"
-			+ "服务器端面对村民，同时让你在"
-			+ "客户端自由地移动相机。"
-			+ "客户端。\n\n"
-			+ "\u00a7lClient-side\u00a7r - 通过移动你的"
-			+ "客户端上的相机来面对村民。这是最合法的选项，但"
-			+ "看起来可能会让人头晕。");
+		.withoutPacketSpam("\u00a7lOff\u00a7r - 根本不要面对村民。会被" + "反作弊插件检测到。\n\n"
+			+ "\u00a7lServer-side\u00a7r - 在" + "服务器端面对村民，同时让你在" + "客户端自由地移动相机。"
+			+ "客户端。\n\n" + "\u00a7lClient-side\u00a7r - 通过移动你的"
+			+ "客户端上的相机来面对村民。这是最合法的选项，但" + "看起来可能会让人头晕。");
 	
 	private final SwingHandSetting swingHand =
-		new SwingHandSetting("如何在与"
-			+ "村民和工作场所互动时挥动你的手。\n\n"
-			+ "\u00a7lOff\u00a7r - 根本不要挥动你的手。会被检测到"
-			+ "反作弊插件。\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在服务器端挥动你的手，"
-			+ "而不在客户端播放动画。\n\n"
-			+ "\u00a7lClient-side\u00a7r - 在客户端挥动你的手。"
-			+ "这是最合法的选项。");
+		new SwingHandSetting("如何在与" + "村民和工作场所互动时挥动你的手。\n\n"
+			+ "\u00a7lOff\u00a7r - 根本不要挥动你的手。会被检测到" + "反作弊插件。\n\n"
+			+ "\u00a7lServer-side\u00a7r - 在服务器端挥动你的手，" + "而不在客户端播放动画。\n\n"
+			+ "\u00a7lClient-side\u00a7r - 在客户端挥动你的手。" + "这是最合法的选项。");
 	
 	private final SliderSetting repairMode = new SliderSetting("修复模式",
-		"防止AutoLibrarian在你的斧头的耐久度达到"
-			+ "给定的阈值时使用它，这样你可以在它坏掉之前修复它。\n"
+		"防止AutoLibrarian在你的斧头的耐久度达到" + "给定的阈值时使用它，这样你可以在它坏掉之前修复它。\n"
 			+ "可以从0（关闭）到100进行调整。",
 		1, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "关闭"));
 	
@@ -183,8 +165,7 @@ public final class AutoLibrarianHack extends Hack
 		}
 		
 		if(placingJobSite && breakingJobSite)
-			throw new IllegalStateException(
-				"试图同时放置和打破工作场所。出了点问题。");
+			throw new IllegalStateException("试图同时放置和打破工作场所。出了点问题。");
 		
 		if(placingJobSite)
 		{
@@ -209,8 +190,7 @@ public final class AutoLibrarianHack extends Hack
 		int experience = tradeScreen.getScreenHandler().getExperience();
 		if(experience > 0)
 		{
-			ChatUtils.warning("村民在 "
-				+ villager.getBlockPos().toShortString()
+			ChatUtils.warning("村民在 " + villager.getBlockPos().toShortString()
 				+ "已经有经验了，意味着它不能再被训练了。");
 			ChatUtils.message("寻找另一个村民...");
 			experiencedVillagers.add(villager);
@@ -233,9 +213,8 @@ public final class AutoLibrarianHack extends Hack
 			return;
 		}
 		
-		ChatUtils.message(
-			"村民正在出售 " + bookOffer.getEnchantmentNameWithLevel()
-				+ "为 " + bookOffer.getFormattedPrice() + "。");
+		ChatUtils.message("村民正在出售 " + bookOffer.getEnchantmentNameWithLevel()
+			+ "为 " + bookOffer.getFormattedPrice() + "。");
 		
 		// if wrong enchantment, break job site and start over
 		if(!wantedBooks.isWanted(bookOffer))
@@ -317,8 +296,7 @@ public final class AutoLibrarianHack extends Hack
 				
 			}else
 			{
-				System.out
-					.println("在工作场所发现错误的方块。打破...");
+				System.out.println("在工作场所发现错误的方块。打破...");
 				breakingJobSite = true;
 				placingJobSite = false;
 			}
@@ -375,8 +353,7 @@ public final class AutoLibrarianHack extends Hack
 		
 		if(player.squaredDistanceTo(villager) > range.getValueSq())
 		{
-			ChatUtils.error("村民超出范围。考虑困住"
-				+ "村民，这样它就不会走开了。");
+			ChatUtils.error("村民超出范围。考虑困住" + "村民，这样它就不会走开了。");
 			setEnabled(false);
 			return;
 		}
@@ -433,8 +410,8 @@ public final class AutoLibrarianHack extends Hack
 			
 			if(!bookOffer.isValid())
 			{
-				System.out.println("发现无效的附魔书报价。\n"
-					+ "NBT数据: " + stack.getNbt());
+				System.out
+					.println("发现无效的附魔书报价。\n" + "NBT数据: " + stack.getNbt());
 				continue;
 			}
 			
@@ -470,12 +447,10 @@ public final class AutoLibrarianHack extends Hack
 			int numExperienced = experiencedVillagers.size();
 			if(numExperienced > 0)
 				errorMsg += "（除了 " + numExperienced + "那个 "
-					+ (numExperienced == 1 ? "是" : "是")
-					+ "已经有经验了。）";
+					+ (numExperienced == 1 ? "是" : "是") + "已经有经验了。）";
 			
 			ChatUtils.error(errorMsg);
-			ChatUtils.message("请确保图书管理员和讲台"
-				+ "都在你站立的地方可以到达。");
+			ChatUtils.message("请确保图书管理员和讲台" + "都在你站立的地方可以到达。");
 			setEnabled(false);
 			return;
 		}
@@ -503,8 +478,7 @@ public final class AutoLibrarianHack extends Hack
 		if(jobSite == null)
 		{
 			ChatUtils.error("找不到图书管理员的讲台。");
-			ChatUtils.message("请确保图书管理员和讲台"
-				+ "都在你站立的地方可以到达。");
+			ChatUtils.message("请确保图书管理员和讲台" + "都在你站立的地方可以到达。");
 			setEnabled(false);
 			return;
 		}

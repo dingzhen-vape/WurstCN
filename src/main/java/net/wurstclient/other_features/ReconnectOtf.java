@@ -15,7 +15,6 @@ public final class ReconnectOtf extends OtherFeature
 {
 	public ReconnectOtf()
 	{
-		super("Reconnect",
-			"每当你被服务器踢出时，Wurst会给你一个\"Reconnect\"按钮，让你可以立即再次加入。");
+		super("Reconnect", "每当你被服务器踢出时，Wurst会给你一个\"Reconnect\"按钮，让你可以立即再次加入。");
 	}
 }

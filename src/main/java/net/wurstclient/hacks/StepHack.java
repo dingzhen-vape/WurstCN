@@ -21,14 +21,12 @@ import net.wurstclient.util.BlockUtils;
 
 public final class StepHack extends Hack implements UpdateListener
 {
-	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"\u00a7l简单\u00a7r模式可以跨越多个方块（启用高度滑块）。\n"
-			+ "\u00a7l合法\u00a7r模式可以绕过NoCheat+。",
-		Mode.values(), Mode.LEGIT);
+	private final EnumSetting<Mode> mode =
+		new EnumSetting<>("模式", "\u00a7l简单\u00a7r模式可以跨越多个方块（启用高度滑块）。\n"
+			+ "\u00a7l合法\u00a7r模式可以绕过NoCheat+。", Mode.values(), Mode.LEGIT);
 	
-	private final SliderSetting height =
-		new SliderSetting("高度", "只在\u00a7l简单\u00a7r模式下有效。",
-			1, 1, 10, 1, ValueDisplay.INTEGER);
+	private final SliderSetting height = new SliderSetting("高度",
+		"只在\u00a7l简单\u00a7r模式下有效。", 1, 1, 10, 1, ValueDisplay.INTEGER);
 	
 	public StepHack()
 	{

@@ -25,7 +25,6 @@ public final class FilterShulkerBulletSetting extends EntityFilterCheckbox
 	
 	public static FilterShulkerBulletSetting genericCombat(boolean checked)
 	{
-		return new FilterShulkerBulletSetting("不会攻击潜影贝子弹。",
-			checked);
+		return new FilterShulkerBulletSetting("不会攻击潜影贝子弹。", checked);
 	}
 }

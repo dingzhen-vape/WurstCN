@@ -47,9 +47,8 @@ public final class FollowHack extends Hack
 	private PathProcessor processor;
 	private int ticksProcessing;
 	
-	private final SliderSetting distance =
-		new SliderSetting("距离", "跟随目标的紧密程度。", 1, 1,
-			12, 0.5, ValueDisplay.DECIMAL);
+	private final SliderSetting distance = new SliderSetting("距离", "跟随目标的紧密程度。",
+		1, 1, 12, 0.5, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting useAi =
 		new CheckboxSetting("使用AI（实验性）", false);
@@ -126,8 +125,7 @@ public final class FollowHack extends Hack
 		PathProcessor.releaseControls();
 		
 		if(entity != null)
-			ChatUtils
-				.message("不再跟随 " + entity.getName().getString());
+			ChatUtils.message("不再跟随 " + entity.getName().getString());
 		
 		entity = null;
 	}

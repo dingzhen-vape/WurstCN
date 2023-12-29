@@ -22,8 +22,7 @@ public final class TabGuiOtf extends OtherFeature
 	
 	public TabGuiOtf()
 	{
-		super("TabGUI", "让你能够在玩游戏时快速切换黑客功能。\n"
-			+ "使用方向键来导航。\n\n"
+		super("TabGUI", "让你能够在玩游戏时快速切换黑客功能。\n" + "使用方向键来导航。\n\n"
 			+ "将\u00a76HackList \u00a76位置\u00a7r设置改为\u00a76右边\u00a7r，以防止TabGUI与HackList重叠。");
 		
 		addSetting(status);

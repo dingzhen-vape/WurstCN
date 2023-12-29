@@ -51,17 +51,15 @@ public final class SpeedNukerHack extends Hack
 			+ "\u00a7l粉碎\u00a7r 模式只破坏可以立即被摧毁的方块（例如高草）。",
 		Mode.values(), Mode.NORMAL);
 	
-	private final BlockSetting id =
-		new BlockSetting("ID", "在ID模式中要破坏的方块类型。\n"
-			+ "air = won't break anything", "minecraft:air", true);
+	private final BlockSetting id = new BlockSetting("ID",
+		"在ID模式中要破坏的方块类型。\n" + "air = won't break anything", "minecraft:air",
+		true);
 	
-	private final CheckboxSetting lockId = new CheckboxSetting("锁定ID",
-		"防止通过点击方块或重启快速核弹器来改变ID。",
-		false);
+	private final CheckboxSetting lockId =
+		new CheckboxSetting("锁定ID", "防止通过点击方块或重启快速核弹器来改变ID。", false);
 	
-	private final BlockListSetting multiIdList = new BlockListSetting(
-		"多ID列表", "在多ID模式中要破坏的方块类型。",
-		"minecraft:ancient_debris", "minecraft:bone_block",
+	private final BlockListSetting multiIdList = new BlockListSetting("多ID列表",
+		"在多ID模式中要破坏的方块类型。", "minecraft:ancient_debris", "minecraft:bone_block",
 		"minecraft:coal_ore", "minecraft:copper_ore",
 		"minecraft:deepslate_coal_ore", "minecraft:deepslate_copper_ore",
 		"minecraft:deepslate_diamond_ore", "minecraft:deepslate_emerald_ore",
@@ -185,19 +183,16 @@ public final class SpeedNukerHack extends Hack
 		NORMAL("普通", n -> "快速Nuker", (n, pos) -> true),
 		
 		ID("ID",
-			n -> "ID快速核弹器 ["
-				+ n.id.getBlockName().replace("minecraft:", "") + "]",
+			n -> "ID快速核弹器 [" + n.id.getBlockName().replace("minecraft:", "")
+				+ "]",
 			(n, pos) -> BlockUtils.getName(pos).equals(n.id.getBlockName())),
 		
-		MULTI_ID("多ID",
-			n -> "多ID快速核弹器 [" + n.multiIdList.getBlockNames().size()
-				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
-					: " IDs]"),
+		MULTI_ID("多ID", n -> "多ID快速核弹器 [" + n.multiIdList.getBlockNames().size()
+			+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]" : " IDs]"),
 			(n, p) -> n.multiIdList.getBlockNames()
 				.contains(BlockUtils.getName(p))),
 		
-		FLAT("平整", n -> "平整快速核弹器",
-			(n, pos) -> pos.getY() >= MC.player.getY()),
+		FLAT("平整", n -> "平整快速核弹器", (n, pos) -> pos.getY() >= MC.player.getY()),
 		
 		SMASH("粉碎", n -> "粉碎快速核弹器",
 			(n, pos) -> BlockUtils.getHardness(pos) >= 1);

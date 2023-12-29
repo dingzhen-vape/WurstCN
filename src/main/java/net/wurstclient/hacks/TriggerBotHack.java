@@ -32,10 +32,8 @@ public final class TriggerBotHack extends Hack implements UpdateListener
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final CheckboxSetting attackWhileBlocking = new CheckboxSetting(
-		"阻挡时攻击",
-		"是否在用盾牌阻挡/使用物品时攻击。",
-		false);
+	private final CheckboxSetting attackWhileBlocking =
+		new CheckboxSetting("阻挡时攻击", "是否在用盾牌阻挡/使用物品时攻击。", false);
 	
 	private final EntityFilterList entityFilters =
 		EntityFilterList.genericCombat();

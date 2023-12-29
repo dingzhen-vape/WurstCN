@@ -24,17 +24,14 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 @SearchTags({"auto totem", "offhand", "off-hand"})
 public final class AutoTotemHack extends Hack implements UpdateListener
 {
-	private final CheckboxSetting showCounter = new CheckboxSetting(
-		"显示图腾计数器", "显示你拥有的图腾数量。", true);
+	private final CheckboxSetting showCounter =
+		new CheckboxSetting("显示图腾计数器", "显示你拥有的图腾数量。", true);
 	
 	private final SliderSetting delay = new SliderSetting("延迟",
-		"在装备下一个图腾之前等待的刻数。", 0, 0, 20, 1,
-		ValueDisplay.INTEGER);
+		"在装备下一个图腾之前等待的刻数。", 0, 0, 20, 1, ValueDisplay.INTEGER);
 	
 	private final SliderSetting health = new SliderSetting("生命值",
-		"在你的生命值达到或低于这个值之前，有效地禁用AutoTotem。\n"
-			+ "0 = 总是激活",
-		0, 0, 10, 0.5,
+		"在你的生命值达到或低于这个值之前，有效地禁用AutoTotem。\n" + "0 = 总是激活", 0, 0, 10, 0.5,
 		ValueDisplay.DECIMAL.withSuffix(" 颗心").withLabel(0, "忽略"));
 	
 	private int nextTickSlot;

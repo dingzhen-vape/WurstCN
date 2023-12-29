@@ -16,8 +16,8 @@ import net.minecraft.entity.passive.PufferfishEntity;
 
 public final class FilterPassiveSetting extends EntityFilterCheckbox
 {
-	private static final String EXCEPTIONS_TEXT = "这个过滤器不会"
-		+ "影响狼，蜜蜂，北极熊，河豚和村民。";
+	private static final String EXCEPTIONS_TEXT =
+		"这个过滤器不会" + "影响狼，蜜蜂，北极熊，河豚和村民。";
 	
 	public FilterPassiveSetting(String description, boolean checked)
 	{
@@ -37,15 +37,13 @@ public final class FilterPassiveSetting extends EntityFilterCheckbox
 	
 	public static FilterPassiveSetting genericCombat(boolean checked)
 	{
-		return new FilterPassiveSetting("不会攻击动物，如猪和"
-			+ "牛，环境生物，如蝙蝠，以及水生生物，如鱼，鱿鱼"
-			+ "和海豚。", checked);
+		return new FilterPassiveSetting(
+			"不会攻击动物，如猪和" + "牛，环境生物，如蝙蝠，以及水生生物，如鱼，鱿鱼" + "和海豚。", checked);
 	}
 	
 	public static FilterPassiveSetting genericVision(boolean checked)
 	{
-		return new FilterPassiveSetting("不会显示动物，如猪和"
-			+ "牛，环境生物，如蝙蝠，以及水生生物，如鱼，鱿鱼"
-			+ "和海豚。", checked);
+		return new FilterPassiveSetting(
+			"不会显示动物，如猪和" + "牛，环境生物，如蝙蝠，以及水生生物，如鱼，鱿鱼" + "和海豚。", checked);
 	}
 }

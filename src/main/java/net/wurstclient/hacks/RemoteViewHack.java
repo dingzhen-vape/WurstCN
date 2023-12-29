@@ -103,8 +103,7 @@ public final class RemoteViewHack extends Hack
 		// reset entity
 		if(entity != null)
 		{
-			ChatUtils.message(
-				"不再查看 " + entity.getName().getString() + "。");
+			ChatUtils.message("不再查看 " + entity.getName().getString() + "。");
 			entity.setInvisible(wasInvisible);
 			entity = null;
 		}
@@ -139,8 +138,7 @@ public final class RemoteViewHack extends Hack
 			
 			if(entity == null)
 			{
-				ChatUtils
-					.error("实体 \"" + viewName + "\" 未找到.");
+				ChatUtils.error("实体 \"" + viewName + "\" 未找到.");
 				return;
 			}
 		}

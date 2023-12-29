@@ -32,20 +32,17 @@ public final class ClickGuiHack extends Hack
 	private final ColorSetting txtColor =
 		new ColorSetting("文本", "文本颜色", new Color(0xF0F0F0));
 	
-	private final SliderSetting opacity = new SliderSetting("透明度", 0.5,
-		0.15, 0.85, 0.01, ValueDisplay.PERCENTAGE);
+	private final SliderSetting opacity = new SliderSetting("透明度", 0.5, 0.15,
+		0.85, 0.01, ValueDisplay.PERCENTAGE);
 	
-	private final SliderSetting ttOpacity = new SliderSetting("提示框透明度",
-		0.75, 0.15, 1, 0.01, ValueDisplay.PERCENTAGE);
+	private final SliderSetting ttOpacity = new SliderSetting("提示框透明度", 0.75,
+		0.15, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
 	private final SliderSetting maxHeight = new SliderSetting("最大高度",
-		"窗口的最大高度\n" + "0 = 没有限制", 200, 0, 1000, 50,
-		ValueDisplay.INTEGER);
+		"窗口的最大高度\n" + "0 = 没有限制", 200, 0, 1000, 50, ValueDisplay.INTEGER);
 	
-	private final SliderSetting maxSettingsHeight =
-		new SliderSetting("最大设置高度",
-			"设置窗口的最大高度\n" + "0 = 没有限制", 200, 0,
-			1000, 50, ValueDisplay.INTEGER);
+	private final SliderSetting maxSettingsHeight = new SliderSetting("最大设置高度",
+		"设置窗口的最大高度\n" + "0 = 没有限制", 200, 0, 1000, 50, ValueDisplay.INTEGER);
 	
 	public ClickGuiHack()
 	{

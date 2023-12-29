@@ -31,26 +31,20 @@ public final class HackListOtf extends OtherFeature
 		Mode.values(), Mode.AUTO);
 	
 	private final EnumSetting<Position> position = new EnumSetting<>("位置",
-		"HackList应该显示在屏幕的哪一边。"
-			+ "\n当使用TabGUI时，将这个改为\u00a7l右边\u00a7r。",
+		"HackList应该显示在屏幕的哪一边。" + "\n当使用TabGUI时，将这个改为\u00a7l右边\u00a7r。",
 		Position.values(), Position.LEFT);
 	
 	private final ColorSetting color = new ColorSetting("颜色",
-		"HackList文本的颜色。\n"
-			+ "只有在\u00a76RainbowUI\u00a7r关闭时才可见。",
-		Color.WHITE);
+		"HackList文本的颜色。\n" + "只有在\u00a76RainbowUI\u00a7r关闭时才可见。", Color.WHITE);
 	
 	private final EnumSetting<SortBy> sortBy = new EnumSetting<>("排序方式",
-		"决定了HackList条目的排序方式。\n"
-			+ "只有当\u00a76模式\u00a7r设置为\u00a76自动\u00a7r时才可见。",
+		"决定了HackList条目的排序方式。\n" + "只有当\u00a76模式\u00a7r设置为\u00a76自动\u00a7r时才可见。",
 		SortBy.values(), SortBy.NAME);
 	
-	private final CheckboxSetting revSort =
-		new CheckboxSetting("反向排序", false);
+	private final CheckboxSetting revSort = new CheckboxSetting("反向排序", false);
 	
-	private final CheckboxSetting animations = new CheckboxSetting("动画",
-		"当启用时，条目会随着hack的启用和禁用而滑入和滑出HackList。",
-		true);
+	private final CheckboxSetting animations =
+		new CheckboxSetting("动画", "当启用时，条目会随着hack的启用和禁用而滑入和滑出HackList。", true);
 	
 	private SortBy prevSortBy;
 	private Boolean prevRevSort;

@@ -17,17 +17,14 @@ import net.wurstclient.settings.CheckboxSetting;
 @DontBlock
 public final class DisableOtf extends OtherFeature
 {
-	private final CheckboxSetting hideEnableButton = new CheckboxSetting(
-		"隐藏启用按钮",
-		"关闭统计界面后，移除\"Enable Wurst\"按钮。"
-			+ "你将需要重启游戏才能重新启用Wurst。",
-		false);
+	private final CheckboxSetting hideEnableButton =
+		new CheckboxSetting("隐藏启用按钮",
+			"关闭统计界面后，移除\"Enable Wurst\"按钮。" + "你将需要重启游戏才能重新启用Wurst。", false);
 	
 	public DisableOtf()
 	{
-		super("禁用Wurst",
-			"要禁用Wurst，进入统计界面并按下\"Disable Wurst\"按钮。\n"
-				+ "一旦按下，它会变成一个\"Enable Wurst\"按钮。");
+		super("禁用Wurst", "要禁用Wurst，进入统计界面并按下\"Disable Wurst\"按钮。\n"
+			+ "一旦按下，它会变成一个\"Enable Wurst\"按钮。");
 		addSetting(hideEnableButton);
 	}
 	

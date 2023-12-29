@@ -14,8 +14,7 @@ import net.minecraft.entity.mob.PiglinEntity;
 
 public final class FilterHostileSetting extends EntityFilterCheckbox
 {
-	private static final String EXCEPTIONS_TEXT = "这个过滤器不会"
-		+ "影响末影人，猪灵，和僵尸猪灵。";
+	private static final String EXCEPTIONS_TEXT = "这个过滤器不会" + "影响末影人，猪灵，和僵尸猪灵。";
 	
 	public FilterHostileSetting(String description, boolean checked)
 	{
@@ -34,13 +33,11 @@ public final class FilterHostileSetting extends EntityFilterCheckbox
 	
 	public static FilterHostileSetting genericCombat(boolean checked)
 	{
-		return new FilterHostileSetting(
-			"不会攻击敌对生物，如僵尸和苦力怕。", checked);
+		return new FilterHostileSetting("不会攻击敌对生物，如僵尸和苦力怕。", checked);
 	}
 	
 	public static FilterHostileSetting genericVision(boolean checked)
 	{
-		return new FilterHostileSetting(
-			"不会显示敌对生物，如僵尸和苦力怕。", checked);
+		return new FilterHostileSetting("不会显示敌对生物，如僵尸和苦力怕。", checked);
 	}
 }

@@ -29,13 +29,10 @@ public final class SneakHack extends Hack
 			+ "\u00a7l合法\u00a7r 模式真的让你潜行。",
 		SneakMode.values(), SneakMode.LEGIT);
 	
-	private final CheckboxSetting offWhileFlying =
-		new CheckboxSetting("飞行时关闭",
-			"自动在你飞行或使用"
-				+ "自由视角时禁用合法潜行,这样它就不会强制你向下飞。\n\n"
-				+ "请记住,这也意味着你在做这些事情时不会对其他玩家隐藏起来。"
-				+ "潜行",
-			false);
+	private final CheckboxSetting offWhileFlying = new CheckboxSetting("飞行时关闭",
+		"自动在你飞行或使用" + "自由视角时禁用合法潜行,这样它就不会强制你向下飞。\n\n"
+			+ "请记住,这也意味着你在做这些事情时不会对其他玩家隐藏起来。" + "潜行",
+		false);
 	
 	public SneakHack()
 	{

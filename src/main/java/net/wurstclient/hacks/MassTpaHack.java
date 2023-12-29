@@ -34,28 +34,19 @@ public final class MassTpaHack extends Hack
 	private static final Pattern ALLOWED_COMMANDS =
 		Pattern.compile("^/+[a-zA-Z0-9_\\-]+$");
 	
-	private final TextFieldSetting commandSetting =
-		new TextFieldSetting("命令",
-			"用于传送的命令。\n"
-				+ "例子: /tp, /tpa, /tpahere, /tpo",
-			"/tpa",
-			s -> s.length() < 64 && ALLOWED_COMMANDS.matcher(s).matches());
+	private final TextFieldSetting commandSetting = new TextFieldSetting("命令",
+		"用于传送的命令。\n" + "例子: /tp, /tpa, /tpahere, /tpo", "/tpa",
+		s -> s.length() < 64 && ALLOWED_COMMANDS.matcher(s).matches());
 	
-	private final SliderSetting delay = new SliderSetting("延迟",
-		"每次传送请求之间的延迟。", 20, 1, 200, 1,
-		ValueDisplay.INTEGER.withSuffix(" 刻").withLabel(1, "1刻"));
+	private final SliderSetting delay =
+		new SliderSetting("延迟", "每次传送请求之间的延迟。", 20, 1, 200, 1,
+			ValueDisplay.INTEGER.withSuffix(" 刻").withLabel(1, "1刻"));
 	
-	private final CheckboxSetting ignoreErrors =
-		new CheckboxSetting("忽略错误",
-			"是否忽略服务器告诉你的消息，说"
-				+ "传送命令无效或者你没有"
-				+ "使用它的权限。",
-			false);
+	private final CheckboxSetting ignoreErrors = new CheckboxSetting("忽略错误",
+		"是否忽略服务器告诉你的消息，说" + "传送命令无效或者你没有" + "使用它的权限。", false);
 	
-	private final CheckboxSetting stopWhenAccepted = new CheckboxSetting(
-		"当被接受时停止", "是否在有人接受你的传送"
-			+ "请求时停止发送更多的传送请求。",
-		true);
+	private final CheckboxSetting stopWhenAccepted =
+		new CheckboxSetting("当被接受时停止", "是否在有人接受你的传送" + "请求时停止发送更多的传送请求。", true);
 	
 	private final Random random = new Random();
 	private final ArrayList<String> players = new ArrayList<>();
@@ -152,8 +143,7 @@ public final class MassTpaHack extends Hack
 				return;
 			
 			event.cancel();
-			ChatUtils.error("这个服务器没有 "
-				+ command.toUpperCase() + " 命令。");
+			ChatUtils.error("这个服务器没有 " + command.toUpperCase() + " 命令。");
 			setEnabled(false);
 			
 		}else if(message.contains("接受") && message.contains("请求")
@@ -163,8 +153,7 @@ public final class MassTpaHack extends Hack
 				return;
 			
 			event.cancel();
-			ChatUtils.message("有人接受了你的 " + command.toUpperCase()
-				+ " 请求。停止。");
+			ChatUtils.message("有人接受了你的 " + command.toUpperCase() + " 请求。停止。");
 			setEnabled(false);
 		}
 	}

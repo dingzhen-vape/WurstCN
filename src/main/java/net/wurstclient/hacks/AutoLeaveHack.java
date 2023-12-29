@@ -22,13 +22,12 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 	"auto quit"})
 public final class AutoLeaveHack extends Hack implements UpdateListener
 {
-	private final SliderSetting health = new SliderSetting("生命值",
-		"当你的生命值达到或低于这个值时，离开服务器。",
-		4, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" 心"));
+	private final SliderSetting health =
+		new SliderSetting("生命值", "当你的生命值达到或低于这个值时，离开服务器。", 4, 0.5, 9.5, 0.5,
+			ValueDisplay.DECIMAL.withSuffix(" 心"));
 	
 	public final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"\u00a7l退出\u00a7r模式只是正常地退出游戏。\n"
-			+ "绕过NoCheat+，但不绕过CombatLog。\n\n"
+		"\u00a7l退出\u00a7r模式只是正常地退出游戏。\n" + "绕过NoCheat+，但不绕过CombatLog。\n\n"
 			+ "\u00a7l字符\u00a7r模式发送一个特殊的聊天消息，让服务器把你踢出去。\n"
 			+ "绕过NoCheat+和一些版本的CombatLog。\n\n"
 			+ "\u00a7lTP\u00a7r模式把你传送到一个无效的位置，让服务器把你踢出去。\n"
@@ -38,9 +37,7 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 		Mode.values(), Mode.QUIT);
 	
 	private final CheckboxSetting disableAutoReconnect = new CheckboxSetting(
-		"禁用自动重连", "当"
-			+ " AutoLeave让你离开服务器时，自动关闭AutoReconnect。",
-		true);
+		"禁用自动重连", "当" + " AutoLeave让你离开服务器时，自动关闭AutoReconnect。", true);
 	
 	public AutoLeaveHack()
 	{

@@ -50,8 +50,7 @@ public final class FilterFlyingSetting extends SliderSetting
 	public static FilterFlyingSetting genericCombat(double value)
 	{
 		return new FilterFlyingSetting(
-			"不会攻击离地面至少给定距离的玩家。\n\n"
-				+ "对于试图通过在你附近放置一个飞行的机器人来检测你的外挂的服务器很有用。",
+			"不会攻击离地面至少给定距离的玩家。\n\n" + "对于试图通过在你附近放置一个飞行的机器人来检测你的外挂的服务器很有用。",
 			value);
 	}
 }

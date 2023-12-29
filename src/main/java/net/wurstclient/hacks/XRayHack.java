@@ -39,8 +39,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	ShouldDrawSideListener, RenderBlockEntityListener
 {
 	private final BlockListSetting ores = new BlockListSetting("矿石",
-		"X-Ray会显示的方块的列表。它们不一定要是矿石"
-			+ " - 你可以添加任何你想要的方块。\n\n"
+		"X-Ray会显示的方块的列表。它们不一定要是矿石" + " - 你可以添加任何你想要的方块。\n\n"
 			+ "更改这个设置后记得重启X-Ray。",
 		"minecraft:ancient_debris", "minecraft:anvil", "minecraft:beacon",
 		"minecraft:bone_block", "minecraft:bookshelf",
@@ -70,12 +69,8 @@ public final class XRayHack extends Hack implements UpdateListener,
 		"minecraft:suspicious_sand", "minecraft:tnt", "minecraft:torch",
 		"minecraft:trapped_chest", "minecraft:water");
 	
-	private final CheckboxSetting onlyExposed = new CheckboxSetting(
-		"只显示暴露的",
-		"只显示在洞穴中可见的矿石。这可以帮助对抗"
-			+ " 反X-Ray插件。\n\n"
-			+ "更改这个设置后记得重启X-Ray。",
-		false);
+	private final CheckboxSetting onlyExposed = new CheckboxSetting("只显示暴露的",
+		"只显示在洞穴中可见的矿石。这可以帮助对抗" + " 反X-Ray插件。\n\n" + "更改这个设置后记得重启X-Ray。", false);
 	
 	private final String optiFineWarning;
 	private final String renderName =

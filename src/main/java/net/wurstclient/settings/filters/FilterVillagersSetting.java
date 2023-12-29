@@ -25,13 +25,11 @@ public final class FilterVillagersSetting extends EntityFilterCheckbox
 	
 	public static FilterVillagersSetting genericCombat(boolean checked)
 	{
-		return new FilterVillagersSetting(
-			"不会攻击村民和流浪商人。", checked);
+		return new FilterVillagersSetting("不会攻击村民和流浪商人。", checked);
 	}
 	
 	public static FilterVillagersSetting genericVision(boolean checked)
 	{
-		return new FilterVillagersSetting(
-			"不会显示村民和流浪商人。", checked);
+		return new FilterVillagersSetting("不会显示村民和流浪商人。", checked);
 	}
 }

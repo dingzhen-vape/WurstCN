@@ -52,13 +52,12 @@ public final class NukerLegitHack extends Hack
 			+ "\u00a7l粉碎\u00a7r模式只破坏可以立即被摧毁的方块（例如高草）。",
 		Mode.values(), Mode.NORMAL);
 	
-	private final BlockSetting id =
-		new BlockSetting("ID", "ID模式中要破坏的方块类型。\n"
-			+ "air = won't break anything", "minecraft:air", true);
+	private final BlockSetting id = new BlockSetting("ID",
+		"ID模式中要破坏的方块类型。\n" + "air = won't break anything", "minecraft:air",
+		true);
 	
-	private final CheckboxSetting lockId = new CheckboxSetting("锁定ID",
-		"防止通过点击方块或重启NukerLegit来改变ID。",
-		false);
+	private final CheckboxSetting lockId =
+		new CheckboxSetting("锁定ID", "防止通过点击方块或重启NukerLegit来改变ID。", false);
 	
 	private final BlockListSetting multiIdList = new BlockListSetting(
 		"MultiID List", "The types of blocks to break in MultiID mode.",

@@ -27,10 +27,8 @@ public final class AutoFishRodSelector
 {
 	private static final MinecraftClient MC = WurstClient.MC;
 	
-	private final CheckboxSetting stopWhenOutOfRods = new CheckboxSetting(
-		"没有鱼竿时停止",
-		"如果启用，自动钓鱼会在没有鱼竿时自动关闭。",
-		false);
+	private final CheckboxSetting stopWhenOutOfRods =
+		new CheckboxSetting("没有鱼竿时停止", "如果启用，自动钓鱼会在没有鱼竿时自动关闭。", false);
 	
 	private final AutoFishHack autoFish;
 	private int bestRodValue;

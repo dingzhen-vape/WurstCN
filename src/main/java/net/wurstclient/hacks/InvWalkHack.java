@@ -29,13 +29,11 @@ import net.wurstclient.settings.CheckboxSetting;
 	"inventory move", "MenuWalk", "menu walk"})
 public final class InvWalkHack extends Hack implements UpdateListener
 {
-	private final CheckboxSetting allowClickGUI =
-		new CheckboxSetting("允许点击GUI",
-			"description.wurst.setting.invwalk.allow_clickgui", true);
+	private final CheckboxSetting allowClickGUI = new CheckboxSetting("允许点击GUI",
+		"description.wurst.setting.invwalk.allow_clickgui", true);
 	
-	private final CheckboxSetting allowOther =
-		new CheckboxSetting("允许其他屏幕",
-			"description.wurst.setting.invwalk.allow_other", true);
+	private final CheckboxSetting allowOther = new CheckboxSetting("允许其他屏幕",
+		"description.wurst.setting.invwalk.allow_other", true);
 	
 	private final CheckboxSetting allowSneak =
 		new CheckboxSetting("允许潜行键", true);

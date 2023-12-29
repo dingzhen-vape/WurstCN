@@ -56,23 +56,20 @@ public final class BowAimbotHack extends Hack
 	implements UpdateListener, RenderListener, GUIRenderListener
 {
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"决定哪个实体会被优先攻击。\n"
-			+ "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
+		"决定哪个实体会被优先攻击。\n" + "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
 			+ "\u00a7l角度\u00a7r - 攻击需要最少头部移动的实体。\n"
 			+ "\u00a7l角度+距离\u00a7r - 角度和距离的混合。这通常是最好的判断你想要瞄准的目标的方法。\n"
 			+ "\u00a7l生命值\u00a7r - 攻击最弱的实体。",
 		Priority.values(), Priority.ANGLE_DIST);
 	
-	private final SliderSetting predictMovement = new SliderSetting(
-		"预测移动",
-		"控制BowAimbot的移动预测算法的强度。",
-		0.2, 0, 2, 0.01, ValueDisplay.PERCENTAGE);
+	private final SliderSetting predictMovement = new SliderSetting("预测移动",
+		"控制BowAimbot的移动预测算法的强度。", 0.2, 0, 2, 0.01, ValueDisplay.PERCENTAGE);
 	
 	private final EntityFilterList entityFilters =
 		EntityFilterList.genericCombat();
 	
-	private final ColorSetting color = new ColorSetting("ESP颜色",
-		"BowAimbot在目标周围绘制的方框的颜色。", Color.RED);
+	private final ColorSetting color =
+		new ColorSetting("ESP颜色", "BowAimbot在目标周围绘制的方框的颜色。", Color.RED);
 	
 	private static final Box TARGET_BOX =
 		new Box(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5);

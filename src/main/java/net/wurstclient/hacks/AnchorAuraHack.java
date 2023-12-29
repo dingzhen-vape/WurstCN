@@ -47,31 +47,22 @@ import net.wurstclient.util.RotationUtils;
 public final class AnchorAuraHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range = new SliderSetting("范围",
-		"决定AnchorAura放置、充能和引爆锚的最远距离。",
-		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		"决定AnchorAura放置、充能和引爆锚的最远距离。", 6, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting autoPlace = new CheckboxSetting(
-		"自动放置锚",
-		"启用后，AnchorAura会自动在有效的实体附近放置锚。\n"
-			+ "禁用后，AnchorAura只会充能和引爆手动放置的锚。",
+	private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置锚",
+		"启用后，AnchorAura会自动在有效的实体附近放置锚。\n" + "禁用后，AnchorAura只会充能和引爆手动放置的锚。",
 		true);
 	
-	private final FacingSetting faceBlocks =
-		FacingSetting.withPacketSpam("面向锚",
-			"AnchorAura在放置和右键点击重生锚时是否要面向正确的方向。\n\n"
-				+ "速度较慢，但可以帮助应对反作弊插件。"
-				+ "检查视线",
-			Facing.OFF);
+	private final FacingSetting faceBlocks = FacingSetting.withPacketSpam("面向锚",
+		"AnchorAura在放置和右键点击重生锚时是否要面向正确的方向。\n\n" + "速度较慢，但可以帮助应对反作弊插件。" + "检查视线",
+		Facing.OFF);
 	
 	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"确保你在放置或右键点击重生锚时不会穿过方块。\n\n",
-		"速度较慢，但可以帮助应对反作弊插件。"
-			+ "检查视线",
-		false);
+		"确保你在放置或右键点击重生锚时不会穿过方块。\n\n", "速度较慢，但可以帮助应对反作弊插件。" + "检查视线", false);
 	
-	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
-		"在哪里寻找重生锚和萤石。", "重生锚在这个维度不会爆炸。",
-		TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
+	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
+		new EnumSetting<>("在哪里寻找重生锚和萤石。", "重生锚在这个维度不会爆炸。",
+			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final EntityFilterList entityFilters =
 		AnchorAuraFilterList.create();
