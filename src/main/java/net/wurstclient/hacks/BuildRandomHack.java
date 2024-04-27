@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -41,62 +41,56 @@ public final class BuildRandomHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range =
-		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private SliderSetting maxAttempts = new SliderSetting("最大尝试次数",
-		"BuildRandom在一次tick中尝试放置一个方块的最大随机位置数。\n\n"
-			+ "更高的值可以加快建造过程，但是会增加"
-			+ "延迟。"
-			+ "检查手持物品",
+	private SliderSetting maxAttempts = new SliderSetting("Max attempts",
+		"Maximum number of random positions that BuildRandom will try to place"
+			+ " a block at in one tick.\n\n"
+			+ "Higher values speed up the building process at the cost of"
+			+ " increased lag.",
 		128, 1, 1024, 1, ValueDisplay.INTEGER);
 	
 	private final CheckboxSetting checkItem =
-		new CheckboxSetting("只有当你真正拿着一个方块时才会建造。\n",
-			"关闭这个选项可以用火，水，岩浆，刷怪蛋，"
-				+ "或者如果你只想用空手在随机的地方右键点击"
-				+ "就可以建造。"
-				+ "检查视线",
+		new CheckboxSetting("Check held item",
+			"Only builds when you are actually holding a block.\n"
+				+ "Turn this off to build with fire, water, lava, spawn eggs,"
+				+ " or if you just want to right click with an empty hand"
+				+ " in random places.",
 			true);
 	
 	private final CheckboxSetting checkLOS =
-		new CheckboxSetting("确保BuildRandom不会尝试在墙后放置方块。",
-			"BuildRandom应该如何面向随机放置的方块。\n\n",
+		new CheckboxSetting("Check line of sight",
+			"Ensure that BuildRandom won't try to place blocks behind walls.",
 			false);
 	
 	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
-		"\u00a7lOff\u00a7r - 不要面向方块。会被反作弊插件检测到。\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在服务器端面向方块，同时在"
-			+ "客户端自由地移动摄像头。\n\n"
-			+ "\u00a7lClient-side\u00a7r - 通过在客户端移动摄像头来面向方块。这是最合法的选项，但是"
-			+ "看起来非常令人眼花缭乱。"
-			+ "BuildRandom应该如何挥动手臂来放置方块。\n\n"
-			+ "\u00a7lOff\u00a7r - 不要挥动手臂。会被反作弊插件检测到"
-			+ "。\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在服务器端挥动手臂，");
+		"How BuildRandom should face the randomly placed blocks.\n\n"
+			+ "\u00a7lOff\u00a7r - Don't face the blocks at all. Will be"
+			+ " detected by anti-cheat plugins.\n\n"
+			+ "\u00a7lServer-side\u00a7r - Face the blocks on the"
+			+ " server-side, while still letting you move the camera freely on"
+			+ " the client-side.\n\n"
+			+ "\u00a7lClient-side\u00a7r - Face the blocks by moving your"
+			+ " camera on the client-side. This is the most legit option, but"
+			+ " can be VERY disorienting to look at.");
 	
 	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"而不在客户端播放动画。\n\n"
-			+ "\u00a7lClient-side\u00a7r - 在客户端挥动手臂。这是最合法的选项。"
-			+ "始终启用FastPlace"
-			+ "即使没有启用FastPlace，也会像启用了一样建造。"
-			+ "边破坏边放置"
-			+ "即使你正在破坏一个方块，也会继续建造。\n"
-			+ "使用外挂可以做到，但是在原版中不行。可能看起来很可疑。");
+		"How BuildRandom should swing your hand when placing blocks.");
 	
 	private final CheckboxSetting fastPlace =
-		new CheckboxSetting("边骑乘边放置",
-			"即使你正在骑乘一个载具，也会继续建造。\n", false);
+		new CheckboxSetting("Always FastPlace",
+			"Builds as if FastPlace was enabled, even if it's not.", false);
 	
 	private final CheckboxSetting placeWhileBreaking = new CheckboxSetting(
-		"使用外挂可以做到，但是在原版中不行。可能看起来很可疑。",
-		"指示器"
-			+ "显示BuildRandom正在放置方块的位置。",
+		"Place while breaking",
+		"Builds even while you are breaking a block.\n"
+			+ "Possible with hacks, but wouldn't work in vanilla. May look suspicious.",
 		false);
 	
 	private final CheckboxSetting placeWhileRiding = new CheckboxSetting(
-		"随机建造",
+		"Place while riding",
 		"Builds even while you are riding a vehicle.\n"
-			+ "显示BuildRandom正在放置方块的位置。",
+			+ "Possible with hacks, but wouldn't work in vanilla. May look suspicious.",
 		false);
 	
 	private final CheckboxSetting indicator = new CheckboxSetting("Indicator",
@@ -122,14 +116,14 @@ public final class BuildRandomHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(RenderListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		lastPos = null;
 		EVENTS.remove(UpdateListener.class, this);

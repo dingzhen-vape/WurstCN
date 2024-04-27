@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -47,7 +47,7 @@ public final class RemoteViewHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// find entity if not already set
 		if(entity == null)
@@ -94,7 +94,7 @@ public final class RemoteViewHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		// remove listener
 		EVENTS.remove(UpdateListener.class, this);
@@ -103,8 +103,7 @@ public final class RemoteViewHack extends Hack
 		// reset entity
 		if(entity != null)
 		{
-			ChatUtils.message(
-				"不再查看 " + entity.getName().getString() + "。");
+			ChatUtils.message("不再查看 " + entity.getName().getString() + "。");
 			entity.setInvisible(wasInvisible);
 			entity = null;
 		}
@@ -139,8 +138,7 @@ public final class RemoteViewHack extends Hack
 			
 			if(entity == null)
 			{
-				ChatUtils
-					.error("实体 \"" + viewName + "\" 未找到.");
+				ChatUtils.error("实体 \"" + viewName + "\" 未找到.");
 				return;
 			}
 		}

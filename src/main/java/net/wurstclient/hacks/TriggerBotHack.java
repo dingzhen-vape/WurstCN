@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -32,10 +32,8 @@ public final class TriggerBotHack extends Hack implements UpdateListener
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final CheckboxSetting attackWhileBlocking = new CheckboxSetting(
-		"阻挡时攻击",
-		"是否在用盾牌阻挡/使用物品时攻击。",
-		false);
+	private final CheckboxSetting attackWhileBlocking =
+		new CheckboxSetting("阻挡时攻击", "是否在用盾牌阻挡/使用物品时攻击。", false);
 	
 	private final EntityFilterList entityFilters =
 		EntityFilterList.genericCombat();
@@ -53,7 +51,7 @@ public final class TriggerBotHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// disable other killauras
 		WURST.getHax().clickAuraHack.setEnabled(false);
@@ -70,7 +68,7 @@ public final class TriggerBotHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}
@@ -98,7 +96,7 @@ public final class TriggerBotHack extends Hack implements UpdateListener
 		if(!isCorrectEntity(target))
 			return;
 		
-		WURST.getHax().autoSwordHack.setSlot();
+		WURST.getHax().autoSwordHack.setSlot(target);
 		
 		WURST.getHax().criticalsHack.doCritical();
 		MC.interactionManager.attackEntity(player, target);

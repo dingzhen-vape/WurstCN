@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -45,9 +45,9 @@ public final class BaseFinderHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final BlockListSetting naturalBlocks = new BlockListSetting(
-		"自然方块",
-		"这些方块将被认为是自然生成的一部分。\n\n"
-			+ "它们不会被高亮显示为玩家基地。",
+		"Natural Blocks",
+		"These blocks will be considered part of natural generation.\n\n"
+			+ "They will NOT be highlighted as player bases.",
 		"minecraft:acacia_leaves", "minecraft:acacia_log", "minecraft:air",
 		"minecraft:allium", "minecraft:amethyst_block",
 		"minecraft:amethyst_cluster", "minecraft:andesite",
@@ -89,8 +89,8 @@ public final class BaseFinderHack extends Hack
 		"minecraft:tall_grass", "minecraft:tall_seagrass", "minecraft:tuff",
 		"minecraft:vine", "minecraft:water", "minecraft:white_tulip");
 	
-	private final ColorSetting color = new ColorSetting("颜色",
-		"人造方块将以这种颜色高亮显示。", Color.RED);
+	private final ColorSetting color = new ColorSetting("Color",
+		"Man-made blocks will be highlighted in this color.", Color.RED);
 	
 	private ArrayList<String> blockNames;
 	
@@ -118,20 +118,20 @@ public final class BaseFinderHack extends Hack
 		
 		// counter
 		if(counter >= 10000)
-			name += "10000+ 个方块";
+			name += "10000+ blocks";
 		else if(counter == 1)
-			name += "1 个方块";
+			name += "1 block";
 		else if(counter == 0)
-			name += "没有东西";
+			name += "nothing";
 		else
-			name += counter + " 个方块";
+			name += counter + " blocks";
 		
-		name += " 找到]";
+		name += " found]";
 		return name;
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// reset timer
 		messageTimer = 0;
@@ -142,7 +142,7 @@ public final class BaseFinderHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
@@ -264,9 +264,9 @@ public final class BaseFinderHack extends Hack
 			if(messageTimer <= 0)
 			{
 				ChatUtils
-					.warning("基地寻找器找到了 \u00a7l很多\u00a7r 的方块。");
+					.warning("BaseFinder found \u00a7lA LOT\u00a7r of blocks.");
 				ChatUtils.message(
-					"为了防止卡顿,它只会显示前10000个方块。");
+					"To prevent lag, it will only show the first 10000 blocks.");
 			}
 			
 			// reset timer

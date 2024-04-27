@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -19,14 +19,14 @@ public final class KeybindManagerOtf extends OtherFeature
 {
 	public KeybindManagerOtf()
 	{
-		super("热键绑定",
-			"这只是一个快捷方式，让你可以从GUI中打开按键绑定管理器。通常你会去Wurst选项 > 按键绑定。");
+		super("Keybinds",
+			"This is just a shortcut to let you open the Keybind Manager from within the GUI. Normally you would go to Wurst Options > Keybinds.");
 	}
 	
 	@Override
 	public String getPrimaryAction()
 	{
-		return "打开热键编辑器";
+		return "Open Keybind Manager";
 	}
 	
 	@Override

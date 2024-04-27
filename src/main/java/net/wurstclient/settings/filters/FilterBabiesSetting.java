@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -13,12 +13,12 @@ import net.minecraft.entity.passive.TadpoleEntity;
 
 public final class FilterBabiesSetting extends EntityFilterCheckbox
 {
-	private static final String EXCEPTIONS_TEXT = "这个过滤器不会"
-		+ "影响僵尸宝宝和其他敌对的宝宝生物。";
+	private static final String EXCEPTIONS_TEXT = "\n\nThis filter does not"
+		+ " affect baby zombies and other hostile baby mobs.";
 	
 	public FilterBabiesSetting(String description, boolean checked)
 	{
-		super("过滤宝宝", description + EXCEPTIONS_TEXT, checked);
+		super("Filter babies", description + EXCEPTIONS_TEXT, checked);
 	}
 	
 	@Override
@@ -38,6 +38,6 @@ public final class FilterBabiesSetting extends EntityFilterCheckbox
 	public static FilterBabiesSetting genericCombat(boolean checked)
 	{
 		return new FilterBabiesSetting(
-			"不会攻击小猪，小村民等。", checked);
+			"Won't attack baby pigs, baby villagers, etc.", checked);
 	}
 }

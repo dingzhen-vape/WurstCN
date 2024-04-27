@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -48,17 +48,15 @@ import net.wurstclient.util.RotationUtils;
 public final class KillauraHack extends Hack
 	implements UpdateListener, PostMotionListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围",
-		"决定Killaura攻击实体的最远距离。\n"
-			+ "任何比指定值更远的实体都不会被攻击。",
-		5, 1, 10, 0.05, ValueDisplay.DECIMAL);
+	private final SliderSetting range =
+		new SliderSetting("范围", "决定Killaura攻击实体的最远距离。\n" + "任何比指定值更远的实体都不会被攻击。",
+			5, 1, 10, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"决定哪个实体会被优先攻击。\n"
-			+ "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
+		"决定哪个实体会被优先攻击。\n" + "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
 			+ "\u00a7l角度\u00a7r - 攻击需要最少头部移动的实体。\n"
 			+ "\u00a7l生命值\u00a7r - 攻击最弱的实体。",
 		Priority.values(), Priority.ANGLE);
@@ -66,19 +64,14 @@ public final class KillauraHack extends Hack
 	private final SliderSetting fov =
 		new SliderSetting("视野", 360, 30, 360, 10, ValueDisplay.DEGREES);
 	
-	private final CheckboxSetting damageIndicator = new CheckboxSetting(
-		"伤害指示器",
-		"在目标内渲染一个颜色的盒子，与其剩余生命值成反比。",
-		true);
+	private final CheckboxSetting damageIndicator =
+		new CheckboxSetting("伤害指示器", "在目标内渲染一个颜色的盒子，与其剩余生命值成反比。", true);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);
 	
-	private final CheckboxSetting checkLOS =
-		new CheckboxSetting("检查视线",
-			"确保你在攻击时不会穿过方块。\n\n"
-				+ "速度较慢，但可以帮助应对反作弊插件。",
-			false);
+	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视线",
+		"确保你在攻击时不会穿过方块。\n\n" + "速度较慢，但可以帮助应对反作弊插件。", false);
 	
 	private final EntityFilterList entityFilters =
 		EntityFilterList.genericCombat();
@@ -158,7 +151,7 @@ public final class KillauraHack extends Hack
 		if(target == null)
 			return;
 		
-		WURST.getHax().autoSwordHack.setSlot();
+		WURST.getHax().autoSwordHack.setSlot(target);
 		
 		Vec3d hitVec = target.getBoundingBox().getCenter();
 		if(checkLOS.isChecked() && !BlockUtils.hasLineOfSight(hitVec))

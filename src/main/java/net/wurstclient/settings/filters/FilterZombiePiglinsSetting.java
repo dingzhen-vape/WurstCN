@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -16,7 +16,7 @@ public final class FilterZombiePiglinsSetting
 	private FilterZombiePiglinsSetting(String description, Mode selected,
 		boolean checked)
 	{
-		super("过滤僵尸猪灵", description, selected, checked);
+		super("Filter zombie piglins", description, selected, checked);
 	}
 	
 	public FilterZombiePiglinsSetting(String description, Mode selected)
@@ -38,24 +38,24 @@ public final class FilterZombiePiglinsSetting
 	
 	public static FilterZombiePiglinsSetting genericCombat(Mode selected)
 	{
-		return new FilterZombiePiglinsSetting("当设置为\u00a7l开\u00a7r时，"
-			+ "僵尸猪灵不会被攻击。 "
-			+ "当设置为\u00a7l如果平静\u00a7r时，僵尸猪灵不会被"
-			+ "攻击直到他们先攻击。要注意的是，这个过滤器"
-			+ "无法检测僵尸猪灵是在攻击你还是别人。"
-			+ " "
-			+ "当设置为\u00a7l关\u00a7r时，这个过滤器什么都不做，"
-			+ "僵尸猪灵可以被攻击。", selected);
+		return new FilterZombiePiglinsSetting("When set to \u00a7lOn\u00a7r,"
+			+ " zombified piglins won't be attacked at all.\n\n"
+			+ "When set to \u00a7lIf calm\u00a7r, zombified piglins won't be"
+			+ " attacked until they attack first. Be warned that this filter"
+			+ " cannot detect if the zombified piglins are attacking you or"
+			+ " someone else.\n\n"
+			+ "When set to \u00a7lOff\u00a7r, this filter does nothing and"
+			+ " zombified piglins can be attacked.", selected);
 	}
 	
 	public static FilterZombiePiglinsSetting genericVision(Mode selected)
 	{
-		return new FilterZombiePiglinsSetting("当设置为\u00a7l开\u00a7r时，"
-			+ "僵尸猪灵不会被显示。 "
-			+ "当设置为\u00a7l如果平静\u00a7r时，僵尸猪灵不会被"
-			+ "显示直到他们攻击某物。 "
-			+ "当设置为\u00a7l关\u00a7r时，这个过滤器什么都不做，"
-			+ "僵尸猪灵可以被显示。", selected);
+		return new FilterZombiePiglinsSetting("When set to \u00a7lOn\u00a7r,"
+			+ " zombified piglins won't be shown at all.\n\n"
+			+ "When set to \u00a7lIf calm\u00a7r, zombified piglins won't be"
+			+ " shown until they attack something.\n\n"
+			+ "When set to \u00a7lOff\u00a7r, this filter does nothing and"
+			+ " zombified piglins can be shown.", selected);
 	}
 	
 	public static FilterZombiePiglinsSetting onOffOnly(String description,

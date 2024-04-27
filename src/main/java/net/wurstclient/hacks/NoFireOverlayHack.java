@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -16,9 +16,8 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 @SearchTags({"no fire overlay"})
 public final class NoFireOverlayHack extends Hack
 {
-	private final SliderSetting offset =
-		new SliderSetting("偏移量", "降低火焰覆盖的量。",
-			0.6, 0.01, 0.6, 0.01, ValueDisplay.DECIMAL);
+	private final SliderSetting offset = new SliderSetting("偏移量", "降低火焰覆盖的量。",
+		0.6, 0.01, 0.6, 0.01, ValueDisplay.DECIMAL);
 	
 	public NoFireOverlayHack()
 	{

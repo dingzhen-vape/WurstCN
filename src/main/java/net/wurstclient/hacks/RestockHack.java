@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -39,20 +39,16 @@ public final class RestockHack extends Hack implements UpdateListener
 	private ItemListSetting items = new ItemListSetting("物品",
 		"Item(s) to be restocked.", "minecraft:minecart");
 	
-	private final SliderSetting restockSlot = new SliderSetting("槽位",
-		"补充到哪个槽位。", 0, -1, 9, 1,
-		ValueDisplay.INTEGER.withLabel(9, "副手").withLabel(-1, "当前"));
+	private final SliderSetting restockSlot =
+		new SliderSetting("槽位", "补充到哪个槽位。", 0, -1, 9, 1,
+			ValueDisplay.INTEGER.withLabel(9, "副手").withLabel(-1, "当前"));
 	
-	private final SliderSetting restockAmount = new SliderSetting(
-		"最小数量",
-		"手中物品的最小数量，低于这个数量时会触发补充。",
-		1, 1, 64, 1, ValueDisplay.INTEGER);
+	private final SliderSetting restockAmount = new SliderSetting("最小数量",
+		"手中物品的最小数量，低于这个数量时会触发补充。", 1, 1, 64, 1, ValueDisplay.INTEGER);
 	
-	private final SliderSetting repairMode = new SliderSetting(
-		"工具修复模式",
-		"当工具的耐久度达到给定的阈值时，会自动换掉，以便在它们损坏之前修复它们。\n"
-			+ "可以从0（关闭）到100调整。",
-		0, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "关闭"));
+	private final SliderSetting repairMode = new SliderSetting("工具修复模式",
+		"当工具的耐久度达到给定的阈值时，会自动换掉，以便在它们损坏之前修复它们。\n" + "可以从0（关闭）到100调整。", 0, 0, 100,
+		1, ValueDisplay.INTEGER.withLabel(0, "关闭"));
 	
 	public RestockHack()
 	{
@@ -65,13 +61,13 @@ public final class RestockHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}

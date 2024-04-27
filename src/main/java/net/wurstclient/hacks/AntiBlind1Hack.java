@@ -9,11 +9,8 @@ package net.wurstclient.hacks;
 
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
-import net.wurstclient.events.RenderListener;
-import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.util.ChatUtils;
 
@@ -24,22 +21,27 @@ import net.wurstclient.util.ChatUtils;
 public final class AntiBlind1Hack extends Hack
 {
 	private Text component;
-	private void showLink(String text,String url)
+	
+	private void showLink(String text, String url)
 	{
 		ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
 		component = Text.literal(text).styled(s -> s.withClickEvent(event));
 	}
+	
 	public AntiBlind1Hack()
 	{
 		super("kono_yalu翻译");
 		setCategory(Category.OTHER);
 	}
+	
 	@Override
 	public void onEnable()
 	{
-		String text = "译者主页链接(点我):https://space.bilibili.com/432060575?spm_id_from=333.1007.0.0";
-		String url = "https://space.bilibili.com/432060575?spm_id_from=333.1007.0.0";
-		showLink(text,url);
+		String text =
+			"译者主页链接(点我):https://space.bilibili.com/432060575?spm_id_from=333.1007.0.0";
+		String url =
+			"https://space.bilibili.com/432060575?spm_id_from=333.1007.0.0";
+		showLink(text, url);
 		ChatUtils.component(component);
 	}
 	

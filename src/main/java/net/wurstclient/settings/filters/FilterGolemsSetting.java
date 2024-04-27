@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -15,7 +15,7 @@ public final class FilterGolemsSetting extends EntityFilterCheckbox
 {
 	public FilterGolemsSetting(String description, boolean checked)
 	{
-		super("过滤傀儡", description, checked);
+		super("Filter golems", description, checked);
 	}
 	
 	@Override
@@ -27,12 +27,12 @@ public final class FilterGolemsSetting extends EntityFilterCheckbox
 	public static FilterGolemsSetting genericCombat(boolean checked)
 	{
 		return new FilterGolemsSetting(
-			"不会攻击铁傀儡和雪傀儡。", checked);
+			"Won't attack iron golems and snow golems.", checked);
 	}
 	
 	public static FilterGolemsSetting genericVision(boolean checked)
 	{
 		return new FilterGolemsSetting(
-			"不会显示铁傀儡和雪傀儡。", checked);
+			"Won't show iron golems and snow golems.", checked);
 	}
 }

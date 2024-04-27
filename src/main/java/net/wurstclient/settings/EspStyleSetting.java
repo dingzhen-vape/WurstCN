@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -11,12 +11,12 @@ public final class EspStyleSetting extends EnumSetting<EspStyleSetting.EspStyle>
 {
 	public EspStyleSetting()
 	{
-		super("风格", EspStyle.values(), EspStyle.BOXES);
+		super("Style", EspStyle.values(), EspStyle.BOXES);
 	}
 	
 	public EspStyleSetting(EspStyle selected)
 	{
-		super("风格", EspStyle.values(), selected);
+		super("Style", EspStyle.values(), selected);
 	}
 	
 	public EspStyleSetting(String name, String description, EspStyle selected)
@@ -36,9 +36,9 @@ public final class EspStyleSetting extends EnumSetting<EspStyleSetting.EspStyle>
 	
 	public enum EspStyle
 	{
-		BOXES("只有盒子", true, false),
-		LINES("只有线条", false, true),
-		LINES_AND_BOXES("线条和盒子", true, true);
+		BOXES("Boxes only", true, false),
+		LINES("Lines only", false, true),
+		LINES_AND_BOXES("Lines and boxes", true, true);
 		
 		private final String name;
 		private final boolean boxes;

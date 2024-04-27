@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -14,7 +14,7 @@ public final class FilterVillagersSetting extends EntityFilterCheckbox
 {
 	public FilterVillagersSetting(String description, boolean checked)
 	{
-		super("过滤村民", description, checked);
+		super("Filter villagers", description, checked);
 	}
 	
 	@Override
@@ -26,12 +26,12 @@ public final class FilterVillagersSetting extends EntityFilterCheckbox
 	public static FilterVillagersSetting genericCombat(boolean checked)
 	{
 		return new FilterVillagersSetting(
-			"不会攻击村民和流浪商人。", checked);
+			"Won't attack villagers and wandering traders.", checked);
 	}
 	
 	public static FilterVillagersSetting genericVision(boolean checked)
 	{
 		return new FilterVillagersSetting(
-			"不会显示村民和流浪商人。", checked);
+			"Won't show villagers and wandering traders.", checked);
 	}
 }

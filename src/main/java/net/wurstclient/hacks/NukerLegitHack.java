@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -42,22 +42,22 @@ public final class NukerLegitHack extends Hack
 	implements LeftClickListener, RenderListener, UpdateListener
 {
 	private final SliderSetting range =
-		new SliderSetting("范围", 4.25, 1, 4.25, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("Range", 4.25, 1, 4.25, 0.05, ValueDisplay.DECIMAL);
 	
-	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"\u00a7l普通\u00a7r模式只是破坏你周围的一切。\n"
-			+ "\u00a7lID\u00a7r模式只破坏选定的方块类型。左键点击一个方块来选择它。\n"
-			+ "\u00a7l多ID\u00a7r模式只破坏你的多ID列表中的方块类型。\n"
-			+ "\u00a7l平整\u00a7r模式平整你周围的区域，但不会挖下去。\n"
-			+ "\u00a7l粉碎\u00a7r模式只破坏可以立即被摧毁的方块（例如高草）。",
+	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
+		"\u00a7lNormal\u00a7r mode simply breaks everything around you.\n"
+			+ "\u00a7lID\u00a7r mode only breaks the selected block type. Left-click on a block to select it.\n"
+			+ "\u00a7lMultiID\u00a7r mode only breaks the block types in your MultiID List.\n"
+			+ "\u00a7lFlat\u00a7r mode flattens the area around you, but won't dig down.\n"
+			+ "\u00a7lSmash\u00a7r mode only breaks blocks that can be destroyed instantly (e.g. tall grass).",
 		Mode.values(), Mode.NORMAL);
 	
 	private final BlockSetting id =
-		new BlockSetting("ID", "ID模式中要破坏的方块类型。\n"
+		new BlockSetting("ID", "The type of block to break in ID mode.\n"
 			+ "air = won't break anything", "minecraft:air", true);
 	
-	private final CheckboxSetting lockId = new CheckboxSetting("锁定ID",
-		"防止通过点击方块或重启NukerLegit来改变ID。",
+	private final CheckboxSetting lockId = new CheckboxSetting("Lock ID",
+		"Prevents changing the ID by clicking on blocks or restarting NukerLegit.",
 		false);
 	
 	private final BlockListSetting multiIdList = new BlockListSetting(
@@ -96,7 +96,7 @@ public final class NukerLegitHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// disable other nukers
 		WURST.getHax().autoMineHack.setEnabled(false);
@@ -112,7 +112,7 @@ public final class NukerLegitHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		// remove listeners
 		EVENTS.remove(LeftClickListener.class, this);

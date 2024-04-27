@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -14,7 +14,7 @@ public final class FilterShulkerBulletSetting extends EntityFilterCheckbox
 {
 	public FilterShulkerBulletSetting(String description, boolean checked)
 	{
-		super("过滤潜影贝子弹", description, checked);
+		super("Filter shulker bullets", description, checked);
 	}
 	
 	@Override
@@ -25,7 +25,7 @@ public final class FilterShulkerBulletSetting extends EntityFilterCheckbox
 	
 	public static FilterShulkerBulletSetting genericCombat(boolean checked)
 	{
-		return new FilterShulkerBulletSetting("不会攻击潜影贝子弹。",
+		return new FilterShulkerBulletSetting("Won't attack shulker bullets.",
 			checked);
 	}
 }

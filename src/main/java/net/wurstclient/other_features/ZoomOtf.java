@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -21,12 +21,12 @@ import net.wurstclient.util.MathUtils;
 @DontBlock
 public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 {
-	private final SliderSetting level = new SliderSetting("缩放等级", 3, 1,
+	private final SliderSetting level = new SliderSetting("Zoom level", 3, 1,
 		50, 0.1, ValueDisplay.DECIMAL.withSuffix("x"));
 	
 	private final CheckboxSetting scroll = new CheckboxSetting(
-		"使用鼠标滚轮",
-		"如果启用，你可以在缩放时使用鼠标滚轮来进一步放大。",
+		"Use mouse wheel",
+		"If enabled, you can use the mouse wheel while zooming to zoom in even further.",
 		true);
 	
 	private Double currentLevel;
@@ -34,9 +34,9 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 	
 	public ZoomOtf()
 	{
-		super("缩放", "让你能够缩放。\n"
-			+ "默认情况下，缩放是通过按下\u00a7lV\u00a7r键来激活的。\n"
-			+ "前往Wurst选项 -> 缩放来改变这个按键绑定。");
+		super("Zoom", "Allows you to zoom in.\n"
+			+ "By default, the zoom is activated by pressing the \u00a7lV\u00a7r key.\n"
+			+ "Go to Wurst Options -> Zoom to change this keybind.");
 		addSetting(level);
 		addSetting(scroll);
 		EVENTS.add(MouseScrollListener.class, this);

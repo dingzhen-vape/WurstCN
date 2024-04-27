@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,13 +7,19 @@
  */
 package net.wurstclient.hacks;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.PotionContentsComponent;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
@@ -25,7 +31,7 @@ import net.wurstclient.util.ChatUtils;
 public final class TrollPotionHack extends Hack
 {
 	private final EnumSetting<PotionType> potionType =
-		new EnumSetting<>("药水类型", "要生成的药水类型。",
+		new EnumSetting<>("Potion type", "The type of potion to generate.",
 			PotionType.values(), PotionType.SPLASH);
 	
 	public TrollPotionHack()
@@ -36,12 +42,12 @@ public final class TrollPotionHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// check gamemode
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("只能在创造模式下使用。");
+			ChatUtils.error("Creative mode only.");
 			setEnabled(false);
 			return;
 		}
@@ -51,9 +57,9 @@ public final class TrollPotionHack extends Hack
 		
 		// give potion
 		if(placeStackInHotbar(stack))
-			ChatUtils.message("药水已创建。");
+			ChatUtils.message("Potion created.");
 		else
-			ChatUtils.error("请清空你的快捷栏中的一个槽位。");
+			ChatUtils.error("Please clear a slot in your hotbar.");
 		
 		setEnabled(false);
 	}
@@ -75,13 +81,13 @@ public final class TrollPotionHack extends Hack
 	
 	private enum PotionType
 	{
-		NORMAL("普通", "药水", Items.POTION),
+		NORMAL("Normal", "Potion", Items.POTION),
 		
-		SPLASH("喷溅", "喷溅药水", Items.SPLASH_POTION),
+		SPLASH("Splash", "Splash Potion", Items.SPLASH_POTION),
 		
-		LINGERING("滞留", "滞留药水", Items.LINGERING_POTION),
+		LINGERING("Lingering", "Lingering Potion", Items.LINGERING_POTION),
 		
-		ARROW("箭", "箭", Items.TIPPED_ARROW);
+		ARROW("Arrow", "Arrow", Items.TIPPED_ARROW);
 		
 		private final String name;
 		private final String itemName;
@@ -104,25 +110,24 @@ public final class TrollPotionHack extends Hack
 		{
 			ItemStack stack = new ItemStack(item);
 			
-			NbtList effects = new NbtList();
+			ArrayList<StatusEffectInstance> effects = new ArrayList<>();
 			for(int i = 1; i <= 23; i++)
 			{
-				String id = Registries.STATUS_EFFECT.getEntry(i).get().getKey()
-					.get().getValue().toString();
+				StatusEffect effect =
+					Registries.STATUS_EFFECT.getEntry(i).get().value();
+				RegistryEntry<StatusEffect> entry =
+					Registries.STATUS_EFFECT.getEntry(effect);
 				
-				NbtCompound effect = new NbtCompound();
-				effect.putInt("Amplifier", Integer.MAX_VALUE);
-				effect.putInt("Duration", Integer.MAX_VALUE);
-				effect.putString("Id", id);
-				effects.add(effect);
+				effects.add(new StatusEffectInstance(entry, Integer.MAX_VALUE,
+					Integer.MAX_VALUE));
 			}
 			
-			NbtCompound nbt = new NbtCompound();
-			nbt.put("CustomPotionEffects", effects);
-			stack.setNbt(nbt);
+			stack.set(DataComponentTypes.POTION_CONTENTS,
+				new PotionContentsComponent(Optional.empty(), Optional.empty(),
+					effects));
 			
-			String name = "\u00a7f" + itemName + "的恶作剧";
-			stack.setCustomName(Text.literal(name));
+			String name = "\u00a7f" + itemName + " of Trolling";
+			stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(name));
 			
 			return stack;
 		}

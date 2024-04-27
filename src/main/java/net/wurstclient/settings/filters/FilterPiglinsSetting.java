@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -13,12 +13,12 @@ import net.minecraft.entity.mob.PiglinEntity;
 public final class FilterPiglinsSetting extends AttackDetectingEntityFilter
 {
 	private static final String EXCEPTIONS_TEXT =
-		"这个过滤器不会影响猪灵暴徒。";
+		"\n\nThis filter does not affect piglin brutes.";
 	
 	private FilterPiglinsSetting(String description, Mode selected,
 		boolean checked)
 	{
-		super("过滤猪灵", description + EXCEPTIONS_TEXT, selected,
+		super("Filter piglins", description + EXCEPTIONS_TEXT, selected,
 			checked);
 	}
 	
@@ -41,23 +41,23 @@ public final class FilterPiglinsSetting extends AttackDetectingEntityFilter
 	
 	public static FilterPiglinsSetting genericCombat(Mode selected)
 	{
-		return new FilterPiglinsSetting("当设置为\u00a7l开\u00a7r时，"
-			+ "猪灵不会被攻击。 "
-			+ "当设置为\u00a7l如果平静\u00a7r时，猪灵不会被攻击"
-			+ "直到他们先攻击。要注意的是，这个过滤器无法"
-			+ "检测猪灵是在攻击你还是别人。 "
-			+ "当设置为\u00a7l关\u00a7r时，这个过滤器什么都不做，"
-			+ "猪灵可以被攻击。", selected);
+		return new FilterPiglinsSetting("When set to \u00a7lOn\u00a7r,"
+			+ " piglins won't be attacked at all.\n\n"
+			+ "When set to \u00a7lIf calm\u00a7r, piglins won't be attacked"
+			+ " until they attack first. Be warned that this filter cannot"
+			+ " detect if the piglins are attacking you or someone else.\n\n"
+			+ "When set to \u00a7lOff\u00a7r, this filter does nothing and"
+			+ " piglins can be attacked.", selected);
 	}
 	
 	public static FilterPiglinsSetting genericVision(Mode selected)
 	{
-		return new FilterPiglinsSetting("当设置为\u00a7l开\u00a7r时，"
-			+ "猪灵不会被显示。 "
-			+ "当设置为\u00a7l如果平静\u00a7r时，猪灵不会被显示直到"
-			+ "他们攻击某物。 "
-			+ "当设置为\u00a7l关\u00a7r时，这个过滤器什么都不做，"
-			+ "猪灵可以被显示。", selected);
+		return new FilterPiglinsSetting("When set to \u00a7lOn\u00a7r,"
+			+ " piglins won't be shown at all.\n\n"
+			+ "When set to \u00a7lIf calm\u00a7r, piglins won't be shown until"
+			+ " they attack something.\n\n"
+			+ "When set to \u00a7lOff\u00a7r, this filter does nothing and"
+			+ " piglins can be shown.", selected);
 	}
 	
 	public static FilterPiglinsSetting onOffOnly(String description,

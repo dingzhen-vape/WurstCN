@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -20,8 +20,7 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class MileyCyrusHack extends Hack implements UpdateListener
 {
 	private final SliderSetting twerkSpeed = new SliderSetting("扭动速度",
-		"我像一颗破坏球一样冲进来...", 5, 1, 10, 1,
-		ValueDisplay.INTEGER);
+		"我像一颗破坏球一样冲进来...", 5, 1, 10, 1, ValueDisplay.INTEGER);
 	
 	private int timer;
 	
@@ -33,14 +32,14 @@ public final class MileyCyrusHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		timer = 0;
 		EVENTS.add(UpdateListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		((IKeyBinding)MC.options.sneakKey).resetPressedState();

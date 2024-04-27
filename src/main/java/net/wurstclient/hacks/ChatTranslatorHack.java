@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -26,8 +26,8 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 	private final EnumSetting<FromLanguage> langFrom = new EnumSetting<>(
 		"从哪种语言翻译", FromLanguage.values(), FromLanguage.AUTO_DETECT);
 	
-	private final EnumSetting<ToLanguage> langTo = new EnumSetting<>(
-		"翻译成哪种语言", ToLanguage.values(), ToLanguage.ENGLISH);
+	private final EnumSetting<ToLanguage> langTo =
+		new EnumSetting<>("翻译成哪种语言", ToLanguage.values(), ToLanguage.ENGLISH);
 	
 	public ChatTranslatorHack()
 	{
@@ -39,13 +39,13 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(ChatInputListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(ChatInputListener.class, this);
 	}

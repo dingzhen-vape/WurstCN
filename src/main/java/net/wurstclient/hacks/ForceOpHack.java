@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -52,7 +52,7 @@ public final class ForceOpHack extends Hack implements ChatInputListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		passwords = defaultList;
 		gotWrongPwMsg = false;
@@ -98,7 +98,8 @@ public final class ForceOpHack extends Hack implements ChatInputListener
 			String[] args = msg.split(" ");
 			int delay = Integer.parseInt(args[1]);
 			boolean waitForMsg = Boolean.parseBoolean(args[2]);
-			new Thread(() -> runForceOP(delay, waitForMsg), "破解账号（AuthME").start();
+			new Thread(() -> runForceOP(delay, waitForMsg), "破解账号（AuthME")
+				.start();
 			return;
 		}
 		
@@ -147,7 +148,7 @@ public final class ForceOpHack extends Hack implements ChatInputListener
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(ChatInputListener.class, this);
 		

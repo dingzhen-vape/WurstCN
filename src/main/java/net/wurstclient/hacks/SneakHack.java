@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -29,13 +29,10 @@ public final class SneakHack extends Hack
 			+ "\u00a7l合法\u00a7r 模式真的让你潜行。",
 		SneakMode.values(), SneakMode.LEGIT);
 	
-	private final CheckboxSetting offWhileFlying =
-		new CheckboxSetting("飞行时关闭",
-			"自动在你飞行或使用"
-				+ "自由视角时禁用合法潜行,这样它就不会强制你向下飞。\n\n"
-				+ "请记住,这也意味着你在做这些事情时不会对其他玩家隐藏起来。"
-				+ "潜行",
-			false);
+	private final CheckboxSetting offWhileFlying = new CheckboxSetting("飞行时关闭",
+		"自动在你飞行或使用" + "自由视角时禁用合法潜行,这样它就不会强制你向下飞。\n\n"
+			+ "请记住,这也意味着你在做这些事情时不会对其他玩家隐藏起来。" + "潜行",
+		false);
 	
 	public SneakHack()
 	{
@@ -52,14 +49,14 @@ public final class SneakHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(PreMotionListener.class, this);
 		EVENTS.add(PostMotionListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(PreMotionListener.class, this);
 		EVENTS.remove(PostMotionListener.class, this);

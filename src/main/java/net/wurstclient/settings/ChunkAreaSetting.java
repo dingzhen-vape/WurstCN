@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -42,22 +42,22 @@ public final class ChunkAreaSetting
 	
 	public enum ChunkArea
 	{
-		A3("Invalid book offer list: ", 1),
-		A5("id", 2),
-		A7("level", 3),
-		A9("max_price", 4),
-		A11("Invalid book offer: ", 5),
-		A13("id", 6),
-		A15("level", 7),
-		A17("max_price", 8),
-		A19("name", 9),
-		A21("descriptionKey", 10),
-		A23("type", 11),
-		A25("BookOffers", 12),
-		A27("id", 13),
-		A29("level", 14),
-		A31("max_price", 15),
-		A33("defaultOffers", 16);
+		A3("3x3 chunks", 1),
+		A5("5x5 chunks", 2),
+		A7("7x7 chunks", 3),
+		A9("9x9 chunks", 4),
+		A11("11x11 chunks", 5),
+		A13("13x13 chunks", 6),
+		A15("15x15 chunks", 7),
+		A17("17x17 chunks", 8),
+		A19("19x19 chunks", 9),
+		A21("21x21 chunks", 10),
+		A23("23x23 chunks", 11),
+		A25("25x25 chunks", 12),
+		A27("27x27 chunks", 13),
+		A29("29x29 chunks", 14),
+		A31("31x31 chunks", 15),
+		A33("33x33 chunks", 16);
 		
 		private final String name;
 		private final int chunkRange;

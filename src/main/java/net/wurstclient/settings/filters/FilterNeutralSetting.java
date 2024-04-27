@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -18,7 +18,7 @@ public final class FilterNeutralSetting extends AttackDetectingEntityFilter
 	private FilterNeutralSetting(String description, Mode selected,
 		boolean checked)
 	{
-		super("过滤中立生物", description, selected, checked);
+		super("Filter neutral mobs", description, selected, checked);
 	}
 	
 	public FilterNeutralSetting(String description, Mode selected)

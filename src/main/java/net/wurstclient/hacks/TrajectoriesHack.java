@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -33,6 +33,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext.FluidHandling;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.RenderListener;
@@ -47,16 +48,14 @@ import net.wurstclient.util.RotationUtils;
 	"arrow trajectories", "bow trajectories"})
 public final class TrajectoriesHack extends Hack implements RenderListener
 {
-	private final ColorSetting missColor = new ColorSetting("未命中颜色",
-		"当轨迹没有击中任何东西时的颜色。", Color.GRAY);
+	private final ColorSetting missColor =
+		new ColorSetting("未命中颜色", "当轨迹没有击中任何东西时的颜色。", Color.GRAY);
 	
 	private final ColorSetting entityHitColor =
-		new ColorSetting("实体命中颜色",
-			"当轨迹击中一个实体时的颜色。", Color.RED);
+		new ColorSetting("实体命中颜色", "当轨迹击中一个实体时的颜色。", Color.RED);
 	
 	private final ColorSetting blockHitColor =
-		new ColorSetting("方块命中颜色",
-			"当轨迹击中一个方块时的颜色。", Color.GREEN);
+		new ColorSetting("方块命中颜色", "当轨迹击中一个方块时的颜色。", Color.GREEN);
 	
 	public TrajectoriesHack()
 	{
@@ -68,13 +67,13 @@ public final class TrajectoriesHack extends Hack implements RenderListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(RenderListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(RenderListener.class, this);
 	}
@@ -185,6 +184,7 @@ public final class TrajectoriesHack extends Hack implements RenderListener
 		Item item = stack.getItem();
 		double throwPower = getThrowPower(item);
 		double gravity = getProjectileGravity(item);
+		FluidHandling fluidHandling = getFluidHandling(item);
 		
 		// prepare yaw and pitch
 		double yaw = Math.toRadians(player.getYaw());
@@ -216,7 +216,8 @@ public final class TrajectoriesHack extends Hack implements RenderListener
 				: RotationUtils.getEyesPos();
 			
 			// check for block collision
-			BlockHitResult bResult = BlockUtils.raycast(lastPos, arrowPos);
+			BlockHitResult bResult =
+				BlockUtils.raycast(lastPos, arrowPos, fluidHandling);
 			if(bResult.getType() != HitResult.Type.MISS)
 			{
 				// replace last pos with the collision point
@@ -302,6 +303,14 @@ public final class TrajectoriesHack extends Hack implements RenderListener
 			return 0.015;
 		
 		return 0.03;
+	}
+	
+	private FluidHandling getFluidHandling(Item item)
+	{
+		if(item instanceof FishingRodItem)
+			return FluidHandling.ANY;
+		
+		return FluidHandling.NONE;
 	}
 	
 	public static boolean isThrowable(ItemStack stack)

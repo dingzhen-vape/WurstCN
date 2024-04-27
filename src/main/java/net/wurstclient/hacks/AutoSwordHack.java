@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,12 +7,15 @@
  */
 package net.wurstclient.hacks;
 
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
-import net.minecraft.item.MiningToolItem;
-import net.minecraft.item.SwordItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
+import net.minecraft.item.TridentItem;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.wurstclient.Category;
@@ -32,16 +35,13 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 	private final EnumSetting<Priority> priority =
 		new EnumSetting<>("优先级", Priority.values(), Priority.SPEED);
 	
-	private final CheckboxSetting switchBack = new CheckboxSetting(
-		"切换回来",
-		"在\u00a7l释放时间\u00a7r过去后，从武器切换回之前选择的槽。",
-		true);
+	private final CheckboxSetting switchBack = new CheckboxSetting("切换回",
+		"在 \u00a7l释放时间\u00a7r 过后，切换回之前选择的槽位。" + "释放时间", true);
 	
-	private final SliderSetting releaseTime = new SliderSetting("释放时间",
-		"AutoSword从武器切换回之前选择的槽的时间。\n\n"
-			+ "只有当\u00a7l切换回来\u00a7r被勾选时才有效。",
-		10, 1, 200, 1,
-		ValueDisplay.INTEGER.withSuffix(" 刻").withLabel(1, "1刻"));
+	private final SliderSetting releaseTime =
+		new SliderSetting("AutoSword 从武器切换回之前选择的槽位的时间。\n\n",
+			"只有当 \u00a7l切换回\u00a7r 被勾选时才有效。" + " 刻" + "1 刻", 10, 1, 200, 1,
+			ValueDisplay.INTEGER.withSuffix("伤害 (斧)").withLabel(1, "速度 (剑)"));
 	
 	private int oldSlot;
 	private int timer;
@@ -57,14 +57,14 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		oldSlot = -1;
 		EVENTS.add(UpdateListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		resetSlot();
@@ -80,7 +80,7 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 			
 			if(entity instanceof LivingEntity
 				&& EntityUtils.IS_ATTACKABLE.test(entity))
-				setSlot();
+				setSlot(entity);
 		}
 		
 		// update timer
@@ -93,7 +93,7 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 		resetSlot();
 	}
 	
-	public void setSlot()
+	public void setSlot(Entity entity)
 	{
 		// check if active
 		if(!isEnabled())
@@ -112,10 +112,9 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 			if(MC.player.getInventory().getStack(i).isEmpty())
 				continue;
 			
-			Item item = MC.player.getInventory().getStack(i).getItem();
-			
-			// get damage
-			float value = getValue(item);
+			// get weapon value
+			ItemStack stack = MC.player.getInventory().getStack(i);
+			float value = getValue(stack, entity);
 			
 			// compare with previous best weapon
 			if(value > bestValue)
@@ -140,21 +139,26 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 		timer = releaseTime.getValueI();
 	}
 	
-	private float getValue(Item item)
+	private float getValue(ItemStack stack, Entity entity)
 	{
+		Item item = stack.getItem();
+		if(!(item instanceof ToolItem || item instanceof TridentItem))
+			return Integer.MIN_VALUE;
+		
 		switch(priority.getSelected())
 		{
 			case SPEED:
-			if(item instanceof ToolItem tool)
-				return ItemUtils.getAttackSpeed(tool);
-			break;
+			return (float)ItemUtils
+				.getAttribute(item, EntityAttributes.GENERIC_ATTACK_SPEED)
+				.orElseThrow();
 			
 			case DAMAGE:
-			if(item instanceof SwordItem sword)
-				return sword.getAttackDamage();
-			if(item instanceof MiningToolItem miningTool)
-				return miningTool.getAttackDamage();
-			break;
+			EntityType<?> group = entity.getType();
+			float dmg = (float)ItemUtils
+				.getAttribute(item, EntityAttributes.GENERIC_ATTACK_DAMAGE)
+				.orElseThrow();
+			dmg += EnchantmentHelper.getAttackDamage(stack, group);
+			return dmg;
 		}
 		
 		return Integer.MIN_VALUE;
@@ -177,8 +181,8 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 	
 	private enum Priority
 	{
-		SPEED("速度 (剑)"),
-		DAMAGE("伤害 (斧)");
+		SPEED("Speed (swords)"),
+		DAMAGE("Damage (axes)");
 		
 		private final String name;
 		

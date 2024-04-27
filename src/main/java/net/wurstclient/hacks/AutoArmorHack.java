@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -36,20 +36,15 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class AutoArmorHack extends Hack
 	implements UpdateListener, PacketOutputListener
 {
-	private final CheckboxSetting useEnchantments = new CheckboxSetting(
-		"使用附魔",
-		"计算护甲强度时是否考虑保护附魔。",
-		true);
+	private final CheckboxSetting useEnchantments =
+		new CheckboxSetting("使用附魔", "计算护甲强度时是否考虑保护附魔。", true);
 	
-	private final CheckboxSetting swapWhileMoving = new CheckboxSetting(
-		"移动时交换",
-		"玩家移动时是否交换护甲部件。\n\n"
-			+ "\u00a7c\u00a7l警告:\u00a7r 这是不可能没有作弊的。它可能会引起怀疑。",
+	private final CheckboxSetting swapWhileMoving = new CheckboxSetting("移动时交换",
+		"玩家移动时是否交换护甲部件。\n\n" + "\u00a7c\u00a7l警告:\u00a7r 这是不可能没有作弊的。它可能会引起怀疑。",
 		false);
 	
 	private final SliderSetting delay = new SliderSetting("延迟",
-		"在交换下一件护甲之前等待的刻数。", 2,
-		0, 20, 1, ValueDisplay.INTEGER);
+		"在交换下一件护甲之前等待的刻数。", 2, 0, 20, 1, ValueDisplay.INTEGER);
 	
 	private int timer;
 	
@@ -63,7 +58,7 @@ public final class AutoArmorHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		timer = 0;
 		EVENTS.add(UpdateListener.class, this);
@@ -71,7 +66,7 @@ public final class AutoArmorHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(PacketOutputListener.class, this);
@@ -175,8 +170,8 @@ public final class AutoArmorHack extends Hack
 	{
 		int armorPoints = item.getProtection();
 		int prtPoints = 0;
-		int armorToughness = (int)item.toughness;
-		int armorType = item.getMaterial().getProtection(Type.LEGGINGS);
+		int armorToughness = (int)item.getToughness();
+		int armorType = item.getMaterial().value().getProtection(Type.LEGGINGS);
 		
 		if(useEnchantments.isChecked())
 		{

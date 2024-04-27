@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -15,7 +15,7 @@ public final class FilterSleepingSetting extends EntityFilterCheckbox
 {
 	public FilterSleepingSetting(String description, boolean checked)
 	{
-		super("过滤睡觉的", description, checked);
+		super("Filter sleeping", description, checked);
 	}
 	
 	@Override
@@ -29,14 +29,14 @@ public final class FilterSleepingSetting extends EntityFilterCheckbox
 	
 	public static FilterSleepingSetting genericCombat(boolean checked)
 	{
-		return new FilterSleepingSetting("不会攻击睡觉的玩家。 "
-			+ "适用于像Mineplex这样的服务器，它们将睡觉的玩家放在"
-			+ "地面上，让他们看起来像尸体。", checked);
+		return new FilterSleepingSetting("Won't attack sleeping players.\n\n"
+			+ "Useful for servers like Mineplex that place sleeping players on"
+			+ " the ground to make them look like corpses.", checked);
 	}
 	
 	public static FilterSleepingSetting genericVision(boolean checked)
 	{
-		return new FilterSleepingSetting("不会显示睡觉的玩家。",
+		return new FilterSleepingSetting("Won't show sleeping players.",
 			checked);
 	}
 }

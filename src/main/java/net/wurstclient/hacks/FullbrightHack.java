@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -29,13 +29,12 @@ public final class FullbrightHack extends Hack implements UpdateListener
 			+ "\u00a7 lNight Vision\u00a17r通过应用夜视效果来工作。此\u00a27ousally\u00a37r与着色器包一起工作。",
 		Method.values(), Method.GAMMA);
 	
-	private final CheckboxSetting fade = new CheckboxSetting("淡入",
-		"在亮度和暗度之间缓慢淡入。", true);
+	private final CheckboxSetting fade =
+		new CheckboxSetting("淡入", "在亮度和暗度之间缓慢淡入。", true);
 	
-	private final SliderSetting defaultGamma = new SliderSetting(
-		"默认亮度",
-		"Fullbright将亮度滑块设回此值w当你关闭它时。",
-		0.5, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
+	private final SliderSetting defaultGamma =
+		new SliderSetting("默认亮度", "Fullbright将亮度滑块设回此值w当你关闭它时。", 0.5, 0, 1,
+			0.01, ValueDisplay.PERCENTAGE);
 	
 	private boolean wasGammaChanged;
 	private float nightVisionStrength;
@@ -81,10 +80,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	
 	private void updateGamma()
 	{
-		boolean shouldChangeGamma =
-			isEnabled() && method.getSelected() == Method.GAMMA;
-		
-		if(shouldChangeGamma)
+		if(isChangingGamma())
 		{
 			setGamma(16);
 			return;
@@ -161,6 +157,11 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	public float getNightVisionStrength()
 	{
 		return nightVisionStrength;
+	}
+	
+	public boolean isChangingGamma()
+	{
+		return isEnabled() && method.getSelected() == Method.GAMMA;
 	}
 	
 	/**

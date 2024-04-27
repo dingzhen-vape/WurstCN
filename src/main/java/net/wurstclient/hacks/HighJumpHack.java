@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -16,10 +16,9 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 @SearchTags({"high jump"})
 public final class HighJumpHack extends Hack
 {
-	private final SliderSetting height = new SliderSetting("高度",
-		"跳跃高度，以方块为单位。\n"
-			+ "在较高的值时，这会变得非常不准确。",
-		6, 1, 100, 1, ValueDisplay.INTEGER);
+	private final SliderSetting height =
+		new SliderSetting("高度", "跳跃高度，以方块为单位。\n" + "在较高的值时，这会变得非常不准确。", 6, 1,
+			100, 1, ValueDisplay.INTEGER);
 	
 	public HighJumpHack()
 	{

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -45,8 +45,7 @@ public final class AutoFarmHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("距离", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting replant =
-		new CheckboxSetting("重新种下", true);
+	private final CheckboxSetting replant = new CheckboxSetting("重新种下", true);
 	
 	private final HashMap<Block, Item> seeds = new HashMap<>();
 	{
@@ -79,7 +78,7 @@ public final class AutoFarmHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		plants.clear();
 		
@@ -88,7 +87,7 @@ public final class AutoFarmHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RenderListener.class, this);

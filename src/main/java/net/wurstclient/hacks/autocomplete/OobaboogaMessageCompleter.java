@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -10,6 +10,7 @@ package net.wurstclient.hacks.autocomplete;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 import com.google.gson.JsonArray;
@@ -50,7 +51,8 @@ public final class OobaboogaMessageCompleter extends MessageCompleter
 		throws IOException, JsonException
 	{
 		// set up the API request
-		URL url = new URL(modelSettings.oobaboogaEndpoint.getValue());
+		URL url =
+			URI.create(modelSettings.oobaboogaEndpoint.getValue()).toURL();
 		HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 		conn.setRequestMethod("POST");
 		conn.setRequestProperty("Content-Type", "application/json");

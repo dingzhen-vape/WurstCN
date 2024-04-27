@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -23,19 +23,14 @@ import net.wurstclient.settings.CheckboxSetting;
 @SearchTags({"EasyElytra", "extra elytra", "easy elytra"})
 public final class ExtraElytraHack extends Hack implements UpdateListener
 {
-	private final CheckboxSetting instantFly = new CheckboxSetting(
-		"瞬间飞行", "跳一下就能飞，不需要奇怪的双跳！", true);
+	private final CheckboxSetting instantFly =
+		new CheckboxSetting("瞬间飞行", "跳一下就能飞，不需要奇怪的双跳！", true);
 	
-	private final CheckboxSetting speedCtrl = new CheckboxSetting(
-		"速度控制", "用前进和后退键控制你的速度。\n"
-			+ "(默认: W 和 S)\n" + "不需要烟花！",
-		true);
+	private final CheckboxSetting speedCtrl = new CheckboxSetting("速度控制",
+		"用前进和后退键控制你的速度。\n" + "(默认: W 和 S)\n" + "不需要烟花！", true);
 	
-	private final CheckboxSetting heightCtrl =
-		new CheckboxSetting("高度控制",
-			"用跳跃和潜行键控制你的高度。\n"
-				+ "(默认: 空格键和 Shift)\n" + "不需要烟花！",
-			false);
+	private final CheckboxSetting heightCtrl = new CheckboxSetting("高度控制",
+		"用跳跃和潜行键控制你的高度。\n" + "(默认: 空格键和 Shift)\n" + "不需要烟花！", false);
 	
 	private final CheckboxSetting stopInWater =
 		new CheckboxSetting("在水中停止飞行", true);
@@ -53,14 +48,14 @@ public final class ExtraElytraHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 		jumpTimer = 0;
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}

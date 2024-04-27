@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -17,9 +17,8 @@ import net.wurstclient.settings.CheckboxSetting;
 @SearchTags({"auto respawn", "AutoRevive", "auto revive"})
 public final class AutoRespawnHack extends Hack implements DeathListener
 {
-	private final CheckboxSetting button =
-		new CheckboxSetting("死亡屏幕按钮", "在死亡"
-			+ "屏幕上显示一个按钮，让你快速启用AutoRespawn。", true);
+	private final CheckboxSetting button = new CheckboxSetting("死亡屏幕按钮",
+		"在死亡" + "屏幕上显示一个按钮，让你快速启用AutoRespawn。", true);
 	
 	public AutoRespawnHack()
 	{
@@ -29,13 +28,13 @@ public final class AutoRespawnHack extends Hack implements DeathListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(DeathListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(DeathListener.class, this);
 	}

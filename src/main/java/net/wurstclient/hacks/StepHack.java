@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -21,14 +21,12 @@ import net.wurstclient.util.BlockUtils;
 
 public final class StepHack extends Hack implements UpdateListener
 {
-	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"\u00a7l简单\u00a7r模式可以跨越多个方块（启用高度滑块）。\n"
-			+ "\u00a7l合法\u00a7r模式可以绕过NoCheat+。",
-		Mode.values(), Mode.LEGIT);
+	private final EnumSetting<Mode> mode =
+		new EnumSetting<>("模式", "\u00a7l简单\u00a7r模式可以跨越多个方块（启用高度滑块）。\n"
+			+ "\u00a7l合法\u00a7r模式可以绕过NoCheat+。", Mode.values(), Mode.LEGIT);
 	
-	private final SliderSetting height =
-		new SliderSetting("高度", "只在\u00a7l简单\u00a7r模式下有效。",
-			1, 1, 10, 1, ValueDisplay.INTEGER);
+	private final SliderSetting height = new SliderSetting("高度",
+		"只在\u00a7l简单\u00a7r模式下有效。", 1, 1, 10, 1, ValueDisplay.INTEGER);
 	
 	public StepHack()
 	{
@@ -39,32 +37,24 @@ public final class StepHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
-		MC.player.stepHeight = 0.5F;
 	}
 	
 	@Override
 	public void onUpdate()
 	{
 		if(mode.getSelected() == Mode.SIMPLE)
-		{
-			// simple mode
-			MC.player.stepHeight = height.getValueF();
 			return;
-		}
 		
-		// legit mode
 		ClientPlayerEntity player = MC.player;
-		player.stepHeight = 0.5F;
-		
 		if(!player.horizontalCollision)
 			return;
 		
@@ -80,7 +70,6 @@ public final class StepHack extends Hack implements UpdateListener
 			return;
 		
 		Box box = player.getBoundingBox().offset(0, 0.05, 0).expand(0.05);
-		
 		if(!MC.world.isSpaceEmpty(player, box.offset(0, 1, 0)))
 			return;
 		
@@ -104,6 +93,14 @@ public final class StepHack extends Hack implements UpdateListener
 		
 		player.setPosition(player.getX(), player.getY() + stepHeight,
 			player.getZ());
+	}
+	
+	public float adjustStepHeight(float stepHeight)
+	{
+		if(isEnabled() && mode.getSelected() == Mode.SIMPLE)
+			return height.getValueF();
+		
+		return stepHeight;
 	}
 	
 	public boolean isAutoJumpAllowed()

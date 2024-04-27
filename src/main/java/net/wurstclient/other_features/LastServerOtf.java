@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -18,7 +18,7 @@ public final class LastServerOtf extends OtherFeature
 	public LastServerOtf()
 	{
 		super("LastServer",
-			"Wurst在服务器选择界面上添加了一个\"Last Server\"按钮，它会自动让你回到你上次玩过的服务器。\n\n"
-				+ "当你被踢出或者有很多服务器时很有用。");
+			"Wurst adds a \"Last Server\" button to the server selection screen that automatically brings you back to the last server you played on.\n\n"
+				+ "Useful when you get kicked and/or have a lot of servers.");
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -38,23 +38,20 @@ public final class BonemealAuraHack extends Hack implements UpdateListener
 	private final SliderSetting range =
 		new SliderSetting("范围", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"\u00a7l快速\u00a7r模式可以一次对多个方块使用骨粉。\n"
-			+ "\u00a7l合法\u00a7r模式可以绕过NoCheat+。",
-		Mode.values(), Mode.FAST);
+	private final EnumSetting<Mode> mode =
+		new EnumSetting<>("模式", "\u00a7l快速\u00a7r模式可以一次对多个方块使用骨粉。\n"
+			+ "\u00a7l合法\u00a7r模式可以绕过NoCheat+。", Mode.values(), Mode.FAST);
 	
 	private final EnumSetting<AutomationLevel> automationLevel =
 		new EnumSetting<>("自动化",
-			"自动化使用骨粉的程度。\n"
-				+ "\u00a7l右键\u00a7r只是用手里的骨粉右键植物。\n"
+			"自动化使用骨粉的程度。\n" + "\u00a7l右键\u00a7r只是用手里的骨粉右键植物。\n"
 				+ "\u00a7l快捷栏\u00a7r选择快捷栏里的骨粉，然后用它对植物。\n"
 				+ "\u00a7l背包\u00a7r在背包里找到骨粉，把它移到快捷栏，然后用它。",
 			AutomationLevel.values(), AutomationLevel.RIGHT_CLICK);
 	
-	private final CheckboxSetting saplings =
-		new CheckboxSetting("树苗", true);
-	private final CheckboxSetting crops = new CheckboxSetting("作物",
-		"小麦，胡萝卜，土豆和甜菜根。", true);
+	private final CheckboxSetting saplings = new CheckboxSetting("树苗", true);
+	private final CheckboxSetting crops =
+		new CheckboxSetting("作物", "小麦，胡萝卜，土豆和甜菜根。", true);
 	private final CheckboxSetting stems =
 		new CheckboxSetting("茎", "南瓜和西瓜。", true);
 	private final CheckboxSetting cocoa = new CheckboxSetting("可可", true);
@@ -77,13 +74,13 @@ public final class BonemealAuraHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}

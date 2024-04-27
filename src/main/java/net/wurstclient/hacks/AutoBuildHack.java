@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -19,7 +19,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -43,36 +42,28 @@ import net.wurstclient.util.DefaultAutoBuildTemplates;
 import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
-import net.wurstclient.util.RotationUtils.Rotation;
 import net.wurstclient.util.json.JsonException;
 
 public final class AutoBuildHack extends Hack
 	implements UpdateListener, RightClickListener, RenderListener
 {
 	private final FileSetting templateSetting = new FileSetting("模板",
-		"决定了要建造什么。\n\n"
-			+ "模板只是JSON文件。你可以随意添加你自己的，或者编辑/删除默认的模板。\n\n"
+		"决定了要建造什么。\n\n" + "模板只是JSON文件。你可以随意添加你自己的，或者编辑/删除默认的模板。\n\n"
 			+ "如果你弄乱了，只需按下'重置为默认值'按钮或删除文件夹。",
 		"autobuild", DefaultAutoBuildTemplates::createFiles);
 	
 	private final SliderSetting range = new SliderSetting("范围",
-		"放置方块时的最大距离。\n" + "推荐值:\n"
-			+ "6.0 对于原版\n" + "4.25 对于NoCheat+",
-		6, 1, 10, 0.05, ValueDisplay.DECIMAL);
+		"放置方块时的最大距离。\n" + "推荐值:\n" + "6.0 对于原版\n" + "4.25 对于NoCheat+", 6, 1, 10,
+		0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"检查视线",
-		"确保你在放置方块时不会穿过墙壁。可以帮助应对反作弊插件，但会减慢建造速度。",
-		false);
+	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视线",
+		"确保你在放置方块时不会穿过墙壁。可以帮助应对反作弊插件，但会减慢建造速度。", false);
 	
 	private final CheckboxSetting instaBuild = new CheckboxSetting("立即建造",
-		"立即建造小型模板（<= 64个方块）。\n"
-			+ "为了获得最佳效果，请站在你要放置的方块附近。",
-		true);
+		"立即建造小型模板（<= 64个方块）。\n" + "为了获得最佳效果，请站在你要放置的方块附近。", true);
 	
 	private final CheckboxSetting fastPlace =
-		new CheckboxSetting("总是快速放置",
-			"就像启用了快速放置一样建造，即使没有启用。", true);
+		new CheckboxSetting("总是快速放置", "就像启用了快速放置一样建造，即使没有启用。", true);
 	
 	private Status status = Status.NO_TEMPLATE;
 	private AutoBuildTemplate template;
@@ -119,7 +110,7 @@ public final class AutoBuildHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(RightClickListener.class, this);
@@ -127,7 +118,7 @@ public final class AutoBuildHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RightClickListener.class, this);
@@ -257,11 +248,7 @@ public final class AutoBuildHack extends Hack
 				continue;
 			
 			// face block
-			Rotation rotation = RotationUtils.getNeededRotations(hitVec);
-			PlayerMoveC2SPacket.LookAndOnGround packet =
-				new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
-					rotation.getPitch(), MC.player.isOnGround());
-			MC.player.networkHandler.sendPacket(packet);
+			RotationUtils.getNeededRotations(hitVec).sendPlayerLookPacket();
 			
 			// place block
 			IMC.getInteractionManager().rightClickBlock(neighbor,

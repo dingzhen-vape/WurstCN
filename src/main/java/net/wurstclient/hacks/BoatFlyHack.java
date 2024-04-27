@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -21,16 +21,14 @@ import net.wurstclient.settings.SliderSetting;
 	"entity speed"})
 public final class BoatFlyHack extends Hack implements UpdateListener
 {
-	private final CheckboxSetting changeForwardSpeed = new CheckboxSetting(
-		"改变前进速度",
-		"允许\u00a7e前进速度\u00a7r被改变，禁用平滑加速。",
-		false);
+	private final CheckboxSetting changeForwardSpeed =
+		new CheckboxSetting("改变前进速度", "允许\u00a7e前进速度\u00a7r被改变，禁用平滑加速。", false);
 	
-	private final SliderSetting forwardSpeed = new SliderSetting(
-		"前进速度", 1, 0.05, 5, 0.05, SliderSetting.ValueDisplay.DECIMAL);
+	private final SliderSetting forwardSpeed = new SliderSetting("前进速度", 1,
+		0.05, 5, 0.05, SliderSetting.ValueDisplay.DECIMAL);
 	
-	private final SliderSetting upwardSpeed = new SliderSetting("上升速度",
-		0.3, 0, 5, 0.05, SliderSetting.ValueDisplay.DECIMAL);
+	private final SliderSetting upwardSpeed = new SliderSetting("上升速度", 0.3, 0,
+		5, 0.05, SliderSetting.ValueDisplay.DECIMAL);
 	
 	public BoatFlyHack()
 	{
@@ -42,13 +40,13 @@ public final class BoatFlyHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}

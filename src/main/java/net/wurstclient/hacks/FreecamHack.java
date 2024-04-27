@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -51,11 +51,10 @@ public final class FreecamHack extends Hack implements UpdateListener,
 	private final SliderSetting speed =
 		new SliderSetting("速度", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting tracer = new CheckboxSetting("追踪线",
-		"在你的角色的实际位置画一条线。", false);
+	private final CheckboxSetting tracer =
+		new CheckboxSetting("追踪线", "在你的角色的实际位置画一条线。", false);
 	
-	private final ColorSetting color =
-		new ColorSetting("追踪线颜色", Color.WHITE);
+	private final ColorSetting color = new ColorSetting("追踪线颜色", Color.WHITE);
 	
 	private FakePlayerEntity fakePlayer;
 	
@@ -69,7 +68,7 @@ public final class FreecamHack extends Hack implements UpdateListener,
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(PacketOutputListener.class, this);
@@ -92,7 +91,7 @@ public final class FreecamHack extends Hack implements UpdateListener,
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(PacketOutputListener.class, this);

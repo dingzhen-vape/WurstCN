@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -14,12 +14,12 @@ import net.minecraft.entity.mob.PiglinEntity;
 
 public final class FilterHostileSetting extends EntityFilterCheckbox
 {
-	private static final String EXCEPTIONS_TEXT = "这个过滤器不会"
-		+ "影响末影人，猪灵，和僵尸猪灵。";
+	private static final String EXCEPTIONS_TEXT = "\n\nThis filter does not"
+		+ " affect endermen, non-brute piglins, and zombified piglins.";
 	
 	public FilterHostileSetting(String description, boolean checked)
 	{
-		super("过滤敌对生物", description + EXCEPTIONS_TEXT, checked);
+		super("Filter hostile mobs", description + EXCEPTIONS_TEXT, checked);
 	}
 	
 	@Override
@@ -35,12 +35,12 @@ public final class FilterHostileSetting extends EntityFilterCheckbox
 	public static FilterHostileSetting genericCombat(boolean checked)
 	{
 		return new FilterHostileSetting(
-			"不会攻击敌对生物，如僵尸和苦力怕。", checked);
+			"Won't attack hostile mobs like zombies and creepers.", checked);
 	}
 	
 	public static FilterHostileSetting genericVision(boolean checked)
 	{
 		return new FilterHostileSetting(
-			"不会显示敌对生物，如僵尸和苦力怕。", checked);
+			"Won't show hostile mobs like zombies and creepers.", checked);
 	}
 }

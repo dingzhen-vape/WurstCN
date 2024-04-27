@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -24,11 +24,9 @@ public final class SafeWalkHack extends Hack
 	private final CheckboxSetting sneak =
 		new CheckboxSetting("在边缘潜行", "在边缘可见地潜行。", false);
 	
-	private final SliderSetting edgeDistance = new SliderSetting(
-		"潜行边缘距离",
-		"SafeWalk会让你离边缘多近才开始潜行。\n\n"
-			+ "这个设置只在\"Sneak at edges\"开启时生效。",
-		0.05, 0.05, 0.25, 0.001, ValueDisplay.DECIMAL.withSuffix("m"));
+	private final SliderSetting edgeDistance = new SliderSetting("潜行边缘距离",
+		"SafeWalk会让你离边缘多近才开始潜行。\n\n" + "这个设置只在\"Sneak at edges\"开启时生效。", 0.05,
+		0.05, 0.25, 0.001, ValueDisplay.DECIMAL.withSuffix("m"));
 	
 	private boolean sneaking;
 	
@@ -67,7 +65,7 @@ public final class SafeWalkHack extends Hack
 		}
 		
 		Box box = player.getBoundingBox();
-		Box adjustedBox = box.stretch(0, -player.stepHeight, 0)
+		Box adjustedBox = box.stretch(0, -player.getStepHeight(), 0)
 			.expand(-edgeDistance.getValue(), 0, -edgeDistance.getValue());
 		
 		if(MC.world.isSpaceEmpty(player, adjustedBox))

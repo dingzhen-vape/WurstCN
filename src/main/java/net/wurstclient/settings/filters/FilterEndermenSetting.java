@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -15,7 +15,7 @@ public final class FilterEndermenSetting extends AttackDetectingEntityFilter
 	private FilterEndermenSetting(String description, Mode selected,
 		boolean checked)
 	{
-		super("过滤末影人", description, selected, checked);
+		super("Filter endermen", description, selected, checked);
 	}
 	
 	public FilterEndermenSetting(String description, Mode selected)
@@ -37,23 +37,23 @@ public final class FilterEndermenSetting extends AttackDetectingEntityFilter
 	
 	public static FilterEndermenSetting genericCombat(Mode selected)
 	{
-		return new FilterEndermenSetting("当设置为\u00a7l开\u00a7r时，"
-			+ "末影人不会被攻击。 "
-			+ "当设置为\u00a7l如果平静\u00a7r时，末影人不会被攻击"
-			+ "直到他们先攻击。要注意的是，这个过滤器无法"
-			+ "检测末影人是在攻击你还是别人。 "
-			+ "当设置为\u00a7l关\u00a7r时，这个过滤器什么都不做，"
-			+ "末影人可以被攻击。", selected);
+		return new FilterEndermenSetting("When set to \u00a7lOn\u00a7r,"
+			+ " endermen won't be attacked at all.\n\n"
+			+ "When set to \u00a7lIf calm\u00a7r, endermen won't be attacked"
+			+ " until they attack first. Be warned that this filter cannot"
+			+ " detect if the endermen are attacking you or someone else.\n\n"
+			+ "When set to \u00a7lOff\u00a7r, this filter does nothing and"
+			+ " endermen can be attacked.", selected);
 	}
 	
 	public static FilterEndermenSetting genericVision(Mode selected)
 	{
-		return new FilterEndermenSetting("当设置为\u00a7l开\u00a7r时，"
-			+ "末影人不会被显示。 "
-			+ "当设置为\u00a7l如果平静\u00a7r时，末影人不会被显示"
-			+ "直到他们攻击某物。 "
-			+ "当设置为\u00a7l关\u00a7r时，这个过滤器什么都不做，"
-			+ "末影人可以被显示。", selected);
+		return new FilterEndermenSetting("When set to \u00a7lOn\u00a7r,"
+			+ " endermen won't be shown at all.\n\n"
+			+ "When set to \u00a7lIf calm\u00a7r, endermen won't be shown"
+			+ " until they attack something.\n\n"
+			+ "When set to \u00a7lOff\u00a7r, this filter does nothing and"
+			+ " endermen can be shown.", selected);
 	}
 	
 	public static FilterEndermenSetting onOffOnly(String description,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -17,8 +17,8 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 public final class ThrowHack extends Hack implements RightClickListener
 {
-	private final SliderSetting amount = new SliderSetting("数量",
-		"每次点击的使用次数。", 16, 2, 1000000, 1, ValueDisplay.INTEGER);
+	private final SliderSetting amount = new SliderSetting("数量", "每次点击的使用次数。",
+		16, 2, 1000000, 1, ValueDisplay.INTEGER);
 	
 	public ThrowHack()
 	{
@@ -35,13 +35,13 @@ public final class ThrowHack extends Hack implements RightClickListener
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		EVENTS.add(RightClickListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(RightClickListener.class, this);
 	}

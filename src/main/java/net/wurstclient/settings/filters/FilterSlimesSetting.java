@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -14,11 +14,11 @@ import net.minecraft.entity.mob.SlimeEntity;
 public final class FilterSlimesSetting extends EntityFilterCheckbox
 {
 	private static final String EXCEPTIONS_TEXT =
-		"这个过滤器不会影响岩浆怪。";
+		"\n\nThis filter does not affect magma cubes.";
 	
 	public FilterSlimesSetting(String description, boolean checked)
 	{
-		super("过滤史莱姆", description + EXCEPTIONS_TEXT, checked);
+		super("Filter slimes", description + EXCEPTIONS_TEXT, checked);
 	}
 	
 	@Override
@@ -29,11 +29,11 @@ public final class FilterSlimesSetting extends EntityFilterCheckbox
 	
 	public static FilterSlimesSetting genericCombat(boolean checked)
 	{
-		return new FilterSlimesSetting("不会攻击史莱姆。", checked);
+		return new FilterSlimesSetting("Won't attack slimes.", checked);
 	}
 	
 	public static FilterSlimesSetting genericVision(boolean checked)
 	{
-		return new FilterSlimesSetting("不会显示史莱姆。", checked);
+		return new FilterSlimesSetting("Won't show slimes.", checked);
 	}
 }

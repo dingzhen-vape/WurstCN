@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -41,8 +41,8 @@ import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.EntityUtils;
 import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
+import net.wurstclient.util.Rotation;
 import net.wurstclient.util.RotationUtils;
-import net.wurstclient.util.RotationUtils.Rotation;
 
 public final class KillauraLegitHack extends Hack
 	implements UpdateListener, RenderListener
@@ -53,26 +53,21 @@ public final class KillauraLegitHack extends Hack
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final SliderSetting rotationSpeed =
-		new SliderSetting("旋转速度", 600, 10, 3600, 10,
-			ValueDisplay.DEGREES.withSuffix("/s"));
+	private final SliderSetting rotationSpeed = new SliderSetting("旋转速度", 600,
+		10, 3600, 10, ValueDisplay.DEGREES.withSuffix("/s"));
 	
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"决定哪个实体会被优先攻击。\n"
-			+ "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
+		"决定哪个实体会被优先攻击。\n" + "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
 			+ "\u00a7l角度\u00a7r - 攻击需要最少头部移动的实体。\n"
 			+ "\u00a7l生命值\u00a7r - 攻击最弱的实体。",
 		Priority.values(), Priority.ANGLE);
 	
 	private final SliderSetting fov = new SliderSetting("视野",
-		"视场 - 实体离你的准星多远才会被忽略。\n"
-			+ "360\u00b0 = 实体可以在你周围被攻击。",
-		360, 30, 360, 10, ValueDisplay.DEGREES);
+		"视场 - 实体离你的准星多远才会被忽略。\n" + "360\u00b0 = 实体可以在你周围被攻击。", 360, 30, 360, 10,
+		ValueDisplay.DEGREES);
 	
-	private final CheckboxSetting damageIndicator = new CheckboxSetting(
-		"伤害指示器",
-		"在目标内渲染一个颜色的盒子，与其剩余生命值成反比。",
-		true);
+	private final CheckboxSetting damageIndicator =
+		new CheckboxSetting("伤害指示器", "在目标内渲染一个颜色的盒子，与其剩余生命值成反比。", true);
 	
 	// same filters as in Killaura, but with stricter defaults
 	private final EntityFilterList entityFilters =
@@ -178,7 +173,7 @@ public final class KillauraLegitHack extends Hack
 		if(target == null)
 			return;
 		
-		WURST.getHax().autoSwordHack.setSlot();
+		WURST.getHax().autoSwordHack.setSlot(target);
 		
 		// check line of sight
 		if(!BlockUtils.hasLineOfSight(target.getBoundingBox().getCenter()))
@@ -207,8 +202,8 @@ public final class KillauraLegitHack extends Hack
 		// turn towards center of boundingBox
 		Rotation next = RotationUtils.slowlyTurnTowards(needed,
 			rotationSpeed.getValueI() / 20F);
-		nextYaw = next.getYaw();
-		nextPitch = next.getPitch();
+		nextYaw = next.yaw();
+		nextPitch = next.pitch();
 		
 		// check if facing center
 		if(RotationUtils.isAlreadyFacing(needed))

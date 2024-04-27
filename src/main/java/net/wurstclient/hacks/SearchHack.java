@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -31,6 +31,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.wurstclient.Category;
+import net.wurstclient.SearchTags;
 import net.wurstclient.events.PacketInputListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
@@ -47,6 +48,7 @@ import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
+@SearchTags({"BlockESP", "block esp"})
 public final class SearchHack extends Hack
 	implements UpdateListener, RenderListener
 {
@@ -54,14 +56,12 @@ public final class SearchHack extends Hack
 		"The type of block to search for.", "minecraft:diamond_ore", false);
 	private Block lastBlock;
 	
-	private final ChunkAreaSetting area = new ChunkAreaSetting("区域",
-		"玩家周围要搜索的区域。\n"
-			+ "更大的值需要更快的电脑。");
+	private final ChunkAreaSetting area =
+		new ChunkAreaSetting("区域", "玩家周围要搜索的区域。\n" + "更大的值需要更快的电脑。");
 	
-	private final SliderSetting limit = new SliderSetting("限制",
-		"要显示的方块的最大数量。\n"
-			+ "更大的值需要更快的电脑。",
-		4, 3, 6, 1, ValueDisplay.LOGARITHMIC);
+	private final SliderSetting limit =
+		new SliderSetting("限制", "要显示的方块的最大数量。\n" + "更大的值需要更快的电脑。", 4, 3, 6, 1,
+			ValueDisplay.LOGARITHMIC);
 	private int prevLimit;
 	private boolean notify;
 	
@@ -93,7 +93,7 @@ public final class SearchHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		lastBlock = block.getBlock();
 		coordinator.setTargetBlock(lastBlock);
@@ -110,7 +110,7 @@ public final class SearchHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(PacketInputListener.class, coordinator);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -13,7 +13,7 @@ public final class FilterNamedSetting extends EntityFilterCheckbox
 {
 	public FilterNamedSetting(String description, boolean checked)
 	{
-		super("过滤器命名为", description, checked);
+		super("Filter named", description, checked);
 	}
 	
 	@Override
@@ -24,13 +24,13 @@ public final class FilterNamedSetting extends EntityFilterCheckbox
 	
 	public static FilterNamedSetting genericCombat(boolean checked)
 	{
-		return new FilterNamedSetting("不会攻击有命名牌的实体。",
+		return new FilterNamedSetting("Won't attack name-tagged entities.",
 			checked);
 	}
 	
 	public static FilterNamedSetting genericVision(boolean checked)
 	{
-		return new FilterNamedSetting("不会显示有命名牌的实体。",
+		return new FilterNamedSetting("Won't show name-tagged entities.",
 			checked);
 	}
 }

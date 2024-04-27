@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -47,9 +47,8 @@ public final class FollowHack extends Hack
 	private PathProcessor processor;
 	private int ticksProcessing;
 	
-	private final SliderSetting distance =
-		new SliderSetting("距离", "跟随目标的紧密程度。", 1, 1,
-			12, 0.5, ValueDisplay.DECIMAL);
+	private final SliderSetting distance = new SliderSetting("距离", "跟随目标的紧密程度。",
+		1, 1, 12, 0.5, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting useAi =
 		new CheckboxSetting("使用AI（实验性）", false);
@@ -76,7 +75,7 @@ public final class FollowHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		WURST.getHax().fightBotHack.setEnabled(false);
 		WURST.getHax().protectHack.setEnabled(false);
@@ -115,7 +114,7 @@ public final class FollowHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
@@ -126,8 +125,7 @@ public final class FollowHack extends Hack
 		PathProcessor.releaseControls();
 		
 		if(entity != null)
-			ChatUtils
-				.message("不再跟随 " + entity.getName().getString());
+			ChatUtils.message("不再跟随 " + entity.getName().getString());
 		
 		entity = null;
 	}
