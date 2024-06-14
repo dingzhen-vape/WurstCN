@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -36,13 +37,11 @@ import net.wurstclient.util.RenderUtils;
 
 public final class AutoFishDebugDraw
 {
-	private final CheckboxSetting debugDraw = new CheckboxSetting("Debug draw",
-		"Shows where bites are occurring and where they will be detected."
-			+ " Useful for optimizing your 'Valid range' setting.",
-		false);
+	private final CheckboxSetting debugDraw = new CheckboxSetting("调试绘图",
+		"显示咬伤发生的位置和它们会被检测到的位置。" + "有用于优化您的'有效范围'设置。", false);
 	
-	private final ColorSetting ddColor = new ColorSetting("DD color",
-		"Color of the debug draw, if enabled.", Color.RED);
+	private final ColorSetting ddColor =
+		new ColorSetting("DD颜色", "调试绘图的颜色，如果启用。", Color.RED);
 	
 	private final SliderSetting validRange;
 	private final FishingSpotManager fishingSpots;
@@ -131,7 +130,6 @@ public final class AutoFishDebugDraw
 	{
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		
 		matrixStack.push();
@@ -141,13 +139,13 @@ public final class AutoFishDebugDraw
 		float[] colorF = ddColor.getColorF();
 		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.5F);
 		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, -0.125F, 0, -0.125F).next();
-		bufferBuilder.vertex(matrix, 0.125F, 0, 0.125F).next();
-		bufferBuilder.vertex(matrix, 0.125F, 0, -0.125F).next();
-		bufferBuilder.vertex(matrix, -0.125F, 0, 0.125F).next();
-		tessellator.draw();
+		BufferBuilder bufferBuilder = tessellator
+			.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
+		bufferBuilder.vertex(matrix, -0.125F, 0, -0.125F);
+		bufferBuilder.vertex(matrix, 0.125F, 0, 0.125F);
+		bufferBuilder.vertex(matrix, 0.125F, 0, -0.125F);
+		bufferBuilder.vertex(matrix, -0.125F, 0, 0.125F);
+		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 		
 		matrixStack.pop();
 	}

@@ -63,9 +63,9 @@ public abstract class AttackDetectingEntityFilter implements EntityFilter
 	
 	public enum Mode
 	{
-		ON("On"),
-		IF_CALM("If calm"),
-		OFF("Off");
+		ON("开"),
+		IF_CALM("如果平静"),
+		OFF("关");
 		
 		private final String name;
 		

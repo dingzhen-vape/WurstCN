@@ -12,7 +12,7 @@ public final class EspBoxSizeSetting
 {
 	public EspBoxSizeSetting(String description)
 	{
-		super("Box size", description, BoxSize.values(), BoxSize.FANCY);
+		super("碰撞箱大小", description, BoxSize.values(), BoxSize.FANCY);
 	}
 	
 	public EspBoxSizeSetting(String name, String description, BoxSize selected)

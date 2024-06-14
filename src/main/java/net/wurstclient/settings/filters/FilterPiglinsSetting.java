@@ -18,8 +18,7 @@ public final class FilterPiglinsSetting extends AttackDetectingEntityFilter
 	private FilterPiglinsSetting(String description, Mode selected,
 		boolean checked)
 	{
-		super("Filter piglins", description + EXCEPTIONS_TEXT, selected,
-			checked);
+		super("筛选猪灵", description + EXCEPTIONS_TEXT, selected, checked);
 	}
 	
 	public FilterPiglinsSetting(String description, Mode selected)

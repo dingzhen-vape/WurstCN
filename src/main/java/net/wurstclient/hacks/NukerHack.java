@@ -47,7 +47,7 @@ public final class NukerHack extends Hack
 	implements UpdateListener, LeftClickListener, RenderListener
 {
 	private final SliderSetting range =
-		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
 		"\u00a7lNormal\u00a7r mode simply breaks everything around you.\n"

@@ -14,7 +14,7 @@ public final class FilterVillagersSetting extends EntityFilterCheckbox
 {
 	public FilterVillagersSetting(String description, boolean checked)
 	{
-		super("Filter villagers", description, checked);
+		super("过滤村民", description, checked);
 	}
 	
 	@Override
@@ -25,13 +25,11 @@ public final class FilterVillagersSetting extends EntityFilterCheckbox
 	
 	public static FilterVillagersSetting genericCombat(boolean checked)
 	{
-		return new FilterVillagersSetting(
-			"Won't attack villagers and wandering traders.", checked);
+		return new FilterVillagersSetting("不会攻击村民和游行贸易商.", checked);
 	}
 	
 	public static FilterVillagersSetting genericVision(boolean checked)
 	{
-		return new FilterVillagersSetting(
-			"Won't show villagers and wandering traders.", checked);
+		return new FilterVillagersSetting("不会显示村民和游行贸易商.", checked);
 	}
 }

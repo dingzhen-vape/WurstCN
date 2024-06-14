@@ -14,7 +14,7 @@ import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 // TODO: Remove this hack in 1.20.5, as it seems to be patched.
-@SearchTags({"range"})
+@SearchTags({"范围"})
 public final class ReachHack extends Hack
 {
 	private final SliderSetting range =

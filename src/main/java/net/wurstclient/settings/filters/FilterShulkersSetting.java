@@ -14,7 +14,7 @@ public final class FilterShulkersSetting extends EntityFilterCheckbox
 {
 	public FilterShulkersSetting(String description, boolean checked)
 	{
-		super("Filter shulkers", description, checked);
+		super("过滤潜影贝", description, checked);
 	}
 	
 	@Override
@@ -25,11 +25,11 @@ public final class FilterShulkersSetting extends EntityFilterCheckbox
 	
 	public static FilterShulkersSetting genericCombat(boolean checked)
 	{
-		return new FilterShulkersSetting("Won't attack shulkers.", checked);
+		return new FilterShulkersSetting("不会攻击潜影贝.", checked);
 	}
 	
 	public static FilterShulkersSetting genericVision(boolean checked)
 	{
-		return new FilterShulkersSetting("Won't show shulkers.", checked);
+		return new FilterShulkersSetting("不会显示潜影贝.", checked);
 	}
 }

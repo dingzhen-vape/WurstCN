@@ -20,8 +20,8 @@ public final class FilterFlyingSetting extends SliderSetting
 {
 	public FilterFlyingSetting(String description, double value)
 	{
-		super("Filter flying", description, value, 0, 2, 0.05,
-			ValueDisplay.DECIMAL.withLabel(0, "off"));
+		super("过滤飞行假人", description, value, 0, 2, 0.05,
+			ValueDisplay.DECIMAL.withLabel(0, "关闭"));
 	}
 	
 	@Override
@@ -50,8 +50,7 @@ public final class FilterFlyingSetting extends SliderSetting
 	public static FilterFlyingSetting genericCombat(double value)
 	{
 		return new FilterFlyingSetting(
-			"Won't attack players that are at least the given distance above ground.\n\n"
-				+ "Useful for servers that try to detect your hacks by placing a flying bot near you.",
+			"不会攻击跳至少给定高度以上的玩家。\n\n" + "有用于服务器试图通过放置一个跳动机器人附近你来检测你的黑客行为。",
 			value);
 	}
 }

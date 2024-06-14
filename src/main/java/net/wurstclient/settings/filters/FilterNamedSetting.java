@@ -13,7 +13,7 @@ public final class FilterNamedSetting extends EntityFilterCheckbox
 {
 	public FilterNamedSetting(String description, boolean checked)
 	{
-		super("Filter named", description, checked);
+		super("过滤命名标记生物", description, checked);
 	}
 	
 	@Override
@@ -24,13 +24,11 @@ public final class FilterNamedSetting extends EntityFilterCheckbox
 	
 	public static FilterNamedSetting genericCombat(boolean checked)
 	{
-		return new FilterNamedSetting("Won't attack name-tagged entities.",
-			checked);
+		return new FilterNamedSetting("不会攻击命名标记的生物.", checked);
 	}
 	
 	public static FilterNamedSetting genericVision(boolean checked)
 	{
-		return new FilterNamedSetting("Won't show name-tagged entities.",
-			checked);
+		return new FilterNamedSetting("不会显示命名标记的生物.", checked);
 	}
 }

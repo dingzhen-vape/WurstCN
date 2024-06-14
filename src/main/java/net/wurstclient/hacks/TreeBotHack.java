@@ -50,9 +50,9 @@ import net.wurstclient.util.OverlayRenderer;
 public final class TreeBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("Range",
-		"How far TreeBot will reach to break blocks.", 4.5, 1, 6, 0.05,
-		ValueDisplay.DECIMAL);
+	private final SliderSetting range =
+		new SliderSetting("范围", "How far TreeBot will reach to break blocks.",
+			4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
 		"How to face the logs and leaves when breaking them.\n\n"

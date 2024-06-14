@@ -35,6 +35,8 @@ import net.wurstclient.settings.FacingSetting;
 import net.wurstclient.settings.FacingSetting.Facing;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.settings.filterlists.AnchorAuraFilterList;
 import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.util.BlockUtils;
@@ -47,22 +49,36 @@ import net.wurstclient.util.RotationUtils;
 public final class AnchorAuraHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range = new SliderSetting("范围",
-		"决定AnchorAura放置、充能和引爆锚的最远距离。", 6, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		"Determines how far AnchorAura will reach to place, charge and detonate anchors.",
+		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置锚",
-		"启用后，AnchorAura会自动在有效的实体附近放置锚。\n" + "禁用后，AnchorAura只会充能和引爆手动放置的锚。",
+	private final CheckboxSetting autoPlace = new CheckboxSetting(
+		"Auto-place anchors",
+		"When enabled, AnchorAura will automatically place anchors near valid entities.\n"
+			+ "When disabled, AnchorAura will only charge and detonate manually placed anchors.",
 		true);
 	
-	private final FacingSetting faceBlocks = FacingSetting.withPacketSpam("面向锚",
-		"AnchorAura在放置和右键点击重生锚时是否要面向正确的方向。\n\n" + "速度较慢，但可以帮助应对反作弊插件。" + "检查视线",
-		Facing.OFF);
+	private final FacingSetting faceBlocks =
+		FacingSetting.withPacketSpam("Face anchors",
+			"Whether or not AnchorAura should face the correct direction when"
+				+ " placing and right-clicking respawn anchors.\n\n"
+				+ "Slower but can help with anti-cheat plugins.",
+			Facing.OFF);
 	
 	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"确保你在放置或右键点击重生锚时不会穿过方块。\n\n", "速度较慢，但可以帮助应对反作弊插件。" + "检查视线", false);
+		"Check line of sight",
+		"Ensures that you don't reach through blocks when placing or right-clicking respawn anchors.\n\n"
+			+ "Slower but can help with anti-cheat plugins.",
+		false);
 	
-	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
-		new EnumSetting<>("在哪里寻找重生锚和萤石。", "重生锚在这个维度不会爆炸。",
-			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		"How AnchorAura should swing your hand when placing, charging and"
+			+ " detonating respawn anchors.",
+		SwingHand.CLIENT);
+	
+	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
+		"Take items from", "Where to look for respawn anchors and glowstone.",
+		TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final EntityFilterList entityFilters =
 		AnchorAuraFilterList.create();
@@ -76,6 +92,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 		addSetting(autoPlace);
 		addSetting(faceBlocks);
 		addSetting(checkLOS);
+		addSetting(swingHand);
 		addSetting(takeItemsFrom);
 		
 		entityFilters.forEach(this::addSetting);
@@ -98,7 +115,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	{
 		if(MC.world.getDimension().respawnAnchorWorks())
 		{
-			ChatUtils.error("快捷栏");
+			ChatUtils.error("Respawn anchors don't explode in this dimension.");
 			setEnabled(false);
 		}
 		
@@ -165,7 +182,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 		}
 		
 		if(shouldSwing)
-			MC.player.swingHand(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 		
 		return newAnchors;
 	}
@@ -187,7 +204,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 				shouldSwing = true;
 			
 		if(shouldSwing)
-			MC.player.swingHand(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 	}
 	
 	private void charge(ArrayList<BlockPos> unchargedAnchors)
@@ -207,7 +224,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 				shouldSwing = true;
 			
 		if(shouldSwing)
-			MC.player.swingHand(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 	}
 	
 	private boolean rightClickBlock(BlockPos pos)
@@ -391,7 +408,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	
 	private enum TakeItemsFrom
 	{
-		HOTBAR("背包", 9),
+		HOTBAR("Hotbar", 9),
 		
 		INVENTORY("Inventory", 36);
 		

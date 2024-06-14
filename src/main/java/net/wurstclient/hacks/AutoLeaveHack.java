@@ -7,8 +7,8 @@
  */
 package net.wurstclient.hacks;
 
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
@@ -17,27 +17,39 @@ import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.util.InventoryUtils;
 
 @SearchTags({"auto leave", "AutoDisconnect", "auto disconnect", "AutoQuit",
 	"auto quit"})
 public final class AutoLeaveHack extends Hack implements UpdateListener
 {
-	private final SliderSetting health =
-		new SliderSetting("生命值", "当你的生命值达到或低于这个值时，离开服务器。", 4, 0.5, 9.5, 0.5,
-			ValueDisplay.DECIMAL.withSuffix(" 心"));
+	private final SliderSetting health = new SliderSetting("Health",
+		"Leaves the server when your health reaches this value or falls below it.",
+		4, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" hearts"));
 	
-	public final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"\u00a7l退出\u00a7r模式只是正常地退出游戏。\n" + "绕过NoCheat+，但不绕过CombatLog。\n\n"
-			+ "\u00a7l字符\u00a7r模式发送一个特殊的聊天消息，让服务器把你踢出去。\n"
-			+ "绕过NoCheat+和一些版本的CombatLog。\n\n"
-			+ "\u00a7lTP\u00a7r模式把你传送到一个无效的位置，让服务器把你踢出去。\n"
-			+ "绕过CombatLog，但不绕过NoCheat+。\n\n"
-			+ "\u00a7l自残\u00a7r模式发送攻击另一个玩家的数据包，但是把自己作为攻击者和目标。这会让服务器把你踢出去。\n"
-			+ "绕过CombatLog和NoCheat+。",
+	public final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
+		"\u00a7lQuit\u00a7r mode just quits the game normally.\n"
+			+ "Bypasses NoCheat+ but not CombatLog.\n\n"
+			+ "\u00a7lChars\u00a7r mode sends a special chat message that"
+			+ " causes the server to kick you.\n"
+			+ "Bypasses NoCheat+ and some versions of CombatLog.\n\n"
+			+ "\u00a7lSelfHurt\u00a7r mode sends the packet for attacking"
+			+ " another player, but with yourself as both the attacker and the"
+			+ " target, causing the server to kick you.\n"
+			+ "Bypasses both CombatLog and NoCheat+.",
 		Mode.values(), Mode.QUIT);
 	
 	private final CheckboxSetting disableAutoReconnect = new CheckboxSetting(
-		"禁用自动重连", "当" + " AutoLeave让你离开服务器时，自动关闭AutoReconnect。", true);
+		"Disable AutoReconnect", "Automatically turns off AutoReconnect when"
+			+ " AutoLeave makes you leave the server.",
+		true);
+	
+	private final SliderSetting totems = new SliderSetting("Totems",
+		"Won't leave the server until the number of totems you have reaches"
+			+ " this value or falls below it.\n\n"
+			+ "11 = always able to leave",
+		11, 0, 11, 1, ValueDisplay.INTEGER.withSuffix(" totems")
+			.withLabel(1, "1 totem").withLabel(11, "ignore"));
 	
 	public AutoLeaveHack()
 	{
@@ -46,11 +58,15 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 		addSetting(health);
 		addSetting(mode);
 		addSetting(disableAutoReconnect);
+		addSetting(totems);
 	}
 	
 	@Override
 	public String getRenderName()
 	{
+		if(MC.player.getAbilities().creativeMode)
+			return getName() + " (paused)";
+		
 		return getName() + " [" + mode.getSelected() + "]";
 	}
 	
@@ -73,38 +89,18 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 		if(MC.player.getAbilities().creativeMode)
 			return;
 		
-		// check for other players
-		if(MC.isInSingleplayer()
-			&& MC.player.networkHandler.getPlayerList().size() == 1)
-			return;
-		
 		// check health
 		float currentHealth = MC.player.getHealth();
 		if(currentHealth <= 0F || currentHealth > health.getValueF() * 2F)
 			return;
 		
+		// check totems
+		if(totems.getValueI() < 11 && InventoryUtils
+			.count(Items.TOTEM_OF_UNDYING, 40, true) > totems.getValueI())
+			return;
+		
 		// leave server
-		switch(mode.getSelected())
-		{
-			case QUIT:
-			MC.world.disconnect();
-			break;
-			
-			case CHARS:
-			MC.getNetworkHandler().sendChatMessage("\u00a7");
-			break;
-			
-			case TELEPORT:
-			MC.player.networkHandler
-				.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(3.1e7,
-					100, 3.1e7, false));
-			break;
-			
-			case SELFHURT:
-			MC.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket
-				.attack(MC.player, MC.player.isSneaking()));
-			break;
-		}
+		mode.getSelected().leave.run();
 		
 		// disable
 		setEnabled(false);
@@ -115,19 +111,22 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 	
 	public static enum Mode
 	{
-		QUIT("退出"),
+		QUIT("Quit", () -> MC.world.disconnect()),
 		
-		CHARS("字符"),
+		CHARS("Chars", () -> MC.getNetworkHandler().sendChatMessage("\u00a7")),
 		
-		TELEPORT("TP"),
-		
-		SELFHURT("自残");
+		SELFHURT("SelfHurt",
+			() -> MC.getNetworkHandler()
+				.sendPacket(PlayerInteractEntityC2SPacket.attack(MC.player,
+					MC.player.isSneaking())));
 		
 		private final String name;
+		private final Runnable leave;
 		
-		private Mode(String name)
+		private Mode(String name, Runnable leave)
 		{
 			this.name = name;
+			this.leave = leave;
 		}
 		
 		@Override

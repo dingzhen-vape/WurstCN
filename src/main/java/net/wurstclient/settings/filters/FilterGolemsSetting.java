@@ -15,7 +15,7 @@ public final class FilterGolemsSetting extends EntityFilterCheckbox
 {
 	public FilterGolemsSetting(String description, boolean checked)
 	{
-		super("Filter golems", description, checked);
+		super("过滤铁傀儡和雪傀儡", description, checked);
 	}
 	
 	@Override
@@ -26,13 +26,11 @@ public final class FilterGolemsSetting extends EntityFilterCheckbox
 	
 	public static FilterGolemsSetting genericCombat(boolean checked)
 	{
-		return new FilterGolemsSetting(
-			"Won't attack iron golems and snow golems.", checked);
+		return new FilterGolemsSetting("不会攻击铁傀儡和雪傀儡.", checked);
 	}
 	
 	public static FilterGolemsSetting genericVision(boolean checked)
 	{
-		return new FilterGolemsSetting(
-			"Won't show iron golems and snow golems.", checked);
+		return new FilterGolemsSetting("不会显示铁傀儡和雪傀儡.", checked);
 	}
 }

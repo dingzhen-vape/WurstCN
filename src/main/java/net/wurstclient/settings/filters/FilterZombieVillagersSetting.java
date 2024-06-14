@@ -14,7 +14,7 @@ public final class FilterZombieVillagersSetting extends EntityFilterCheckbox
 {
 	public FilterZombieVillagersSetting(String description, boolean checked)
 	{
-		super("Filter zombie villagers", description, checked);
+		super("过滤僵尸村民", description, checked);
 	}
 	
 	@Override
@@ -25,13 +25,11 @@ public final class FilterZombieVillagersSetting extends EntityFilterCheckbox
 	
 	public static FilterZombieVillagersSetting genericCombat(boolean checked)
 	{
-		return new FilterZombieVillagersSetting(
-			"Won't attack zombified villagers.", checked);
+		return new FilterZombieVillagersSetting("不会攻击僵尸村民.", checked);
 	}
 	
 	public static FilterZombieVillagersSetting genericVision(boolean checked)
 	{
-		return new FilterZombieVillagersSetting(
-			"Won't show zombified villagers.", checked);
+		return new FilterZombieVillagersSetting("不会显示僵尸村民.", checked);
 	}
 }

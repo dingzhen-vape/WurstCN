@@ -15,7 +15,7 @@ public final class FilterEndermenSetting extends AttackDetectingEntityFilter
 	private FilterEndermenSetting(String description, Mode selected,
 		boolean checked)
 	{
-		super("Filter endermen", description, selected, checked);
+		super("过滤末影人", description, selected, checked);
 	}
 	
 	public FilterEndermenSetting(String description, Mode selected)

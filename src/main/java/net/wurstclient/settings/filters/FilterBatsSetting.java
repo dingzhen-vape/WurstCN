@@ -14,7 +14,7 @@ public final class FilterBatsSetting extends EntityFilterCheckbox
 {
 	public FilterBatsSetting(String description, boolean checked)
 	{
-		super("Filter bats", description, checked);
+		super("过滤蝙蝠", description, checked);
 	}
 	
 	@Override
@@ -25,13 +25,13 @@ public final class FilterBatsSetting extends EntityFilterCheckbox
 	
 	public static FilterBatsSetting genericCombat(boolean checked)
 	{
-		return new FilterBatsSetting("Won't attack bats and any other"
-			+ " \"ambient\" mobs that might be added by mods.", checked);
+		return new FilterBatsSetting("不会攻击蝙蝠和任何其他" + " \"ambient\"生物可能由模组添加的。",
+			checked);
 	}
 	
 	public static FilterBatsSetting genericVision(boolean checked)
 	{
-		return new FilterBatsSetting("Won't show bats and any other"
-			+ " \"ambient\" mobs that might be added by mods.", checked);
+		return new FilterBatsSetting("不会显示蝙蝠和任何其他" + " \"ambient\"生物可能由模组添加的。",
+			checked);
 	}
 }

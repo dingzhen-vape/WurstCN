@@ -14,7 +14,7 @@ public final class FilterPlayersSetting extends EntityFilterCheckbox
 {
 	public FilterPlayersSetting(String description, boolean checked)
 	{
-		super("Filter players", description, checked);
+		super("过滤玩家", description, checked);
 	}
 	
 	@Override
@@ -25,11 +25,11 @@ public final class FilterPlayersSetting extends EntityFilterCheckbox
 	
 	public static FilterPlayersSetting genericCombat(boolean checked)
 	{
-		return new FilterPlayersSetting("Won't attack other players.", checked);
+		return new FilterPlayersSetting("不会攻击其他玩家.", checked);
 	}
 	
 	public static FilterPlayersSetting genericVision(boolean checked)
 	{
-		return new FilterPlayersSetting("Won't show other players.", checked);
+		return new FilterPlayersSetting("不会显示其他玩家.", checked);
 	}
 }

@@ -13,7 +13,7 @@ public final class FilterInvisibleSetting extends EntityFilterCheckbox
 {
 	public FilterInvisibleSetting(String description, boolean checked)
 	{
-		super("Filter invisible", description, checked);
+		super("过滤透明生物", description, checked);
 	}
 	
 	@Override
@@ -24,13 +24,11 @@ public final class FilterInvisibleSetting extends EntityFilterCheckbox
 	
 	public static FilterInvisibleSetting genericCombat(boolean checked)
 	{
-		return new FilterInvisibleSetting("Won't attack invisible entities.",
-			checked);
+		return new FilterInvisibleSetting("不会攻击透明生物.", checked);
 	}
 	
 	public static FilterInvisibleSetting genericVision(boolean checked)
 	{
-		return new FilterInvisibleSetting("Won't show invisible entities.",
-			checked);
+		return new FilterInvisibleSetting("不会显示透明生物.", checked);
 	}
 }

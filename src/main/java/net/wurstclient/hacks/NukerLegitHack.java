@@ -42,7 +42,7 @@ public final class NukerLegitHack extends Hack
 	implements LeftClickListener, RenderListener, UpdateListener
 {
 	private final SliderSetting range =
-		new SliderSetting("Range", 4.25, 1, 4.25, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", 4.25, 1, 4.25, 0.05, ValueDisplay.DECIMAL);
 	
 	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
 		"\u00a7lNormal\u00a7r mode simply breaks everything around you.\n"

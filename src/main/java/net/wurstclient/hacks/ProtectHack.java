@@ -30,6 +30,8 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.AttackSpeedSliderSetting;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.PauseAttackOnContainersSetting;
+import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.settings.filters.*;
 import net.wurstclient.util.EntityUtils;
@@ -42,8 +44,11 @@ public final class ProtectHack extends Hack
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		"How Protect should swing your hand when attacking.", SwingHand.CLIENT);
+	
 	private final CheckboxSetting useAi =
-		new CheckboxSetting("使用AI（实验性）", false);
+		new CheckboxSetting("Use AI (experimental)", false);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);
@@ -94,6 +99,7 @@ public final class ProtectHack extends Hack
 		
 		setCategory(Category.COMBAT);
 		addSetting(speed);
+		addSetting(swingHand);
 		addSetting(useAi);
 		addSetting(pauseOnContainers);
 		
@@ -104,8 +110,8 @@ public final class ProtectHack extends Hack
 	public String getRenderName()
 	{
 		if(friend != null)
-			return "保护中 " + friend.getName().getString();
-		return "保护";
+			return "Protecting " + friend.getName().getString();
+		return "Protect";
 	}
 	
 	@Override
@@ -281,7 +287,7 @@ public final class ProtectHack extends Hack
 			// attack enemy
 			WURST.getHax().criticalsHack.doCritical();
 			MC.interactionManager.attackEntity(MC.player, enemy);
-			MC.player.swingHand(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 			speed.resetTimer();
 		}
 	}

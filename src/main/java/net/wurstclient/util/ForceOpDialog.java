@@ -57,7 +57,7 @@ public class ForceOpDialog extends JDialog
 		
 		addSeparator(4, 56, 498, 4);
 		
-		addLabel("Speed", 4, 64);
+		addLabel("速度", 4, 64);
 		addDelaySelector();
 		addDontWaitCheckbox();
 		
