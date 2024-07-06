@@ -51,19 +51,17 @@ public final class AntiAfkHack extends Hack
 		1, 1, 64, 1, ValueDisplay.AREA_FROM_RADIUS);
 	
 	private final SliderSetting waitTime =
-		new SliderSetting("Wait time", "Time between movements in seconds.",
-			2.5, 0, 60, 0.05, ValueDisplay.DECIMAL.withSuffix("s"));
+		new SliderSetting("等待时间", "Time between movements in seconds.", 2.5, 0,
+			60, 0.05, ValueDisplay.DECIMAL.withSuffix("s"));
 	
-	private final SliderSetting waitTimeRand =
-		new SliderSetting("Wait time randomization",
-			"How much time can be randomly added or subtracted from the wait"
-				+ " time, in seconds.",
-			0.5, 0, 60, 0.05,
-			ValueDisplay.DECIMAL.withPrefix("\u00b1").withSuffix("s"));
+	private final SliderSetting waitTimeRand = new SliderSetting("随机等待时间",
+		"How much time can be randomly added or subtracted from the wait"
+			+ " time, 单位:秒",
+		0.5, 0, 60, 0.05,
+		ValueDisplay.DECIMAL.withPrefix("\u00b1").withSuffix("s"));
 	
 	private final CheckboxSetting showWaitTime =
-		new CheckboxSetting("Show wait time",
-			"Displays the remaining wait time in the HackList.", true);
+		new CheckboxSetting("显示等待时间", "显示等待时间在功能列表上", true);
 	
 	private int timer;
 	private Random random = Random.createLocal();
