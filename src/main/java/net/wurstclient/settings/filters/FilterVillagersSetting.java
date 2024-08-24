@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -25,11 +25,11 @@ public final class FilterVillagersSetting extends EntityFilterCheckbox
 	
 	public static FilterVillagersSetting genericCombat(boolean checked)
 	{
-		return new FilterVillagersSetting("不会攻击村民和流浪商人。", checked);
+		return new FilterVillagersSetting("不会攻击村民和游行贸易商.", checked);
 	}
 	
 	public static FilterVillagersSetting genericVision(boolean checked)
 	{
-		return new FilterVillagersSetting("不会显示村民和流浪商人。", checked);
+		return new FilterVillagersSetting("不会显示村民和游行贸易商.", checked);
 	}
 }

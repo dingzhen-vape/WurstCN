@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -76,7 +76,7 @@ public final class SettingsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("无法加载 " + path.getFileName());
+			System.out.println("Couldn't load " + path.getFileName());
 			e.printStackTrace();
 		}
 		
@@ -143,7 +143,7 @@ public final class SettingsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("无法保存 " + path.getFileName());
+			System.out.println("Couldn't save " + path.getFileName());
 			e.printStackTrace();
 		}
 	}

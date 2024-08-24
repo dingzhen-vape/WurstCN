@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -25,11 +25,11 @@ public final class FilterPlayersSetting extends EntityFilterCheckbox
 	
 	public static FilterPlayersSetting genericCombat(boolean checked)
 	{
-		return new FilterPlayersSetting("不会攻击其他玩家。", checked);
+		return new FilterPlayersSetting("不会攻击其他玩家.", checked);
 	}
 	
 	public static FilterPlayersSetting genericVision(boolean checked)
 	{
-		return new FilterPlayersSetting("不会显示其他玩家。", checked);
+		return new FilterPlayersSetting("不会显示其他玩家.", checked);
 	}
 }

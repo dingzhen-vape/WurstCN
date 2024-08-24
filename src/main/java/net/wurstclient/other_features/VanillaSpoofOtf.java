@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,8 +7,8 @@
  */
 package net.wurstclient.other_features;
 
+import net.minecraft.network.packet.BrandCustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.util.Identifier;
 import net.wurstclient.DontBlock;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.ConnectionPacketOutputListener;
@@ -21,11 +21,13 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class VanillaSpoofOtf extends OtherFeature
 	implements ConnectionPacketOutputListener
 {
-	private final CheckboxSetting spoof = new CheckboxSetting("伪装原版", false);
+	private final CheckboxSetting spoof =
+		new CheckboxSetting("Spoof Vanilla", false);
 	
 	public VanillaSpoofOtf()
 	{
-		super("VanillaSpoof", "通过假装是原版客户端来绕过反Fabric插件。");
+		super("VanillaSpoof",
+			"Bypasses anti-Fabric plugins by pretending to be a vanilla client.");
 		addSetting(spoof);
 		
 		EVENTS.add(ConnectionPacketOutputListener.class, this);
@@ -40,23 +42,20 @@ public final class VanillaSpoofOtf extends OtherFeature
 		if(!(event.getPacket() instanceof CustomPayloadC2SPacket packet))
 			return;
 		
-		Identifier channel = packet.payload().id();
-		
-		if(channel.getNamespace().equals("minecraft")
-			&& channel.getPath().equals("register"))
-			event.cancel();
+		// change client brand "fabric" back to "vanilla"
+		if(packet.payload() instanceof BrandCustomPayload)
+			event.setPacket(
+				new CustomPayloadC2SPacket(new BrandCustomPayload("vanilla")));
 			
-		// Apparently the Minecraft client no longer sends its brand to the
-		// server as of 23w31a
+		// cancel Fabric's "c:version", "c:register" and
+		// "fabric:custom_ingredient_sync" packets
+		// TODO: Something else is needed to prevent the connection from
+		// hanging when these packets are cancelled.
 		
-		// if(packet.getChannel().getNamespace().equals("minecraft")
-		// && packet.getChannel().getPath().equals("brand"))
-		// event.setPacket(new CustomPayloadC2SPacket(
-		// CustomPayloadC2SPacket.BRAND,
-		// new PacketByteBuf(Unpooled.buffer()).writeString("vanilla")));
-		
-		if(channel.getNamespace().equals("fabric"))
-			event.cancel();
+		// Identifier channel = packet.payload().getId().id();
+		// if(channel.getNamespace().equals("fabric")
+		// || channel.getNamespace().equals("c"))
+		// event.cancel();
 	}
 	
 	@Override

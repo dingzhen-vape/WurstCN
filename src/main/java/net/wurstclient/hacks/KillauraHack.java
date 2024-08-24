@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -15,7 +15,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -26,7 +25,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
-import net.wurstclient.events.PostMotionListener;
+import net.wurstclient.events.HandleInputListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
@@ -36,6 +35,8 @@ import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.PauseAttackOnContainersSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.EntityUtils;
@@ -46,32 +47,51 @@ import net.wurstclient.util.RotationUtils;
 @SearchTags({"kill aura", "ForceField", "force field", "CrystalAura",
 	"crystal aura", "AutoCrystal", "auto crystal"})
 public final class KillauraHack extends Hack
-	implements UpdateListener, PostMotionListener, RenderListener
+	implements UpdateListener, HandleInputListener, RenderListener
 {
-	private final SliderSetting range =
-		new SliderSetting("范围", "决定Killaura攻击实体的最远距离。\n" + "任何比指定值更远的实体都不会被攻击。",
-			5, 1, 10, 0.05, ValueDisplay.DECIMAL);
+	private final SliderSetting range = new SliderSetting("范围",
+		"Determines how far Killaura will reach to attack entities.\n"
+			+ "Anything that is further away than the specified value will not be attacked.",
+		5, 1, 10, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"决定哪个实体会被优先攻击。\n" + "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
-			+ "\u00a7l角度\u00a7r - 攻击需要最少头部移动的实体。\n"
-			+ "\u00a7l生命值\u00a7r - 攻击最弱的实体。",
+	private final SliderSetting speedRandMS = new SliderSetting("随机速度",
+		"Helps you bypass anti-cheat plugins by varying the delay between"
+			+ " attacks.\n\n" + "\u00b1100ms is recommended for Vulcan.\n\n"
+			+ "0 (off) is fine for NoCheat+, AAC, Grim, Verus, Spartan, and"
+			+ " vanilla servers.",
+		100, 0, 1000, 50, ValueDisplay.INTEGER.withPrefix("\u00b1")
+			.withSuffix("ms").withLabel(0, "off"));
+	
+	private final EnumSetting<Priority> priority = new EnumSetting<>("Priority",
+		"Determines which entity will be attacked first.\n"
+			+ "\u00a7lDistance\u00a7r - Attacks the closest entity.\n"
+			+ "\u00a7lAngle\u00a7r - Attacks the entity that requires the least head movement.\n"
+			+ "\u00a7lHealth\u00a7r - Attacks the weakest entity.",
 		Priority.values(), Priority.ANGLE);
 	
 	private final SliderSetting fov =
-		new SliderSetting("视野", 360, 30, 360, 10, ValueDisplay.DEGREES);
+		new SliderSetting("FOV", 360, 30, 360, 10, ValueDisplay.DEGREES);
 	
-	private final CheckboxSetting damageIndicator =
-		new CheckboxSetting("伤害指示器", "在目标内渲染一个颜色的盒子，与其剩余生命值成反比。", true);
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		"How Killaura should swing your hand when attacking.",
+		SwingHand.CLIENT);
+	
+	private final CheckboxSetting damageIndicator = new CheckboxSetting(
+		"Damage indicator",
+		"Renders a colored box within the target, inversely proportional to its remaining health.",
+		true);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视线",
-		"确保你在攻击时不会穿过方块。\n\n" + "速度较慢，但可以帮助应对反作弊插件。", false);
+	private final CheckboxSetting checkLOS =
+		new CheckboxSetting("Check line of sight",
+			"Ensures that you don't reach through blocks when attacking.\n\n"
+				+ "Slower but can help with anti-cheat plugins.",
+			false);
 	
 	private final EntityFilterList entityFilters =
 		EntityFilterList.genericCombat();
@@ -86,8 +106,10 @@ public final class KillauraHack extends Hack
 		
 		addSetting(range);
 		addSetting(speed);
+		addSetting(speedRandMS);
 		addSetting(priority);
 		addSetting(fov);
+		addSetting(swingHand);
 		addSetting(damageIndicator);
 		addSetting(pauseOnContainers);
 		addSetting(checkLOS);
@@ -109,9 +131,9 @@ public final class KillauraHack extends Hack
 		WURST.getHax().triggerBotHack.setEnabled(false);
 		WURST.getHax().tpAuraHack.setEnabled(false);
 		
-		speed.resetTimer();
+		speed.resetTimer(speedRandMS.getValue());
 		EVENTS.add(UpdateListener.class, this);
-		EVENTS.add(PostMotionListener.class, this);
+		EVENTS.add(HandleInputListener.class, this);
 		EVENTS.add(RenderListener.class, this);
 	}
 	
@@ -119,7 +141,7 @@ public final class KillauraHack extends Hack
 	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
-		EVENTS.remove(PostMotionListener.class, this);
+		EVENTS.remove(HandleInputListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
 		
 		target = null;
@@ -137,7 +159,7 @@ public final class KillauraHack extends Hack
 			return;
 		
 		Stream<Entity> stream = EntityUtils.getAttackableEntities();
-		double rangeSq = Math.pow(range.getValue(), 2);
+		double rangeSq = range.getValueSq();
 		stream = stream.filter(e -> MC.player.squaredDistanceTo(e) <= rangeSq);
 		
 		if(fov.getValue() < 360.0)
@@ -164,18 +186,16 @@ public final class KillauraHack extends Hack
 	}
 	
 	@Override
-	public void onPostMotion()
+	public void onHandleInput()
 	{
 		if(target == null)
 			return;
 		
-		WURST.getHax().criticalsHack.doCritical();
-		ClientPlayerEntity player = MC.player;
-		MC.interactionManager.attackEntity(player, target);
-		player.swingHand(Hand.MAIN_HAND);
+		MC.interactionManager.attackEntity(MC.player, target);
+		swingHand.swing(Hand.MAIN_HAND);
 		
 		target = null;
-		speed.resetTimer();
+		speed.resetTimer(speedRandMS.getValue());
 	}
 	
 	@Override
@@ -236,13 +256,13 @@ public final class KillauraHack extends Hack
 	
 	private enum Priority
 	{
-		DISTANCE("距离", e -> MC.player.squaredDistanceTo(e)),
+		DISTANCE("Distance", e -> MC.player.squaredDistanceTo(e)),
 		
-		ANGLE("角度",
+		ANGLE("Angle",
 			e -> RotationUtils
 				.getAngleToLookVec(e.getBoundingBox().getCenter())),
 		
-		HEALTH("生命", e -> e instanceof LivingEntity
+		HEALTH("Health", e -> e instanceof LivingEntity
 			? ((LivingEntity)e).getHealth() : Integer.MAX_VALUE);
 		
 		private final String name;

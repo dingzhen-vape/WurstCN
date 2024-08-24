@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -34,6 +34,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 import net.wurstclient.WurstClient;
 import net.wurstclient.event.EventManager;
+import net.wurstclient.events.HandleInputListener.HandleInputEvent;
 import net.wurstclient.events.LeftClickListener.LeftClickEvent;
 import net.wurstclient.events.RightClickListener.RightClickEvent;
 import net.wurstclient.mixinterface.IClientPlayerEntity;
@@ -62,6 +63,23 @@ public abstract class MinecraftClientMixin
 	private MinecraftClientMixin(WurstClient wurst, String name)
 	{
 		super(name);
+	}
+	
+	/**
+	 * Runs just before {@link MinecraftClient#handleInputEvents()}, bypassing
+	 * the <code>overlay == null && currentScreen == null</code> check in
+	 * {@link MinecraftClient#tick()}.
+	 */
+	@Inject(at = @At(value = "FIELD",
+		target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;",
+		ordinal = 0), method = "tick()V")
+	private void onHandleInputEvents(CallbackInfo ci)
+	{
+		// Make sure this event is not fired outside of gameplay
+		if(player == null)
+			return;
+		
+		EventManager.fire(HandleInputEvent.INSTANCE);
 	}
 	
 	@Inject(at = @At(value = "FIELD",

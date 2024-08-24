@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -41,9 +41,10 @@ public final class XRayHack extends Hack implements UpdateListener,
 	private final BlockListSetting ores = new BlockListSetting("矿石",
 		"X-Ray会显示的方块的列表。它们不一定要是矿石" + " - 你可以添加任何你想要的方块。\n\n"
 			+ "更改这个设置后记得重启X-Ray。",
-		"minecraft:ancient_debris", "minecraft:anvil", "minecraft:beacon",
-		"minecraft:bone_block", "minecraft:bookshelf",
-		"minecraft:brewing_stand", "minecraft:chain_command_block",
+		"minecraft:amethyst_cluster", "minecraft:ancient_debris",
+		"minecraft:anvil", "minecraft:beacon", "minecraft:bone_block",
+		"minecraft:bookshelf", "minecraft:brewing_stand",
+		"minecraft:budding_amethyst", "minecraft:chain_command_block",
 		"minecraft:chest", "minecraft:clay", "minecraft:coal_block",
 		"minecraft:coal_ore", "minecraft:command_block", "minecraft:copper_ore",
 		"minecraft:crafter", "minecraft:crafting_table",
@@ -65,9 +66,11 @@ public final class XRayHack extends Hack implements UpdateListener,
 		"minecraft:raw_copper_block", "minecraft:raw_gold_block",
 		"minecraft:raw_iron_block", "minecraft:redstone_block",
 		"minecraft:redstone_ore", "minecraft:repeating_command_block",
-		"minecraft:spawner", "minecraft:suspicious_gravel",
-		"minecraft:suspicious_sand", "minecraft:tnt", "minecraft:torch",
-		"minecraft:trapped_chest", "minecraft:water");
+		"minecraft:sculk_catalyst", "minecraft:sculk_sensor",
+		"minecraft:sculk_shrieker", "minecraft:spawner",
+		"minecraft:suspicious_gravel", "minecraft:suspicious_sand",
+		"minecraft:tnt", "minecraft:torch", "minecraft:trapped_chest",
+		"minecraft:trial_spawner", "minecraft:vault", "minecraft:water");
 	
 	private final CheckboxSetting onlyExposed = new CheckboxSetting("只显示暴露的",
 		"只显示在洞穴中可见的矿石。这可以帮助对抗" + " 反X-Ray插件。\n\n" + "更改这个设置后记得重启X-Ray。", false);
@@ -94,7 +97,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// cache block names in case the setting changes while X-Ray is enabled
 		oreNamesCache = new ArrayList<>(ores.getBlockNames());
@@ -115,7 +118,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		// remove event listeners
 		EVENTS.remove(UpdateListener.class, this);

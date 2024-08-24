@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -9,6 +9,7 @@ package net.wurstclient.hacks;
 
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -16,17 +17,21 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.SelectMerchantTradeC2SPacket;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -61,42 +66,55 @@ import net.wurstclient.util.BlockPlacer.BlockPlacingParams;
 public final class AutoLibrarianHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final BookOffersSetting wantedBooks = new BookOffersSetting("想要的书",
-		"你想让你的村民出售的附魔书的列表。\n\n" + "AutoLibrarian会停止训练当前的村民"
-			+ "一旦它学会了出售这些书中的一本。\n\n" + "你也可以为每本书设置一个最高价格，以防你"
-			+ "已经有一个村民出售它，但你想要一个" + "更便宜的价格。",
-		"minecraft:depth_strider", "minecraft:efficiency",
-		"minecraft:feather_falling", "minecraft:fortune", "minecraft:looting",
-		"minecraft:mending", "minecraft:protection", "minecraft:respiration",
-		"minecraft:sharpness", "minecraft:silk_touch", "minecraft:unbreaking");
+	private final BookOffersSetting wantedBooks = new BookOffersSetting(
+		"Wanted books",
+		"A list of enchanted books that you want your villagers to sell.\n\n"
+			+ "AutoLibrarian will stop training the current villager"
+			+ " once it has learned to sell one of these books.\n\n"
+			+ "You can also set a maximum price for each book, in case you"
+			+ " already have a villager selling it but you want it for a"
+			+ " cheaper price.",
+		"minecraft:depth_strider;3", "minecraft:efficiency;5",
+		"minecraft:feather_falling;4", "minecraft:fortune;3",
+		"minecraft:looting;3", "minecraft:mending;1", "minecraft:protection;4",
+		"minecraft:respiration;3", "minecraft:sharpness;5",
+		"minecraft:silk_touch;1", "minecraft:unbreaking;3");
 	
-	private final CheckboxSetting lockInTrade = new CheckboxSetting("锁定交易",
-		"一旦村民学会了出售你想要的书，就自动从村民那里买点东西。这样可以防止村民" + "以后改变它的交易报价。\n\n"
-			+ "使用这个功能时，请确保你的" + "库存中至少有24张纸和9个绿宝石。或者，1本书和" + "64个绿宝石也可以。"
-			+ "范围",
+	private final CheckboxSetting lockInTrade = new CheckboxSetting(
+		"Lock in trade",
+		"Automatically buys something from the villager once it has learned to"
+			+ " sell the book you want. This prevents the villager from"
+			+ " changing its trade offers later.\n\n"
+			+ "Make sure you have at least 24 paper and 9 emeralds in your"
+			+ " inventory when using this feature. Alternatively, 1 book and"
+			+ " 64 emeralds will also work.",
 		false);
 	
 	private final UpdateBooksSetting updateBooks = new UpdateBooksSetting();
 	
 	private final SliderSetting range =
-		new SliderSetting("距离\n\n", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FacingSetting facing = FacingSetting
-		.withoutPacketSpam("\u00a7lOff\u00a7r - 根本不要面对村民。会被" + "反作弊插件检测到。\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在" + "服务器端面对村民，同时让你在" + "客户端自由地移动相机。"
-			+ "客户端。\n\n" + "\u00a7lClient-side\u00a7r - 通过移动你的"
-			+ "客户端上的相机来面对村民。这是最合法的选项，但" + "看起来可能会让人头晕。");
+		.withoutPacketSpam("How to face the villager and job site.\n\n"
+			+ "\u00a7lOff\u00a7r - Don't face the villager at all. Will be"
+			+ " detected by anti-cheat plugins.\n\n"
+			+ "\u00a7lServer-side\u00a7r - Face the villager on the"
+			+ " server-side, while still letting you move the camera freely on"
+			+ " the client-side.\n\n"
+			+ "\u00a7lClient-side\u00a7r - Face the villager by moving your"
+			+ " camera on the client-side. This is the most legit option, but"
+			+ " can be disorienting to look at.");
 	
 	private final SwingHandSetting swingHand =
-		new SwingHandSetting("如何在与" + "村民和工作场所互动时挥动你的手。\n\n"
-			+ "\u00a7lOff\u00a7r - 根本不要挥动你的手。会被检测到" + "反作弊插件。\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在服务器端挥动你的手，" + "而不在客户端播放动画。\n\n"
-			+ "\u00a7lClient-side\u00a7r - 在客户端挥动你的手。" + "这是最合法的选项。");
+		new SwingHandSetting("How to swing your hand when interacting with the"
+			+ " villager and job site.");
 	
-	private final SliderSetting repairMode = new SliderSetting("修复模式",
-		"防止AutoLibrarian在你的斧头的耐久度达到" + "给定的阈值时使用它，这样你可以在它坏掉之前修复它。\n"
-			+ "可以从0（关闭）到100进行调整。",
-		1, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "关闭"));
+	private final SliderSetting repairMode = new SliderSetting("Repair mode",
+		"Prevents AutoLibrarian from using your axe when its durability reaches"
+			+ " the given threshold, so you can repair it before it breaks.\n"
+			+ "Can be adjusted from 0 (off) to 100.",
+		1, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "off"));
 	
 	private final OverlayRenderer overlay = new OverlayRenderer();
 	private final HashSet<VillagerEntity> experiencedVillagers =
@@ -165,7 +183,8 @@ public final class AutoLibrarianHack extends Hack
 		}
 		
 		if(placingJobSite && breakingJobSite)
-			throw new IllegalStateException("试图同时放置和打破工作场所。出了点问题。");
+			throw new IllegalStateException(
+				"Trying to place and break job site at the same time. Something is wrong.");
 		
 		if(placingJobSite)
 		{
@@ -190,9 +209,10 @@ public final class AutoLibrarianHack extends Hack
 		int experience = tradeScreen.getScreenHandler().getExperience();
 		if(experience > 0)
 		{
-			ChatUtils.warning("村民在 " + villager.getBlockPos().toShortString()
-				+ "已经有经验了，意味着它不能再被训练了。");
-			ChatUtils.message("寻找另一个村民...");
+			ChatUtils.warning("Villager at "
+				+ villager.getBlockPos().toShortString()
+				+ " is already experienced, meaning it can't be trained anymore.");
+			ChatUtils.message("Looking for another villager...");
 			experiencedVillagers.add(villager);
 			villager = null;
 			jobSite = null;
@@ -206,21 +226,22 @@ public final class AutoLibrarianHack extends Hack
 		
 		if(bookOffer == null)
 		{
-			ChatUtils.message("村民没有出售附魔书。");
+			ChatUtils.message("Villager is not selling an enchanted book.");
 			closeTradeScreen();
 			breakingJobSite = true;
-			System.out.println("打破工作场所...");
+			System.out.println("Breaking job site...");
 			return;
 		}
 		
-		ChatUtils.message("村民正在出售 " + bookOffer.getEnchantmentNameWithLevel()
-			+ "为 " + bookOffer.getFormattedPrice() + "。");
+		ChatUtils.message(
+			"Villager is selling " + bookOffer.getEnchantmentNameWithLevel()
+				+ " for " + bookOffer.getFormattedPrice() + ".");
 		
 		// if wrong enchantment, break job site and start over
 		if(!wantedBooks.isWanted(bookOffer))
 		{
 			breakingJobSite = true;
-			System.out.println("打破工作场所...");
+			System.out.println("Breaking job site...");
 			closeTradeScreen();
 			return;
 		}
@@ -246,21 +267,21 @@ public final class AutoLibrarianHack extends Hack
 		// update wanted books based on the user's settings
 		updateBooks.getSelected().update(wantedBooks, bookOffer);
 		
-		ChatUtils.message("完成！");
+		ChatUtils.message("Done!");
 		setEnabled(false);
 	}
 	
 	private void breakJobSite()
 	{
 		if(jobSite == null)
-			throw new IllegalStateException("工作场所是空的。");
+			throw new IllegalStateException("Job site is null.");
 		
 		BlockBreakingParams params =
 			BlockBreaker.getBlockBreakingParams(jobSite);
 		
 		if(params == null || BlockUtils.getState(jobSite).isReplaceable())
 		{
-			System.out.println("工作场所已经被打破。替换...");
+			System.out.println("Job site has been broken. Replacing...");
 			breakingJobSite = false;
 			placingJobSite = true;
 			return;
@@ -276,7 +297,7 @@ public final class AutoLibrarianHack extends Hack
 		// damage block and swing hand
 		if(MC.interactionManager.updateBlockBreakingProgress(jobSite,
 			params.side()))
-			swingHand.getSelected().swing(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 		
 		// update progress
 		overlay.updateProgress();
@@ -285,18 +306,19 @@ public final class AutoLibrarianHack extends Hack
 	private void placeJobSite()
 	{
 		if(jobSite == null)
-			throw new IllegalStateException("工作场所是空的。");
+			throw new IllegalStateException("Job site is null.");
 		
 		if(!BlockUtils.getState(jobSite).isReplaceable())
 		{
 			if(BlockUtils.getBlock(jobSite) == Blocks.LECTERN)
 			{
-				System.out.println("工作场所已经被放置。");
+				System.out.println("Job site has been placed.");
 				placingJobSite = false;
 				
 			}else
 			{
-				System.out.println("在工作场所发现错误的方块。打破...");
+				System.out
+					.println("Found wrong block at job site. Breaking...");
 				breakingJobSite = true;
 				placingJobSite = false;
 			}
@@ -316,7 +338,8 @@ public final class AutoLibrarianHack extends Hack
 			? Hand.MAIN_HAND : Hand.OFF_HAND;
 		
 		// sneak-place to avoid activating trapdoors/chests/etc.
-		MC.options.sneakKey.setPressed(true);
+		IKeyBinding sneakKey = IKeyBinding.get(MC.options.sneakKey);
+		sneakKey.setPressed(true);
 		if(!MC.player.isSneaking())
 			return;
 		
@@ -324,7 +347,7 @@ public final class AutoLibrarianHack extends Hack
 		BlockPlacingParams params = BlockPlacer.getBlockPlacingParams(jobSite);
 		if(params == null)
 		{
-			((IKeyBinding)MC.options.sneakKey).resetPressedState();
+			sneakKey.resetPressedState();
 			return;
 		}
 		
@@ -337,10 +360,10 @@ public final class AutoLibrarianHack extends Hack
 		
 		// swing hand
 		if(result.isAccepted() && result.shouldSwingHand())
-			swingHand.getSelected().swing(hand);
+			swingHand.swing(hand);
 		
 		// reset sneak
-		((IKeyBinding)MC.options.sneakKey).resetPressedState();
+		sneakKey.resetPressedState();
 	}
 	
 	private void openTradeScreen()
@@ -353,7 +376,8 @@ public final class AutoLibrarianHack extends Hack
 		
 		if(player.squaredDistanceTo(villager) > range.getValueSq())
 		{
-			ChatUtils.error("村民超出范围。考虑困住" + "村民，这样它就不会走开了。");
+			ChatUtils.error("Villager is out of range. Consider trapping"
+				+ " the villager so it doesn't wander away.");
 			setEnabled(false);
 			return;
 		}
@@ -378,7 +402,7 @@ public final class AutoLibrarianHack extends Hack
 		
 		// swing hand
 		if(actionResult.isAccepted() && actionResult.shouldSwingHand())
-			swingHand.getSelected().swing(hand);
+			swingHand.swing(hand);
 		
 		// set cooldown
 		MC.itemUseCooldown = 4;
@@ -395,23 +419,27 @@ public final class AutoLibrarianHack extends Hack
 		for(TradeOffer tradeOffer : tradeOffers)
 		{
 			ItemStack stack = tradeOffer.getSellItem();
-			if(!(stack.getItem() instanceof EnchantedBookItem book))
+			if(!(stack.getItem() instanceof EnchantedBookItem))
 				continue;
 			
-			NbtList enchantmentNbt = EnchantedBookItem.getEnchantmentNbt(stack);
-			if(enchantmentNbt.isEmpty())
+			Set<Entry<RegistryEntry<Enchantment>>> enchantmentLevelMap =
+				EnchantmentHelper.getEnchantments(stack)
+					.getEnchantmentEntries();
+			if(enchantmentLevelMap.isEmpty())
 				continue;
 			
-			NbtList bookNbt = EnchantedBookItem.getEnchantmentNbt(stack);
-			String enchantment = bookNbt.getCompound(0).getString("id");
-			int level = bookNbt.getCompound(0).getInt("lvl");
-			int price = tradeOffer.getAdjustedFirstBuyItem().getCount();
+			Object2IntMap.Entry<RegistryEntry<Enchantment>> firstEntry =
+				enchantmentLevelMap.stream().findFirst().orElseThrow();
+			
+			String enchantment = firstEntry.getKey().getIdAsString();
+			int level = firstEntry.getIntValue();
+			int price = tradeOffer.getDisplayedFirstBuyItem().getCount();
 			BookOffer bookOffer = new BookOffer(enchantment, level, price);
 			
-			if(!bookOffer.isValid())
+			if(!bookOffer.isFullyValid())
 			{
-				System.out
-					.println("发现无效的附魔书报价。\n" + "NBT数据: " + stack.getNbt());
+				System.out.println("Found invalid enchanted book offer.\n"
+					+ "Component data: " + enchantmentLevelMap);
 				continue;
 			}
 			
@@ -443,19 +471,21 @@ public final class AutoLibrarianHack extends Hack
 		
 		if(villager == null)
 		{
-			String errorMsg = "找不到附近的图书管理员。";
+			String errorMsg = "Couldn't find a nearby librarian.";
 			int numExperienced = experiencedVillagers.size();
 			if(numExperienced > 0)
-				errorMsg += "（除了 " + numExperienced + "那个 "
-					+ (numExperienced == 1 ? "是" : "是") + "已经有经验了。）";
+				errorMsg += " (Except for " + numExperienced + " that "
+					+ (numExperienced == 1 ? "is" : "are")
+					+ " already experienced.)";
 			
 			ChatUtils.error(errorMsg);
-			ChatUtils.message("请确保图书管理员和讲台" + "都在你站立的地方可以到达。");
+			ChatUtils.message("Make sure both the librarian and the lectern"
+				+ " are reachable from where you are standing.");
 			setEnabled(false);
 			return;
 		}
 		
-		System.out.println("在这里找到村民 " + villager.getBlockPos());
+		System.out.println("Found villager at " + villager.getBlockPos());
 	}
 	
 	private void setTargetJobSite()
@@ -477,13 +507,14 @@ public final class AutoLibrarianHack extends Hack
 		
 		if(jobSite == null)
 		{
-			ChatUtils.error("找不到图书管理员的讲台。");
-			ChatUtils.message("请确保图书管理员和讲台" + "都在你站立的地方可以到达。");
+			ChatUtils.error("Couldn't find the librarian's lectern.");
+			ChatUtils.message("Make sure both the librarian and the lectern"
+				+ " are reachable from where you are standing.");
 			setEnabled(false);
 			return;
 		}
 		
-		System.out.println("在这里找到讲台 " + jobSite);
+		System.out.println("Found lectern at " + jobSite);
 	}
 	
 	@Override

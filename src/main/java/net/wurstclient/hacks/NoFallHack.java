@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -8,6 +8,7 @@
 package net.wurstclient.hacks;
 
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket.OnGroundOnly;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
@@ -18,15 +19,18 @@ import net.wurstclient.settings.CheckboxSetting;
 @SearchTags({"no fall"})
 public final class NoFallHack extends Hack implements UpdateListener
 {
-	private final CheckboxSetting allowElytra =
-		new CheckboxSetting("允许鞘翅", "在你使用鞘翅飞行时也尝试防止摔落伤害。\n\n"
-			+ "\u00a7c\u00a7l警告:\u00a7r 这有时会导致你" + "意外地停止飞行。", false);
+	private final CheckboxSetting allowElytra = new CheckboxSetting("允许鞘翅",
+		"description.wurst.setting.nofall.allow_elytra", false);
+	
+	private final CheckboxSetting pauseForMace = new CheckboxSetting("为重锤暂停",
+		"description.wurst.setting.nofall.pause_for_mace", false);
 	
 	public NoFallHack()
 	{
 		super("无摔伤");
 		setCategory(Category.MOVEMENT);
 		addSetting(allowElytra);
+		addSetting(pauseForMace);
 	}
 	
 	@Override
@@ -37,22 +41,26 @@ public final class NoFallHack extends Hack implements UpdateListener
 			return getName();
 		
 		if(player.isFallFlying() && !allowElytra.isChecked())
-			return getName() + " (暂停)";
+			return getName() + "（已暂停）";
 		
 		if(player.isCreative())
-			return getName() + " (暂停)";
+			return getName() + "（已暂停）";
+		
+		if(pauseForMace.isChecked() && isHoldingMace(player))
+			return getName() + "（已暂停）";
 		
 		return getName();
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
+		WURST.getHax().antiHungerHack.setEnabled(false);
 		EVENTS.add(UpdateListener.class, this);
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}
@@ -69,6 +77,10 @@ public final class NoFallHack extends Hack implements UpdateListener
 		boolean fallFlying = player.isFallFlying();
 		if(fallFlying && !allowElytra.isChecked())
 			return;
+		
+		// pause when holding a mace, if enabled
+		if(pauseForMace.isChecked() && isHoldingMace(player))
+			return;
 			
 		// ignore small falls that can't cause damage,
 		// unless CreativeFlight is enabled in survival mode
@@ -84,6 +96,11 @@ public final class NoFallHack extends Hack implements UpdateListener
 		
 		// send packet to stop fall damage
 		player.networkHandler.sendPacket(new OnGroundOnly(true));
+	}
+	
+	private boolean isHoldingMace(ClientPlayerEntity player)
+	{
+		return player.getMainHandStack().isOf(Items.MACE);
 	}
 	
 	private boolean isFallingFastEnoughToCauseDamage(ClientPlayerEntity player)

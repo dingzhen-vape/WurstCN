@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -28,7 +28,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
+import net.minecraft.client.render.BuiltBuffer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -66,15 +66,18 @@ import net.wurstclient.util.RotationUtils;
 public final class TunnellerHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final EnumSetting<TunnelSize> size =
-		new EnumSetting<>("隧道大小", TunnelSize.values(), TunnelSize.SIZE_3X3);
+	private final EnumSetting<TunnelSize> size = new EnumSetting<>(
+		"Tunnel size", TunnelSize.values(), TunnelSize.SIZE_3X3);
 	
-	private final SliderSetting limit = new SliderSetting("限制",
-		"当隧道达到给定的长度时自动停止。\n\n" + "0 = 无限制", 0, 0, 1000, 1, ValueDisplay.INTEGER
-			.withSuffix(" 方块").withLabel(1, "1 方块").withLabel(0, "关闭"));
+	private final SliderSetting limit = new SliderSetting("Limit",
+		"Automatically stops once the tunnel has reached the given length.\n\n"
+			+ "0 = no limit",
+		0, 0, 1000, 1, ValueDisplay.INTEGER.withSuffix(" blocks")
+			.withLabel(1, "1 block").withLabel(0, "disabled"));
 	
-	private final CheckboxSetting torches =
-		new CheckboxSetting("放置火把", "在隧道内放置足够的火把来防止怪物生成。", false);
+	private final CheckboxSetting torches = new CheckboxSetting("Place torches",
+		"Places just enough torches to prevent mobs from spawning inside the tunnel.",
+		false);
 	
 	private BlockPos start;
 	private Direction direction;
@@ -109,7 +112,7 @@ public final class TunnellerHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		WURST.getHax().autoMineHack.setEnabled(false);
 		WURST.getHax().excavatorHack.setEnabled(false);
@@ -140,7 +143,7 @@ public final class TunnellerHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		// remove listeners
 		EVENTS.remove(UpdateListener.class, this);
@@ -269,9 +272,8 @@ public final class TunnellerHack extends Hack
 		vertexBuffers[0] = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
+		BufferBuilder bufferBuilder = tessellator
+			.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
 		
 		RegionPos region = RenderUtils.getCameraRegion();
 		Vec3d offset = Vec3d.ofCenter(start).subtract(region.toVec3d());
@@ -382,18 +384,18 @@ public final class TunnellerHack extends Hack
 			getAllInBox(from, to).forEach(blocks::add);
 			
 			if(vertexBuffers[1] != null)
+			{
 				vertexBuffers[1].close();
-			
-			vertexBuffers[1] = new VertexBuffer(VertexBuffer.Usage.STATIC);
+				vertexBuffers[1] = null;
+			}
 			
 			RegionPos region = RenderUtils.getCameraRegion();
 			Box box = new Box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9)
 				.offset(region.negate().toVec3d());
 			
 			Tessellator tessellator = RenderSystem.renderThreadTesselator();
-			BufferBuilder bufferBuilder = tessellator.getBuffer();
-			bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-				VertexFormats.POSITION);
+			BufferBuilder bufferBuilder = tessellator.begin(
+				VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
 			
 			currentBlock = null;
 			for(BlockPos pos : blocks)
@@ -411,10 +413,14 @@ public final class TunnellerHack extends Hack
 				RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
 			}
 			
-			BuiltBuffer buffer = bufferBuilder.end();
-			vertexBuffers[1].bind();
-			vertexBuffers[1].upload(buffer);
-			VertexBuffer.unbind();
+			BuiltBuffer buffer = bufferBuilder.endNullable();
+			if(buffer != null)
+			{
+				vertexBuffers[1] = new VertexBuffer(VertexBuffer.Usage.STATIC);
+				vertexBuffers[1].bind();
+				vertexBuffers[1].upload(buffer);
+				VertexBuffer.unbind();
+			}
 			
 			if(currentBlock == null)
 			{
@@ -493,28 +499,32 @@ public final class TunnellerHack extends Hack
 					blocks.add(pos);
 				
 			if(vertexBuffers[2] != null)
+			{
 				vertexBuffers[2].close();
+				vertexBuffers[2] = null;
+			}
 			
-			vertexBuffers[2] = new VertexBuffer(VertexBuffer.Usage.STATIC);
+			if(!blocks.isEmpty())
+			{
+				RegionPos region = RenderUtils.getCameraRegion();
+				Box box = new Box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9)
+					.offset(region.negate().toVec3d());
+				
+				Tessellator tessellator = RenderSystem.renderThreadTesselator();
+				BufferBuilder bufferBuilder = tessellator.begin(
+					VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
+				
+				for(BlockPos pos : blocks)
+					RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
+				
+				vertexBuffers[2] = new VertexBuffer(VertexBuffer.Usage.STATIC);
+				vertexBuffers[2].bind();
+				vertexBuffers[2].upload(bufferBuilder.end());
+				VertexBuffer.unbind();
+				return true;
+			}
 			
-			RegionPos region = RenderUtils.getCameraRegion();
-			Box box = new Box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9)
-				.offset(region.negate().toVec3d());
-			
-			Tessellator tessellator = RenderSystem.renderThreadTesselator();
-			BufferBuilder bufferBuilder = tessellator.getBuffer();
-			bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-				VertexFormats.POSITION);
-			
-			for(BlockPos pos : blocks)
-				RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
-			
-			BuiltBuffer buffer = bufferBuilder.end();
-			vertexBuffers[2].bind();
-			vertexBuffers[2].upload(buffer);
-			VertexBuffer.unbind();
-			
-			return !blocks.isEmpty();
+			return false;
 		}
 		
 		private BlockPos offsetFloor(BlockPos pos, Vec3i vec)
@@ -632,30 +642,35 @@ public final class TunnellerHack extends Hack
 			if(liquids.isEmpty())
 				return false;
 			
-			ChatUtils.error("1x2");
+			ChatUtils.error("The tunnel is flooded, cannot continue.");
 			
 			if(vertexBuffers[3] != null)
+			{
 				vertexBuffers[3].close();
+				vertexBuffers[3] = null;
+			}
 			
-			vertexBuffers[3] = new VertexBuffer(VertexBuffer.Usage.STATIC);
+			if(!liquids.isEmpty())
+			{
+				RegionPos region = RenderUtils.getCameraRegion();
+				Box box = new Box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9)
+					.offset(region.negate().toVec3d());
+				
+				Tessellator tessellator = RenderSystem.renderThreadTesselator();
+				BufferBuilder bufferBuilder = tessellator.begin(
+					VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
+				
+				for(BlockPos pos : liquids)
+					RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
+				
+				BuiltBuffer buffer = bufferBuilder.end();
+				
+				vertexBuffers[3] = new VertexBuffer(VertexBuffer.Usage.STATIC);
+				vertexBuffers[3].bind();
+				vertexBuffers[3].upload(buffer);
+				VertexBuffer.unbind();
+			}
 			
-			RegionPos region = RenderUtils.getCameraRegion();
-			Box box = new Box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9)
-				.offset(region.negate().toVec3d());
-			
-			Tessellator tessellator = RenderSystem.renderThreadTesselator();
-			BufferBuilder bufferBuilder = tessellator.getBuffer();
-			bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-				VertexFormats.POSITION);
-			
-			for(BlockPos pos : liquids)
-				RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
-			
-			BuiltBuffer buffer = bufferBuilder.end();
-			
-			vertexBuffers[3].bind();
-			vertexBuffers[3].upload(buffer);
-			VertexBuffer.unbind();
 			return true;
 		}
 		
@@ -710,19 +725,19 @@ public final class TunnellerHack extends Hack
 	
 	private class PlaceTorchTask extends Task
 	{
-		@SuppressWarnings("1x3")
 		@Override
 		public boolean canRun()
 		{
+			if(vertexBuffers[4] != null)
+			{
+				vertexBuffers[4].close();
+				vertexBuffers[4] = null;
+			}
+			
 			if(!torches.isChecked())
 			{
 				lastTorch = null;
 				nextTorch = BlockPos.ofFloored(MC.player.getPos());
-				if(vertexBuffers[4] != null)
-				{
-					vertexBuffers[4].close();
-					vertexBuffers[4] = null;
-				}
 				return false;
 			}
 			
@@ -733,15 +748,11 @@ public final class TunnellerHack extends Hack
 				nextTorch = lastTorch.offset(direction,
 					size.getSelected().torchDistance);
 			
-			if(vertexBuffers[4] != null)
-				vertexBuffers[4].close();
-			
-			vertexBuffers[4] = new VertexBuffer(VertexBuffer.Usage.STATIC);
-			
 			RegionPos region = RenderUtils.getCameraRegion();
 			Vec3d torchVec =
 				Vec3d.ofBottomCenter(nextTorch).subtract(region.toVec3d());
 			
+			vertexBuffers[4] = new VertexBuffer(VertexBuffer.Usage.STATIC);
 			RenderUtils.drawArrow(torchVec, torchVec.add(0, 0.5, 0),
 				vertexBuffers[4]);
 			
@@ -752,10 +763,9 @@ public final class TunnellerHack extends Hack
 			BlockState state = BlockUtils.getState(nextTorch);
 			if(!state.isReplaceable())
 				return false;
-				
-			// Can't see why canPlaceAt() is deprecated. Still seems to be
-			// widely used with no replacement.
-			return Blocks.TORCH.canPlaceAt(state, MC.world, nextTorch);
+			
+			return Blocks.TORCH.getDefaultState().canPlaceAt(MC.world,
+				nextTorch);
 		}
 		
 		@Override
@@ -763,7 +773,7 @@ public final class TunnellerHack extends Hack
 		{
 			if(!equipTorch())
 			{
-				ChatUtils.error("1x4");
+				ChatUtils.error("Out of torches.");
 				setEnabled(false);
 				return;
 			}
@@ -957,27 +967,27 @@ public final class TunnellerHack extends Hack
 		SIZE_1X2("1x2", new Vec3i(0, 1, 0), new Vec3i(0, 0, 0), 4, 13),
 		SIZE_1X3("1x3", new Vec3i(0, 2, 0), new Vec3i(0, 0, 0), 4, 13),
 		SIZE_1X4("1x4", new Vec3i(0, 3, 0), new Vec3i(0, 0, 0), 4, 13),
-		SIZE_1X5("1x2", new Vec3i(0, 4, 0), new Vec3i(0, 0, 0), 3, 13),
+		SIZE_1X5("1x5", new Vec3i(0, 4, 0), new Vec3i(0, 0, 0), 3, 13),
 		
-		SIZE_2X2("1x3", new Vec3i(1, 1, 0), new Vec3i(0, 0, 0), 4, 11),
-		SIZE_2X3("1x4", new Vec3i(1, 2, 0), new Vec3i(0, 0, 0), 4, 11),
-		SIZE_2X4("1x2", new Vec3i(1, 3, 0), new Vec3i(0, 0, 0), 4, 11),
-		SIZE_2X5("1x3", new Vec3i(1, 4, 0), new Vec3i(0, 0, 0), 3, 11),
+		SIZE_2X2("2x2", new Vec3i(1, 1, 0), new Vec3i(0, 0, 0), 4, 11),
+		SIZE_2X3("2x3", new Vec3i(1, 2, 0), new Vec3i(0, 0, 0), 4, 11),
+		SIZE_2X4("2x4", new Vec3i(1, 3, 0), new Vec3i(0, 0, 0), 4, 11),
+		SIZE_2X5("2x5", new Vec3i(1, 4, 0), new Vec3i(0, 0, 0), 3, 11),
 		
-		SIZE_3X2("1x4", new Vec3i(1, 1, 0), new Vec3i(-1, 0, 0), 4, 11),
-		SIZE_3X3("1x2", new Vec3i(1, 2, 0), new Vec3i(-1, 0, 0), 4, 11),
-		SIZE_3X4("1x3", new Vec3i(1, 3, 0), new Vec3i(-1, 0, 0), 4, 11),
-		SIZE_3X5("1x4", new Vec3i(1, 4, 0), new Vec3i(-1, 0, 0), 3, 11),
+		SIZE_3X2("3x2", new Vec3i(1, 1, 0), new Vec3i(-1, 0, 0), 4, 11),
+		SIZE_3X3("3x3", new Vec3i(1, 2, 0), new Vec3i(-1, 0, 0), 4, 11),
+		SIZE_3X4("3x4", new Vec3i(1, 3, 0), new Vec3i(-1, 0, 0), 4, 11),
+		SIZE_3X5("3x5", new Vec3i(1, 4, 0), new Vec3i(-1, 0, 0), 3, 11),
 		
-		SIZE_4X2("1x2", new Vec3i(2, 1, 0), new Vec3i(-1, 0, 0), 4, 9),
-		SIZE_4X3("1x3", new Vec3i(2, 2, 0), new Vec3i(-1, 0, 0), 4, 9),
-		SIZE_4X4("1x4", new Vec3i(2, 3, 0), new Vec3i(-1, 0, 0), 4, 9),
-		SIZE_4X5("1x2", new Vec3i(2, 4, 0), new Vec3i(-1, 0, 0), 3, 9),
+		SIZE_4X2("4x2", new Vec3i(2, 1, 0), new Vec3i(-1, 0, 0), 4, 9),
+		SIZE_4X3("4x3", new Vec3i(2, 2, 0), new Vec3i(-1, 0, 0), 4, 9),
+		SIZE_4X4("4x4", new Vec3i(2, 3, 0), new Vec3i(-1, 0, 0), 4, 9),
+		SIZE_4X5("4x5", new Vec3i(2, 4, 0), new Vec3i(-1, 0, 0), 3, 9),
 		
-		SIZE_5X2("1x3", new Vec3i(2, 1, 0), new Vec3i(-2, 0, 0), 4, 9),
-		SIZE_5X3("1x4", new Vec3i(2, 2, 0), new Vec3i(-2, 0, 0), 4, 9),
-		SIZE_5X4("1x2", new Vec3i(2, 3, 0), new Vec3i(-2, 0, 0), 4, 9),
-		SIZE_5X5("1x3", new Vec3i(2, 4, 0), new Vec3i(-2, 0, 0), 3, 9);
+		SIZE_5X2("5x2", new Vec3i(2, 1, 0), new Vec3i(-2, 0, 0), 4, 9),
+		SIZE_5X3("5x3", new Vec3i(2, 2, 0), new Vec3i(-2, 0, 0), 4, 9),
+		SIZE_5X4("5x4", new Vec3i(2, 3, 0), new Vec3i(-2, 0, 0), 4, 9),
+		SIZE_5X5("5x5", new Vec3i(2, 4, 0), new Vec3i(-2, 0, 0), 3, 9);
 		
 		private final String name;
 		private final Vec3i from;

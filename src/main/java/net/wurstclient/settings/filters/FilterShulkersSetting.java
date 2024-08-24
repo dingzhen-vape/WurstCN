@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -25,11 +25,11 @@ public final class FilterShulkersSetting extends EntityFilterCheckbox
 	
 	public static FilterShulkersSetting genericCombat(boolean checked)
 	{
-		return new FilterShulkersSetting("不会攻击潜影贝。", checked);
+		return new FilterShulkersSetting("不会攻击潜影贝.", checked);
 	}
 	
 	public static FilterShulkersSetting genericVision(boolean checked)
 	{
-		return new FilterShulkersSetting("不会显示潜影贝。", checked);
+		return new FilterShulkersSetting("不会显示潜影贝.", checked);
 	}
 }

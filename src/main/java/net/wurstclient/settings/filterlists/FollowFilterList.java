@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -23,52 +23,67 @@ public final class FollowFilterList extends EntityFilterList
 	{
 		ArrayList<EntityFilter> builder = new ArrayList<>();
 		
-		builder.add(new FilterPlayersSetting("不会跟随其他玩家。", false));
+		builder.add(new FilterPlayersSetting(
+			"description.wurst.setting.follow.filter_players", false));
 		
-		builder.add(new FilterSleepingSetting("不会跟随睡觉的玩家。", false));
+		builder.add(new FilterSleepingSetting(
+			"description.wurst.setting.follow.filter_sleeping", false));
 		
-		builder.add(new FilterFlyingSetting("不会跟随高于地面一定距离的玩家。", 0));
+		builder.add(new FilterFlyingSetting(
+			"description.wurst.setting.follow.filter_flying", 0));
 		
-		builder.add(new FilterHostileSetting("不会跟随像僵尸和苦力怕这样的敌对生物。", true));
+		builder.add(new FilterHostileSetting("自动跟随时不会跟随像僵尸和苦力怕这样的敌对生物。", true));
 		
-		builder.add(FilterNeutralSetting.onOffOnly("不会跟随像末影人和狼这样的中立生物。", true));
+		builder.add(FilterNeutralSetting.onOffOnly(
+			"description.wurst.setting.follow.filter_neutral", true));
 		
 		builder.add(new FilterPassiveSetting(
-			"不会跟随像猪和" + "牛这样的动物，像蝙蝠这样的环境生物，和像" + "鱼，鱿鱼和海豚这样的水生生物。", true));
+			"自动跟随时不会跟随像猪和牛这样的动物、像蝙蝠这样的环境生物，以及像鱼、鱿鱼和海豚这样的水生生物。", true));
 		
 		builder.add(new FilterPassiveWaterSetting(
-			"不会跟随像鱼，鱿鱼，海豚和水怪这样的" + "被动水生生物。", true));
+			"自动跟随时不会跟随像鱼、鱿鱼、海豚和美洲狮这样的被动水生生物。", true));
 		
-		builder.add(new FilterBabiesSetting("不会跟随小猪，小村民等。", true));
+		builder.add(new FilterBabiesSetting("自动跟随时不会跟随小猪、小村民等。", true));
 		
 		builder.add(new FilterBatsSetting(
-			"不会跟随蝙蝠和任何其他" + " \"ambient\" 可能由模组添加的生物。", true));
+			"description.wurst.setting.follow.filter_bats", true));
 		
-		builder.add(new FilterSlimesSetting("不会跟随史莱姆。", true));
+		builder.add(new FilterSlimesSetting("自动跟随时不会跟随史莱姆。", true));
 		
-		builder.add(new FilterPetsSetting("不会跟随驯服的狼，驯服的马等。", true));
+		builder.add(new FilterPetsSetting(
+			"description.wurst.setting.follow.filter_pets", true));
 		
-		builder.add(new FilterVillagersSetting("不会跟随村民和流浪商人。", true));
+		builder.add(new FilterVillagersSetting(
+			"description.wurst.setting.follow.filter_villagers", true));
 		
-		builder.add(new FilterZombieVillagersSetting("不会跟随僵尸村民。", true));
+		builder.add(new FilterZombieVillagersSetting(
+			"description.wurst.setting.follow.filter_zombie_villagers", true));
 		
-		builder.add(new FilterGolemsSetting("不会跟随铁傀儡和雪傀儡。", true));
+		builder.add(new FilterGolemsSetting(
+			"description.wurst.setting.follow.filter_golems", true));
 		
-		builder.add(FilterPiglinsSetting.onOffOnly("不会跟随猪灵。", true));
+		builder.add(FilterPiglinsSetting.onOffOnly("自动跟随时不会跟随猪灵。", true));
 		
-		builder.add(FilterZombiePiglinsSetting.onOffOnly("不会跟随僵尸猪灵。", true));
+		builder.add(FilterZombiePiglinsSetting.onOffOnly(
+			"description.wurst.setting.follow.filter_zombie_piglins", true));
 		
-		builder.add(FilterEndermenSetting.onOffOnly("不会跟随末影人。", true));
+		builder.add(FilterEndermenSetting.onOffOnly(
+			"description.wurst.setting.follow.filter_endermen", true));
 		
-		builder.add(new FilterShulkersSetting("不会跟随潜影贝。", true));
+		builder.add(new FilterShulkersSetting(
+			"description.wurst.setting.follow.filter_shulkers", true));
 		
-		builder.add(new FilterAllaysSetting("不会跟随盟友。", true));
+		builder.add(new FilterAllaysSetting(
+			"description.wurst.setting.follow.filter_allays", true));
 		
-		builder.add(new FilterInvisibleSetting("不会跟随隐形的实体。", false));
+		builder.add(new FilterInvisibleSetting(
+			"description.wurst.setting.follow.filter_invisible", false));
 		
-		builder.add(new FilterArmorStandsSetting("不会跟随盔甲架。", true));
+		builder.add(new FilterArmorStandsSetting(
+			"description.wurst.setting.follow.filter_armor_stands", true));
 		
-		builder.add(new FilterMinecartsSetting("不会跟随矿车。", true));
+		builder.add(new FilterMinecartsSetting(
+			"description.wurst.setting.follow.filter_minecarts", true));
 		
 		return new FollowFilterList(builder);
 	}

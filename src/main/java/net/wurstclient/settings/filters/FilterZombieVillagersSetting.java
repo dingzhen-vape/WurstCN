@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -25,11 +25,11 @@ public final class FilterZombieVillagersSetting extends EntityFilterCheckbox
 	
 	public static FilterZombieVillagersSetting genericCombat(boolean checked)
 	{
-		return new FilterZombieVillagersSetting("不会攻击僵尸村民。", checked);
+		return new FilterZombieVillagersSetting("不会攻击僵尸村民.", checked);
 	}
 	
 	public static FilterZombieVillagersSetting genericVision(boolean checked)
 	{
-		return new FilterZombieVillagersSetting("不会显示僵尸村民。", checked);
+		return new FilterZombieVillagersSetting("不会显示僵尸村民.", checked);
 	}
 }

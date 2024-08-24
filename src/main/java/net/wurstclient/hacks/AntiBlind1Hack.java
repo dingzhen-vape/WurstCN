@@ -10,14 +10,9 @@ package net.wurstclient.hacks;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.wurstclient.Category;
-import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.util.ChatUtils;
 
-@SearchTags({"AntiBlindness", "NoBlindness", "anti blindness", "no blindness",
-	"AntiDarkness", "NoDarkness", "anti darkness", "no darkness",
-	"AntiWardenEffect", "anti warden effect", "NoWardenEffect",
-	"no warden effect"})
 public final class AntiBlind1Hack extends Hack
 {
 	private Text component;

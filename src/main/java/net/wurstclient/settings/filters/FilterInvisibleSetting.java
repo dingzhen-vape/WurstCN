@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -13,7 +13,7 @@ public final class FilterInvisibleSetting extends EntityFilterCheckbox
 {
 	public FilterInvisibleSetting(String description, boolean checked)
 	{
-		super("过滤隐形", description, checked);
+		super("过滤透明生物", description, checked);
 	}
 	
 	@Override
@@ -24,11 +24,11 @@ public final class FilterInvisibleSetting extends EntityFilterCheckbox
 	
 	public static FilterInvisibleSetting genericCombat(boolean checked)
 	{
-		return new FilterInvisibleSetting("不会攻击隐形的实体。", checked);
+		return new FilterInvisibleSetting("不会攻击透明生物.", checked);
 	}
 	
 	public static FilterInvisibleSetting genericVision(boolean checked)
 	{
-		return new FilterInvisibleSetting("不会显示隐形的实体。", checked);
+		return new FilterInvisibleSetting("不会显示透明生物.", checked);
 	}
 }

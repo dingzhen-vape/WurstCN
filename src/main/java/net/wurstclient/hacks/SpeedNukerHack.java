@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -43,23 +43,25 @@ public final class SpeedNukerHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"\u00a7l普通\u00a7r 模式简单地破坏你周围的一切。\n"
-			+ "\u00a7lID\u00a7r 模式只破坏选定的方块类型。左键点击一个方块来选择它。\n"
-			+ "\u00a7l多ID\u00a7r 模式只破坏你的多ID列表中的方块类型。\n"
-			+ "\u00a7l平整\u00a7r 模式平整你周围的区域,但不会挖下去。\n"
-			+ "\u00a7l粉碎\u00a7r 模式只破坏可以立即被摧毁的方块（例如高草）。",
+	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
+		"\u00a7lNormal\u00a7r mode simply breaks everything around you.\n"
+			+ "\u00a7lID\u00a7r mode only breaks the selected block type. Left-click on a block to select it.\n"
+			+ "\u00a7lMultiID\u00a7r mode only breaks the block types in your MultiID List.\n"
+			+ "\u00a7lFlat\u00a7r mode flattens the area around you, but won't dig down.\n"
+			+ "\u00a7lSmash\u00a7r mode only breaks blocks that can be destroyed instantly (e.g. tall grass).",
 		Mode.values(), Mode.NORMAL);
 	
-	private final BlockSetting id = new BlockSetting("ID",
-		"在ID模式中要破坏的方块类型。\n" + "air = won't break anything", "minecraft:air",
-		true);
+	private final BlockSetting id =
+		new BlockSetting("ID", "The type of block to break in ID mode.\n"
+			+ "air = won't break anything", "minecraft:air", true);
 	
-	private final CheckboxSetting lockId =
-		new CheckboxSetting("锁定ID", "防止通过点击方块或重启快速核弹器来改变ID。", false);
+	private final CheckboxSetting lockId = new CheckboxSetting("Lock ID",
+		"Prevents changing the ID by clicking on blocks or restarting SpeedNuker.",
+		false);
 	
-	private final BlockListSetting multiIdList = new BlockListSetting("多ID列表",
-		"在多ID模式中要破坏的方块类型。", "minecraft:ancient_debris", "minecraft:bone_block",
+	private final BlockListSetting multiIdList = new BlockListSetting(
+		"MultiID List", "The types of blocks to break in MultiID mode.",
+		"minecraft:ancient_debris", "minecraft:bone_block",
 		"minecraft:coal_ore", "minecraft:copper_ore",
 		"minecraft:deepslate_coal_ore", "minecraft:deepslate_copper_ore",
 		"minecraft:deepslate_diamond_ore", "minecraft:deepslate_emerald_ore",
@@ -90,7 +92,7 @@ public final class SpeedNukerHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// disable other nukers
 		WURST.getHax().autoMineHack.setEnabled(false);
@@ -105,7 +107,7 @@ public final class SpeedNukerHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		// remove listeners
 		EVENTS.remove(LeftClickListener.class, this);
@@ -180,21 +182,24 @@ public final class SpeedNukerHack extends Hack
 	
 	private enum Mode
 	{
-		NORMAL("普通", n -> "快速Nuker", (n, pos) -> true),
+		NORMAL("Normal", n -> "快速Nuker", (n, pos) -> true),
 		
 		ID("ID",
-			n -> "ID快速核弹器 [" + n.id.getBlockName().replace("minecraft:", "")
-				+ "]",
+			n -> "IDSpeedNuker ["
+				+ n.id.getBlockName().replace("minecraft:", "") + "]",
 			(n, pos) -> BlockUtils.getName(pos).equals(n.id.getBlockName())),
 		
-		MULTI_ID("多ID", n -> "多ID快速核弹器 [" + n.multiIdList.getBlockNames().size()
-			+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]" : " IDs]"),
+		MULTI_ID("MultiID",
+			n -> "MultiIDNuker [" + n.multiIdList.getBlockNames().size()
+				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
+					: " IDs]"),
 			(n, p) -> n.multiIdList.getBlockNames()
 				.contains(BlockUtils.getName(p))),
 		
-		FLAT("平整", n -> "平整快速核弹器", (n, pos) -> pos.getY() >= MC.player.getY()),
+		FLAT("Flat", n -> "FlatSpeedNuker",
+			(n, pos) -> pos.getY() >= MC.player.getY()),
 		
-		SMASH("粉碎", n -> "粉碎快速核弹器",
+		SMASH("Smash", n -> "SmashSpeedNuker",
 			(n, pos) -> BlockUtils.getHardness(pos) >= 1);
 		
 		private final String name;

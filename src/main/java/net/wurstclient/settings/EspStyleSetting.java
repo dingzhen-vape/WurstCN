@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -36,8 +36,8 @@ public final class EspStyleSetting extends EnumSetting<EspStyleSetting.EspStyle>
 	
 	public enum EspStyle
 	{
-		BOXES("只有盒子", true, false),
-		LINES("只有线条", false, true),
+		BOXES("仅盒子", true, false),
+		LINES("仅线条", false, true),
 		LINES_AND_BOXES("线条和盒子", true, true);
 		
 		private final String name;

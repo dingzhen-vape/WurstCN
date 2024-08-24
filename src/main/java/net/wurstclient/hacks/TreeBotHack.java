@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -50,20 +50,23 @@ import net.wurstclient.util.OverlayRenderer;
 public final class TreeBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围",
-		"TreeBot会伸手多远来打破方块。", 4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+	private final SliderSetting range =
+		new SliderSetting("范围", "How far TreeBot will reach to break blocks.",
+			4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
-		"打破原木和树叶时如何面对它们。\n\n" + "\u00a7l关闭\u00a7r - 不要面对方块。会被" + "反作弊插件检测到。\n\n"
-			+ "\u00a7l服务器端\u00a7r - 在" + "服务器端面对方块，同时让你在" + "客户端自由地移动相机。\n\n"
-			+ "\u00a7l客户端\u00a7r - 通过移动你的" + "相机在客户端面对方块。这是最合法的选项，但"
-			+ "看起来可能会让人头晕。");
+		"How to face the logs and leaves when breaking them.\n\n"
+			+ "\u00a7lOff\u00a7r - Don't face the blocks at all. Will be"
+			+ " detected by anti-cheat plugins.\n\n"
+			+ "\u00a7lServer-side\u00a7r - Face the blocks on the"
+			+ " server-side, while still letting you move the camera freely on"
+			+ " the client-side.\n\n"
+			+ "\u00a7lClient-side\u00a7r - Face the blocks by moving your"
+			+ " camera on the client-side. This is the most legit option, but"
+			+ " can be disorienting to look at.");
 	
-	private final SwingHandSetting swingHand =
-		new SwingHandSetting("TreeBot在打破原木和树叶时应该如何挥动你的手。\n\n"
-			+ "\u00a7l关闭\u00a7r - 不要挥动你的手。会被检测到" + "反作弊插件。\n\n"
-			+ "\u00a7l服务器端\u00a7r - 在服务器端挥动你的手，" + "不在客户端播放动画。\n\n"
-			+ "\u00a7l客户端\u00a7r - 在客户端挥动你的手。" + "这是最合法的选项。");
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		"How TreeBot should swing your hand when breaking logs and leaves.");
 	
 	private TreeFinder treeFinder;
 	private AngleFinder angleFinder;
@@ -86,19 +89,19 @@ public final class TreeBotHack extends Hack
 	public String getRenderName()
 	{
 		if(treeFinder != null && !treeFinder.isDone() && !treeFinder.isFailed())
-			return getName() + " [搜索]";
+			return getName() + " [Searching]";
 		
 		if(processor != null && !processor.isDone())
-			return getName() + " [前往]";
+			return getName() + " [Going]";
 		
 		if(tree != null && !tree.getLogs().isEmpty())
-			return getName() + " [砍伐]";
+			return getName() + " [Chopping]";
 		
 		return getName();
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		treeFinder = new TreeFinder();
 		
@@ -107,7 +110,7 @@ public final class TreeBotHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
@@ -241,7 +244,7 @@ public final class TreeBotHack extends Hack
 		// damage block and swing hand
 		if(MC.interactionManager.updateBlockBreakingProgress(pos,
 			params.side()))
-			swingHand.getSelected().swing(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 		
 		// update progress
 		overlay.updateProgress();

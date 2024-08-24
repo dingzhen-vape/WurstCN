@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -15,7 +15,7 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class TimerHack extends Hack
 {
 	private final SliderSetting speed =
-		new SliderSetting("Speed", 2, 0.1, 20, 0.1, ValueDisplay.DECIMAL);
+		new SliderSetting("速度", 2, 0.1, 20, 0.1, ValueDisplay.DECIMAL);
 	
 	public TimerHack()
 	{

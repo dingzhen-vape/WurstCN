@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -51,19 +51,25 @@ import net.wurstclient.util.RotationUtils;
 public final class FeedAuraHack extends Hack
 	implements UpdateListener, PostMotionListener, RenderListener
 {
-	private final SliderSetting range =
-		new SliderSetting("范围", "决定喂养光环喂养动物的最远距离。\n" + "超过指定值的动物不会被喂养。", 5, 1,
-			10, 0.05, ValueDisplay.DECIMAL);
+	private final SliderSetting range = new SliderSetting("范围",
+		"Determines how far FeedAura will reach to feed animals.\n"
+			+ "Anything that is further away than the specified value will not be fed.",
+		5, 1, 10, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FilterBabiesSetting filterBabies =
-		new FilterBabiesSetting("不会喂养幼年动物。\n" + "节省食物，但不会加速幼年动物的成长。", true);
+		new FilterBabiesSetting("Won't feed baby animals.\n"
+			+ "Saves food, but doesn't speed up baby growth.", true);
 	
 	private final CheckboxSetting filterUntamed =
-		new CheckboxSetting("过滤未驯服的", "不会喂养还没有被驯服的可驯服动物。", false);
+		new CheckboxSetting("Filter untamed",
+			"Won't feed tameable animals that haven't been tamed yet.", false);
 	
-	private final CheckboxSetting filterHorses = new CheckboxSetting("过滤马类动物",
-		"不会喂养马、羊驼、驴等。\n" + "由于Minecraft bug MC-233276，这些动物会无限消耗物品，所以推荐这样做。",
-		true);
+	private final CheckboxSetting filterHorses = new CheckboxSetting(
+		"Filter horse-like animals",
+		"Won't feed horses, llamas, donkeys, etc.\n"
+			+ "Recommended in Minecraft versions before 1.20.3 due to MC-233276,"
+			+ "which causes these animals to consume items indefinitely.",
+		false);
 	
 	private final Random random = new Random();
 	private AnimalEntity target;

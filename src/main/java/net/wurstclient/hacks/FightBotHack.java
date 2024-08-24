@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -34,6 +34,8 @@ import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.PauseAttackOnContainersSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.util.EntityUtils;
 
@@ -42,17 +44,20 @@ import net.wurstclient.util.EntityUtils;
 public final class FightBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围", "攻击范围（类似杀戮光环）",
-		4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
+	private final SliderSetting range = new SliderSetting("范围",
+		"攻击范围 (像 Killaura)", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting("如何 FightBot 应该移动您的手臂当攻击时.", SwingHand.CLIENT);
+	
 	private final SliderSetting distance = new SliderSetting("距离",
-		"跟随目标的紧密程度。\n" + "这个值应该设置得比范围小。", 3, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		"如何紧随目标。\n" + "这个值应该低于范围。", 3, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting useAi =
-		new CheckboxSetting("使用AI（实验性）", false);
+		new CheckboxSetting("使用人工智能 (实验性)", false);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);
@@ -71,6 +76,7 @@ public final class FightBotHack extends Hack
 		setCategory(Category.COMBAT);
 		addSetting(range);
 		addSetting(speed);
+		addSetting(swingHand);
 		addSetting(distance);
 		addSetting(useAi);
 		addSetting(pauseOnContainers);
@@ -79,7 +85,7 @@ public final class FightBotHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// disable other killauras
 		WURST.getHax().aimAssistHack.setEnabled(false);
@@ -101,7 +107,7 @@ public final class FightBotHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		// remove listener
 		EVENTS.remove(UpdateListener.class, this);
@@ -207,9 +213,8 @@ public final class FightBotHack extends Hack
 			return;
 		
 		// attack entity
-		WURST.getHax().criticalsHack.doCritical();
 		MC.interactionManager.attackEntity(MC.player, entity);
-		MC.player.swingHand(Hand.MAIN_HAND);
+		swingHand.swing(Hand.MAIN_HAND);
 		speed.resetTimer();
 	}
 	

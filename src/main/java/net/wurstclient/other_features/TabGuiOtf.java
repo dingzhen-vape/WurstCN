@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -18,12 +18,13 @@ import net.wurstclient.settings.EnumSetting;
 public final class TabGuiOtf extends OtherFeature
 {
 	private final EnumSetting<Status> status =
-		new EnumSetting<>("状态", Status.values(), Status.DISABLED);
+		new EnumSetting<>("Status", Status.values(), Status.DISABLED);
 	
 	public TabGuiOtf()
 	{
-		super("TabGUI", "让你能够在玩游戏时快速切换黑客功能。\n" + "使用方向键来导航。\n\n"
-			+ "将\u00a76HackList \u00a76位置\u00a7r设置改为\u00a76右边\u00a7r，以防止TabGUI与HackList重叠。");
+		super("TabGUI", "Allows you to quickly toggle hacks while playing.\n"
+			+ "Use the arrow keys to navigate.\n\n"
+			+ "Change the \u00a76HackList \u00a76Position\u00a7r setting to \u00a76Right\u00a7r to prevent TabGUI from overlapping with the HackList.");
 		
 		addSetting(status);
 	}
@@ -35,8 +36,8 @@ public final class TabGuiOtf extends OtherFeature
 	
 	private enum Status
 	{
-		ENABLED("启用"),
-		DISABLED("禁用");
+		ENABLED("Enabled"),
+		DISABLED("Disabled");
 		
 		private final String name;
 		

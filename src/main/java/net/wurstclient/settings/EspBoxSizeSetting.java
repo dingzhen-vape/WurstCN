@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -12,7 +12,7 @@ public final class EspBoxSizeSetting
 {
 	public EspBoxSizeSetting(String description)
 	{
-		super("盒子大小", description, BoxSize.values(), BoxSize.FANCY);
+		super("碰撞箱大小", description, BoxSize.values(), BoxSize.FANCY);
 	}
 	
 	public EspBoxSizeSetting(String name, String description, BoxSize selected)
@@ -27,8 +27,8 @@ public final class EspBoxSizeSetting
 	
 	public enum BoxSize
 	{
-		ACCURATE("准确", 0),
-		FANCY("花哨", 0.1F);
+		ACCURATE("Accurate", 0),
+		FANCY("Fancy", 0.1F);
 		
 		private final String name;
 		private final float extraSize;

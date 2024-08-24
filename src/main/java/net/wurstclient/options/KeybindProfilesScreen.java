@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -36,7 +36,7 @@ public final class KeybindProfilesScreen extends Screen
 	
 	public KeybindProfilesScreen(Screen prevScreen)
 	{
-		super(Text.literal("Edit"));
+		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 	}
 	
@@ -47,21 +47,21 @@ public final class KeybindProfilesScreen extends Screen
 			WurstClient.INSTANCE.getKeybinds().listProfiles());
 		
 		addDrawableChild(
-			ButtonWidget.builder(Text.literal("NONE"), b -> openFolder())
+			ButtonWidget.builder(Text.literal("Open Folder"), b -> openFolder())
 				.dimensions(8, 8, 100, 20).build());
 		
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Edit"),
+			.builder(Text.literal("New Profile"),
 				b -> client.setScreen(
 					new EnterProfileNameScreen(this, this::newProfile)))
 			.dimensions(width / 2 - 154, height - 48, 100, 20).build());
 		
-		loadButton = addDrawableChild(ButtonWidget
-			.builder(Text.literal("Change Key"), b -> loadSelected())
-			.dimensions(width / 2 - 50, height - 48, 100, 20).build());
+		loadButton = addDrawableChild(
+			ButtonWidget.builder(Text.literal("Load"), b -> loadSelected())
+				.dimensions(width / 2 - 50, height - 48, 100, 20).build());
 		
 		addDrawableChild(
-			ButtonWidget.builder(Text.literal("Save"), b -> openPrevScreen())
+			ButtonWidget.builder(Text.literal("Cancel"), b -> openPrevScreen())
 				.dimensions(width / 2 + 54, height - 48, 100, 20).build());
 	}
 	
@@ -73,8 +73,8 @@ public final class KeybindProfilesScreen extends Screen
 	
 	private void newProfile(String name)
 	{
-		if(!name.endsWith("Cancel"))
-			name += "Cancel";
+		if(!name.endsWith(".json"))
+			name += ".json";
 		
 		try
 		{
@@ -95,7 +95,7 @@ public final class KeybindProfilesScreen extends Screen
 		}
 		
 		Path path = listGui.list.get(listGui.selected);
-		String fileName = "Edit" + path.getFileName();
+		String fileName = "" + path.getFileName();
 		
 		try
 		{
@@ -178,15 +178,16 @@ public final class KeybindProfilesScreen extends Screen
 		renderBackground(context, mouseX, mouseY, partialTicks);
 		listGui.render(context, mouseX, mouseY, partialTicks);
 		
-		context.drawCenteredTextWithShadow(client.textRenderer, "Add",
-			width / 2, 12, 0xffffff);
+		context.drawCenteredTextWithShadow(client.textRenderer,
+			"Keybind Profiles", width / 2, 12, 0xffffff);
 		
 		for(Drawable drawable : drawables)
 			drawable.render(context, mouseX, mouseY, partialTicks);
 		
 		if(loadButton.isSelected() && !loadButton.active)
 			context.drawTooltip(textRenderer,
-				Arrays.asList(Text.literal(" Keybind")), mouseX, mouseY);
+				Arrays.asList(Text.literal("You must first select a file.")),
+				mouseX, mouseY);
 	}
 	
 	@Override
@@ -244,15 +245,15 @@ public final class KeybindProfilesScreen extends Screen
 			TextRenderer tr = mc.textRenderer;
 			
 			Path path = list.get(index);
-			// tr.draw(matrixStack, "Edit" + path.getFileName(), x + 28, y,
+			// tr.draw(matrixStack, "" + path.getFileName(), x + 28, y,
 			// 0xf0f0f0);
-			context.drawTextWithShadow(tr, "Edit" + path.getFileName(), x + 28,
-				y, 0xf0f0f0);
-			// tr.draw(matrixStack, "Edit" +
+			context.drawTextWithShadow(tr, "" + path.getFileName(), x + 28, y,
+				0xf0f0f0);
+			// tr.draw(matrixStack, "" +
 			// client.runDirectory.toPath().relativize(path), x + 28, y + 9,
 			// 0xa0a0a0);
 			context.drawTextWithShadow(tr,
-				"Edit" + client.runDirectory.toPath().relativize(path), x + 28,
+				"" + client.runDirectory.toPath().relativize(path), x + 28,
 				y + 9, 0xa0a0a0);
 		}
 	}

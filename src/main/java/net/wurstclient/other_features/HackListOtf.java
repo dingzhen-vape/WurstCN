@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -19,39 +19,46 @@ import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.EnumSetting;
 
-@SearchTags({"ArrayList", "ModList", "CheatList", "mod list", "array list",
-	"hack list", "cheat list"})
+@SearchTags({"hack list", "HakList", "hak list", "HacksList", "hacks list",
+	"HaxList", "hax list", "ArrayList", "array list", "ModList", "mod list",
+	"CheatList", "cheat list"})
 @DontBlock
 public final class HackListOtf extends OtherFeature
 {
-	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"\u00a7l自动\u00a7r模式在列表能够适应屏幕时渲染整个列表。\n"
-			+ "\u00a7l计数\u00a7r模式只渲染活动的hack的数量。\n"
-			+ "\u00a7l隐藏\u00a7r模式什么都不渲染。",
+	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
+		"\u00a7lAuto\u00a7r mode renders the whole list if it fits onto the screen.\n"
+			+ "\u00a7lCount\u00a7r mode only renders the number of active hacks.\n"
+			+ "\u00a7lHidden\u00a7r mode renders nothing.",
 		Mode.values(), Mode.AUTO);
 	
-	private final EnumSetting<Position> position = new EnumSetting<>("位置",
-		"HackList应该显示在屏幕的哪一边。" + "\n当使用TabGUI时，将这个改为\u00a7l右边\u00a7r。",
+	private final EnumSetting<Position> position = new EnumSetting<>("Position",
+		"Which side of the screen the HackList should be shown on."
+			+ "\nChange this to \u00a7lRight\u00a7r when using TabGUI.",
 		Position.values(), Position.LEFT);
 	
-	private final ColorSetting color = new ColorSetting("颜色",
-		"HackList文本的颜色。\n" + "只有在\u00a76RainbowUI\u00a7r关闭时才可见。", Color.WHITE);
+	private final ColorSetting color = new ColorSetting("Color",
+		"Color of the HackList text.\n"
+			+ "Only visible when \u00a76RainbowUI\u00a7r is disabled.",
+		Color.WHITE);
 	
-	private final EnumSetting<SortBy> sortBy = new EnumSetting<>("排序方式",
-		"决定了HackList条目的排序方式。\n" + "只有当\u00a76模式\u00a7r设置为\u00a76自动\u00a7r时才可见。",
+	private final EnumSetting<SortBy> sortBy = new EnumSetting<>("Sort by",
+		"Determines how the HackList entries are sorted.\n"
+			+ "Only visible when \u00a76Mode\u00a7r is set to \u00a76Auto\u00a7r.",
 		SortBy.values(), SortBy.NAME);
 	
-	private final CheckboxSetting revSort = new CheckboxSetting("反向排序", false);
+	private final CheckboxSetting revSort =
+		new CheckboxSetting("Reverse sorting", false);
 	
-	private final CheckboxSetting animations =
-		new CheckboxSetting("动画", "当启用时，条目会随着hack的启用和禁用而滑入和滑出HackList。", true);
+	private final CheckboxSetting animations = new CheckboxSetting("Animations",
+		"When enabled, entries slide into and out of the HackList as hacks are enabled and disabled.",
+		true);
 	
 	private SortBy prevSortBy;
 	private Boolean prevRevSort;
 	
 	public HackListOtf()
 	{
-		super("功能列表", "在屏幕上显示活动的hack列表。");
+		super("HackList", "Shows a list of active hacks on the screen.");
 		
 		addSetting(mode);
 		addSetting(position);
@@ -115,11 +122,11 @@ public final class HackListOtf extends OtherFeature
 	
 	public static enum Mode
 	{
-		AUTO("自动"),
+		AUTO("Auto"),
 		
-		COUNT("计数"),
+		COUNT("Count"),
 		
-		HIDDEN("隐藏");
+		HIDDEN("Hidden");
 		
 		private final String name;
 		
@@ -137,9 +144,9 @@ public final class HackListOtf extends OtherFeature
 	
 	public static enum Position
 	{
-		LEFT("左边"),
+		LEFT("Left"),
 		
-		RIGHT("右边");
+		RIGHT("Right");
 		
 		private final String name;
 		
@@ -157,9 +164,9 @@ public final class HackListOtf extends OtherFeature
 	
 	public static enum SortBy
 	{
-		NAME("名称", (a, b) -> a.getName().compareToIgnoreCase(b.getName())),
+		NAME("Name", (a, b) -> a.getName().compareToIgnoreCase(b.getName())),
 		
-		WIDTH("宽度", Comparator.comparingInt(
+		WIDTH("Width", Comparator.comparingInt(
 			h -> WurstClient.MC.textRenderer.getWidth(h.getRenderName())));
 		
 		private final String name;
