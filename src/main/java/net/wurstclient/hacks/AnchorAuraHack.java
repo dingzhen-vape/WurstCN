@@ -62,11 +62,11 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视线",
 		"description.wurst.setting.anchoraura.check_line_of_sight", false);
 	
-	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"当放置、充能和" + " 引爆重生锚点时，AnchorAura应该如何摆动你的手。", SwingHand.CLIENT);
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting(this, SwingHand.CLIENT);
 	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
-		"从以下位置获取物品", "description.wurst.setting.anchoraura.take_items_from",
+		"从中获取物品", "description.wurst.setting.anchoraura.take_items_from",
 		TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final EntityFilterList entityFilters =
@@ -104,7 +104,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	{
 		if(MC.world.getDimension().respawnAnchorWorks())
 		{
-			ChatUtils.error("重生锚点在此维度不会爆炸。");
+			ChatUtils.error("重生锚点在这个维度中不会爆炸。");
 			setEnabled(false);
 		}
 		
@@ -397,9 +397,9 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	
 	private enum TakeItemsFrom
 	{
-		HOTBAR("快捷栏", 9),
+		HOTBAR("热键栏", 9),
 		
-		INVENTORY("库存", 36);
+		INVENTORY("背包", 36);
 		
 		private final String name;
 		private final int maxInvSlot;

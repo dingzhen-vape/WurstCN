@@ -97,7 +97,7 @@ public final class ChatTranslatorHack extends Hack
 			&& filterOwnMessages.isOwnMessage(message))
 			return;
 		
-		Thread.ofVirtual().name("ChatTranslator")
+		Thread.ofVirtual().name("聊天翻译器")
 			.uncaughtExceptionHandler((t, e) -> e.printStackTrace())
 			.start(() -> showTranslated(message, fromLang, toLang));
 	}
@@ -128,7 +128,7 @@ public final class ChatTranslatorHack extends Hack
 		
 		event.cancel();
 		
-		Thread.ofVirtual().name("ChatTranslator")
+		Thread.ofVirtual().name("聊天翻译器")
 			.uncaughtExceptionHandler((t, e) -> e.printStackTrace())
 			.start(() -> sendTranslated(message, fromLang, toLang));
 	}

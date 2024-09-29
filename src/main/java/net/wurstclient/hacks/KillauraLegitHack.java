@@ -56,39 +56,31 @@ public final class KillauraLegitHack extends Hack implements UpdateListener,
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final SliderSetting speedRandMS = new SliderSetting("随机速度",
-		"Helps you bypass anti-cheat plugins by varying the delay between"
-			+ " attacks.\n\n" + "\u00b1100ms is recommended for Vulcan.\n\n"
-			+ "0 (off) is fine for NoCheat+, AAC, Grim, Verus, Spartan, and"
-			+ " vanilla servers.",
+	private final SliderSetting speedRandMS = new SliderSetting("速度随机化",
+		"通过改变攻击之间的延迟来帮助您绕过反作弊插件。\n\n" + "\u00b1100ms建议用于Vulcan。\n\n"
+			+ "0（关闭）适用于NoCheat+、AAC、Grim、Verus、Spartan和" + " 原版服务器。",
 		100, 0, 1000, 50, ValueDisplay.INTEGER.withPrefix("\u00b1")
-			.withSuffix("ms").withLabel(0, "off"));
+			.withSuffix("ms").withLabel(0, "关闭"));
 	
-	private final SliderSetting rotationSpeed =
-		new SliderSetting("Rotation Speed", 600, 10, 3600, 10,
-			ValueDisplay.DEGREES.withSuffix("/s"));
+	private final SliderSetting rotationSpeed = new SliderSetting("旋转速度", 600,
+		10, 3600, 10, ValueDisplay.DEGREES.withSuffix("/s"));
 	
-	private final EnumSetting<Priority> priority = new EnumSetting<>("Priority",
-		"Determines which entity will be attacked first.\n"
-			+ "\u00a7lDistance\u00a7r - Attacks the closest entity.\n"
-			+ "\u00a7lAngle\u00a7r - Attacks the entity that requires the least head movement.\n"
-			+ "\u00a7lHealth\u00a7r - Attacks the weakest entity.",
+	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
+		"确定将首先攻击哪个实体。\n" + "\u00a7l距离\u00a7r - 攻击最近的实体。\n"
+			+ "\u00a7l角度\u00a7r - 攻击需要最少头部移动的实体。\n"
+			+ "\u00a7l生命值\u00a7r - 攻击生命值最低的实体。",
 		Priority.values(), Priority.ANGLE);
 	
-	private final SliderSetting fov = new SliderSetting("FOV",
-		"Field Of View - how far away from your crosshair an entity can be before it's ignored.\n"
-			+ "360\u00b0 = entities can be attacked all around you.",
-		360, 30, 360, 10, ValueDisplay.DEGREES);
+	private final SliderSetting fov = new SliderSetting("视野",
+		"视野 - 从十字准星到实体的最大距离，超出此范围将被忽略。\n" + "360\u00b0 = 可以攻击周围的所有实体。", 360, 30,
+		360, 10, ValueDisplay.DEGREES);
 	
 	private final SwingHandSetting swingHand =
 		SwingHandSetting.withoutOffOption(
-			"How KillauraLegit should swing your hand when attacking.",
-			SwingHand.CLIENT);
+			SwingHandSetting.genericCombatDescription(this), SwingHand.CLIENT);
 	
-	private final CheckboxSetting damageIndicator = new CheckboxSetting(
-		"Damage indicator",
-		"Renders a colored box within the target, inversely proportional to its remaining health.",
-		true);
+	private final CheckboxSetting damageIndicator =
+		new CheckboxSetting("伤害指示器", "在目标内渲染一个颜色框，与其剩余生命值成反比。", true);
 	
 	// same filters as in Killaura, but with stricter defaults
 	private final EntityFilterList entityFilters =

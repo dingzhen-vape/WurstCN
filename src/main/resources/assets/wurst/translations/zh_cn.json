@@ -1,4 +1,7 @@
 {
+  "description.wurst.hack.模板创建工具": "创建一个可以用于自动建造这个功能使用的模板",
+  "description.wurst.hack.聊天翻译器": "感谢北魏孝文帝汉化",
+  "description.wurst.hack.矿脉挖掘者": "自动挖取一整个矿脉！",
   "description.wurst.hack.空中放置": "允许您在空中放置方块。",
   "description.wurst.hack.重锤出击": "提升你使用重锤的伤害",
   "description.wurst.hack.自动爆炸重生锚": "自动放置（可选），充能，引爆重生锚并击杀你附近的实体。",
@@ -130,7 +133,7 @@
   "description.wurst.hack.一键绿玩": "瞬间关闭所有的作弊功能。\n请小心使用！",
   "description.wurst.hack.简单跑酷": "当你到达方块边缘时自动跳起。\n适用于跑酷或部分需要跑跳的场景。",
   "description.wurst.hack.玩家透视": "高亮透视附近的玩家。\n你的好友会显示蓝色框框。",
-  "description.wurst.hack.传送门GUI": "允许你在传送门内打开 GUI。",
+  "description.wurst.hack.传送门gui": "允许你在传送门内打开 GUI。",
   "description.wurst.hack.冻结药水": "当你站着不动时冻结所有的药水效果时间。",
   "description.wurst.hack.躲猫猫透视": "在躲猫猫小游戏中知道哪些是人扮的方块。\n用于 Mineplex 服务器的 Prophunt（躲猫猫），其他服务器未必奏效。",
   "description.wurst.hack.保护": "使用 AI 模式保护最近的实体，并保护它免受其他实体的伤害。\n使用指令 .protect 来保护指定的实体，而不是最近的一个。",

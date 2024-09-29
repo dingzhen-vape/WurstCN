@@ -45,19 +45,19 @@ public final class FightBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range = new SliderSetting("范围",
-		"攻击范围 (像 Killaura)", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		"攻击范围（像Killaura一样）", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final SwingHandSetting swingHand =
-		new SwingHandSetting("如何 FightBot 应该移动您的手臂当攻击时.", SwingHand.CLIENT);
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		SwingHandSetting.genericCombatDescription(this), SwingHand.CLIENT);
 	
 	private final SliderSetting distance = new SliderSetting("距离",
-		"如何紧随目标。\n" + "这个值应该低于范围。", 3, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		"跟随目标的距离。\n" + "这应该设置为比范围低的值。", 3, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting useAi =
-		new CheckboxSetting("使用人工智能 (实验性)", false);
+		new CheckboxSetting("使用AI（实验性）", false);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);

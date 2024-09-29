@@ -48,36 +48,25 @@ import net.wurstclient.util.RotationUtils;
 public final class CrystalAuraHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range = new SliderSetting("范围",
-		"Determines how far CrystalAura will reach to place and detonate crystals.",
-		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		"确定CrystalAura放置和引爆水晶的最大距离。", 6, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting autoPlace = new CheckboxSetting(
-		"Auto-place crystals",
-		"When enabled, CrystalAura will automatically place crystals near valid entities.\n"
-			+ "When disabled, CrystalAura will only detonate manually placed crystals.",
+	private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置水晶",
+		"启用时，CrystalAura将自动在有效实体附近放置水晶。\n" + "禁用时，CrystalAura仅引爆手动放置的水晶。",
 		true);
 	
-	private final FacingSetting faceBlocks =
-		FacingSetting.withPacketSpam("Face crystals",
-			"Whether or not CrystalAura should face the correct direction when"
-				+ " placing and left-clicking end crystals.\n\n"
-				+ "Slower but can help with anti-cheat plugins.",
-			Facing.OFF);
+	private final FacingSetting faceBlocks = FacingSetting.withPacketSpam(
+		"面对水晶", "CrystalAura在放置和左键点击末影水晶时是否应面对正确的方向。\n\n" + "较慢，但可以帮助反作弊插件。",
+		Facing.OFF);
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"Check line of sight",
-		"Ensures that you don't reach through blocks when placing or left-clicking end crystals.\n\n"
-			+ "Slower but can help with anti-cheat plugins.",
-		false);
+	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视线",
+		"确保在放置或左键点击末影水晶时不会穿透方块。\n\n" + "较慢，但可以帮助反作弊插件。", false);
 	
-	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"How CrystalAura should swing your hand when placing and detonating"
-			+ " end crystals.",
-		SwingHand.CLIENT);
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting(this, SwingHand.CLIENT);
 	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
-		new EnumSetting<>("Take items from", "Where to look for end crystals.",
-			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
+		new EnumSetting<>("从哪里获取物品", "寻找末影水晶的位置。", TakeItemsFrom.values(),
+			TakeItemsFrom.INVENTORY);
 	
 	private final EntityFilterList entityFilters =
 		CrystalAuraFilterList.create();

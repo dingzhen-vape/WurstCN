@@ -38,38 +38,26 @@ public final class TriggerBotHack extends Hack
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final SliderSetting speedRandMS = new SliderSetting("随机速度",
-		"Helps you bypass anti-cheat plugins by varying the delay between"
-			+ " attacks.\n\n" + "\u00b1100ms is recommended for Vulcan.\n\n"
-			+ "0 (off) is fine for NoCheat+, AAC, Grim, Verus, Spartan, and"
-			+ " vanilla servers.",
+	private final SliderSetting speedRandMS = new SliderSetting("速度随机化",
+		"通过改变攻击之间的延迟来帮助您绕过反作弊插件。\n\n" + "\u00b1100ms建议用于Vulcan。\n\n"
+			+ "0（关闭）适用于NoCheat+、AAC、Grim、Verus、Spartan和" + " 原版服务器。",
 		100, 0, 1000, 50, ValueDisplay.INTEGER.withPrefix("\u00b1")
-			.withSuffix("ms").withLabel(0, "off"));
+			.withSuffix("ms").withLabel(0, "关闭"));
 	
-	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"How TriggerBot should swing your hand when attacking.\n\n"
-			+ "This setting will be ignored if \"Simulate mouse click\" is"
-			+ " enabled.",
-		SwingHand.CLIENT);
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting(this, SwingHand.CLIENT);
 	
 	private final CheckboxSetting attackWhileBlocking =
-		new CheckboxSetting("Attack while blocking",
-			"Attacks even while you're blocking with a shield or using"
-				+ " items.\n\n"
-				+ "This would not be possible in vanilla and won't work if"
-				+ " \"Simulate mouse click\" is enabled.",
+		new CheckboxSetting("攻击时阻挡",
+			"即使您正在用盾牌阻挡或使用物品时也会攻击。\n\n" + "在原版中这是不可能的，并且如果\"模拟鼠标点击\"启用将无法工作。",
 			false);
 	
-	private final CheckboxSetting simulateMouseClick = new CheckboxSetting(
-		"Simulate mouse click",
-		"Simulates an actual mouse click (or key press) when attacking. Can be"
-			+ " used to trick CPS measuring tools into thinking that you're"
-			+ " attacking manually.\n\n"
-			+ "\u00a7c\u00a7lWARNING:\u00a7r Simulating mouse clicks can lead"
-			+ " to unexpected behavior, like in-game menus clicking themselves."
-			+ " Also, the \"Swing hand\" and \"Attack while blocking\" settings"
-			+ " will not work while this option is enabled.",
-		false);
+	private final CheckboxSetting simulateMouseClick =
+		new CheckboxSetting("模拟鼠标点击",
+			"在攻击时模拟实际的鼠标点击（或按键）。可以" + " 用来欺骗CPS测量工具，让它们认为您正在" + " 手动攻击。\n\n"
+				+ "\u00a7c\u00a7l警告:\u00a7r 模拟鼠标点击可能导致" + " 意外行为，例如游戏内菜单自动点击。"
+				+ " 同时，\"挥动手\"和\"攻击时阻挡\"设置" + " 在此选项启用时将无法工作。",
+			false);
 	
 	private final EntityFilterList entityFilters =
 		EntityFilterList.genericCombat();

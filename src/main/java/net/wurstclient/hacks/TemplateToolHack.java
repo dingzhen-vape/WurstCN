@@ -477,7 +477,7 @@ public final class TemplateToolHack extends Hack
 			jsonBlocks.add(JsonUtils.GSON.toJsonTree(
 				new int[]{pos.getX(), pos.getY(), pos.getZ()}, int[].class));
 		}
-		json.add("方块", jsonBlocks);
+		json.add("blocks", jsonBlocks);
 		
 		try(PrintWriter save = new PrintWriter(new FileWriter(file)))
 		{

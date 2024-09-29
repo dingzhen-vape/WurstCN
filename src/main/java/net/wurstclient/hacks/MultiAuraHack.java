@@ -37,10 +37,10 @@ public final class MultiAuraHack extends Hack implements UpdateListener
 		new AttackSpeedSliderSetting();
 	
 	private final SliderSetting fov =
-		new SliderSetting("视野范围", 360, 30, 360, 10, ValueDisplay.DEGREES);
+		new SliderSetting("视野", 360, 30, 360, 10, ValueDisplay.DEGREES);
 	
-	private final SwingHandSetting swingHand =
-		new SwingHandSetting("如何MultiAura应该把手摇动来攻击。", SwingHand.CLIENT);
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		SwingHandSetting.genericCombatDescription(this), SwingHand.CLIENT);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(false);

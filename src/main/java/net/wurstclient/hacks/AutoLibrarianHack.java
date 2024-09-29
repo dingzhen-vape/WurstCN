@@ -56,6 +56,7 @@ import net.wurstclient.settings.FacingSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.util.*;
 import net.wurstclient.util.BlockBreaker.BlockBreakingParams;
 import net.wurstclient.util.BlockPlacer.BlockPlacingParams;
@@ -66,28 +67,18 @@ import net.wurstclient.util.BlockPlacer.BlockPlacingParams;
 public final class AutoLibrarianHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final BookOffersSetting wantedBooks = new BookOffersSetting(
-		"Wanted books",
-		"A list of enchanted books that you want your villagers to sell.\n\n"
-			+ "AutoLibrarian will stop training the current villager"
-			+ " once it has learned to sell one of these books.\n\n"
-			+ "You can also set a maximum price for each book, in case you"
-			+ " already have a villager selling it but you want it for a"
-			+ " cheaper price.",
+	private final BookOffersSetting wantedBooks = new BookOffersSetting("想要的书籍",
+		"您希望村民出售的附魔书籍列表。\n\n" + "一旦村民学会出售这些书籍，AutoLibrarian将停止培训当前村民。\n\n"
+			+ "您还可以为每本书设置最高价格，以防您已经有村民出售，但想以更低的价格购买。",
 		"minecraft:depth_strider;3", "minecraft:efficiency;5",
 		"minecraft:feather_falling;4", "minecraft:fortune;3",
 		"minecraft:looting;3", "minecraft:mending;1", "minecraft:protection;4",
 		"minecraft:respiration;3", "minecraft:sharpness;5",
 		"minecraft:silk_touch;1", "minecraft:unbreaking;3");
 	
-	private final CheckboxSetting lockInTrade = new CheckboxSetting(
-		"Lock in trade",
-		"Automatically buys something from the villager once it has learned to"
-			+ " sell the book you want. This prevents the villager from"
-			+ " changing its trade offers later.\n\n"
-			+ "Make sure you have at least 24 paper and 9 emeralds in your"
-			+ " inventory when using this feature. Alternatively, 1 book and"
-			+ " 64 emeralds will also work.",
+	private final CheckboxSetting lockInTrade = new CheckboxSetting("锁定交易",
+		"一旦村民学会出售您想要的书籍，自动从村民那里购买某样东西。这可以防止村民以后更改其交易报价。\n\n"
+			+ "使用此功能时，请确保您至少有24张纸和9颗绿宝石在您的库存中。或者，1本书和64颗绿宝石也可以工作。",
 		false);
 	
 	private final UpdateBooksSetting updateBooks = new UpdateBooksSetting();
@@ -95,26 +86,19 @@ public final class AutoLibrarianHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final FacingSetting facing = FacingSetting
-		.withoutPacketSpam("How to face the villager and job site.\n\n"
-			+ "\u00a7lOff\u00a7r - Don't face the villager at all. Will be"
-			+ " detected by anti-cheat plugins.\n\n"
-			+ "\u00a7lServer-side\u00a7r - Face the villager on the"
-			+ " server-side, while still letting you move the camera freely on"
-			+ " the client-side.\n\n"
-			+ "\u00a7lClient-side\u00a7r - Face the villager by moving your"
-			+ " camera on the client-side. This is the most legit option, but"
-			+ " can be disorienting to look at.");
+	private final FacingSetting facing =
+		FacingSetting.withoutPacketSpam("AutoLibrarian应如何面向村民和工作地点。\n\n"
+			+ "\u00a7l关闭\u00a7r - 根本不面向村民。将被反作弊插件检测。\n\n"
+			+ "\u00a7l服务器端\u00a7r - 在服务器端面向村民，同时仍然允许您在客户端自由移动摄像头。\n\n"
+			+ "\u00a7l客户端\u00a7r - 通过在客户端移动摄像头面向村民。这是最合法的选项，但可能会让人感到迷失。");
 	
 	private final SwingHandSetting swingHand =
-		new SwingHandSetting("How to swing your hand when interacting with the"
-			+ " villager and job site.");
+		new SwingHandSetting(this, SwingHand.SERVER);
 	
-	private final SliderSetting repairMode = new SliderSetting("Repair mode",
-		"Prevents AutoLibrarian from using your axe when its durability reaches"
-			+ " the given threshold, so you can repair it before it breaks.\n"
-			+ "Can be adjusted from 0 (off) to 100.",
-		1, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "off"));
+	private final SliderSetting repairMode = new SliderSetting("修复模式",
+		"防止AutoLibrarian在工具耐久度达到给定阈值时使用您的斧头，以便在其损坏之前进行修理。\n"
+			+ "可以从0（关闭）调整到100次剩余使用。",
+		1, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "关闭"));
 	
 	private final OverlayRenderer overlay = new OverlayRenderer();
 	private final HashSet<VillagerEntity> experiencedVillagers =
