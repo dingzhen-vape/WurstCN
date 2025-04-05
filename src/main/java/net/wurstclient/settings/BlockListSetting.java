@@ -1,0 +1,195 @@
+/*
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ *
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+ */
+package net.wurstclient.settings;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
+import net.minecraft.block.Block;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
+import net.wurstclient.WurstClient;
+import net.wurstclient.clickgui.Component;
+import net.wurstclient.clickgui.components.BlockListEditButton;
+import net.wurstclient.keybinds.PossibleKeybind;
+import net.wurstclient.util.BlockUtils;
+import net.wurstclient.util.json.JsonException;
+import net.wurstclient.util.json.JsonUtils;
+import net.wurstclient.util.text.WText;
+
+public class BlockListSetting extends Setting
+{
+	private final ArrayList<String> blockNames = new ArrayList<>();
+	private final String[] defaultNames;
+	
+	public BlockListSetting(String name, WText description, String... blocks)
+	{
+		super(name, description);
+		
+		Arrays.stream(blocks).parallel()
+			.map(s -> Registries.BLOCK.get(Identifier.of(s)))
+			.filter(Objects::nonNull).map(BlockUtils::getName).distinct()
+			.sorted().forEachOrdered(s -> blockNames.add(s));
+		defaultNames = blockNames.toArray(new String[0]);
+	}
+	
+	public BlockListSetting(String name, String descriptionKey,
+		String... blocks)
+	{
+		this(name, WText.translated(descriptionKey), blocks);
+	}
+	
+	public List<String> getBlockNames()
+	{
+		return Collections.unmodifiableList(blockNames);
+	}
+	
+	public int indexOf(String name)
+	{
+		return Collections.binarySearch(blockNames, name);
+	}
+	
+	public int indexOf(Block block)
+	{
+		return indexOf(BlockUtils.getName(block));
+	}
+	
+	public boolean contains(String name)
+	{
+		return indexOf(name) >= 0;
+	}
+	
+	public boolean contains(Block block)
+	{
+		return indexOf(block) >= 0;
+	}
+	
+	public int size()
+	{
+		return blockNames.size();
+	}
+	
+	public void add(Block block)
+	{
+		String name = BlockUtils.getName(block);
+		if(Collections.binarySearch(blockNames, name) >= 0)
+			return;
+		
+		blockNames.add(name);
+		Collections.sort(blockNames);
+		WurstClient.INSTANCE.saveSettings();
+	}
+	
+	public void remove(int index)
+	{
+		if(index < 0 || index >= blockNames.size())
+			return;
+		
+		blockNames.remove(index);
+		WurstClient.INSTANCE.saveSettings();
+	}
+	
+	public void resetToDefaults()
+	{
+		blockNames.clear();
+		blockNames.addAll(Arrays.asList(defaultNames));
+		WurstClient.INSTANCE.saveSettings();
+	}
+	
+	@Override
+	public Component getComponent()
+	{
+		return new BlockListEditButton(this);
+	}
+	
+	@Override
+	public void fromJson(JsonElement json)
+	{
+		try
+		{
+			blockNames.clear();
+			
+			// if string "default", load default blocks
+			if(JsonUtils.getAsString(json, "否").equals("default"))
+			{
+				blockNames.addAll(Arrays.asList(defaultNames));
+				return;
+			}
+			
+			// otherwise, load the blocks in the JSON array
+			JsonUtils.getAsArray(json).getAllStrings().parallelStream()
+				.map(s -> Registries.BLOCK.get(Identifier.of(s)))
+				.filter(Objects::nonNull).map(BlockUtils::getName).distinct()
+				.sorted().forEachOrdered(s -> blockNames.add(s));
+			
+		}catch(JsonException e)
+		{
+			e.printStackTrace();
+			resetToDefaults();
+		}
+	}
+	
+	@Override
+	public JsonElement toJson()
+	{
+		// if blockNames is the same as defaultNames, save string "default"
+		if(blockNames.equals(Arrays.asList(defaultNames)))
+			return new JsonPrimitive("default");
+		
+		JsonArray json = new JsonArray();
+		blockNames.forEach(s -> json.add(s));
+		return json;
+	}
+	
+	@Override
+	public JsonObject exportWikiData()
+	{
+		JsonObject json = new JsonObject();
+		
+		json.addProperty("name", getName());
+		json.addProperty("descriptionKey", getDescription());
+		json.addProperty("type", "方块列表");
+		
+		JsonArray defaultBlocksJson = new JsonArray();
+		for(String blockName : defaultNames)
+			defaultBlocksJson.add(blockName);
+		json.add("默认方块", defaultBlocksJson);
+		
+		return json;
+	}
+	
+	@Override
+	public Set<PossibleKeybind> getPossibleKeybinds(String featureName)
+	{
+		String fullName = featureName + " " + getName();
+		
+		String command = ".blocklist " + featureName.toLowerCase() + " ";
+		command += getName().toLowerCase().replace(" ", "_") + " ";
+		
+		LinkedHashSet<PossibleKeybind> pkb = new LinkedHashSet<>();
+		// Can't just list all the blocks here. Would need to change UI to allow
+		// user to choose a block after selecting this option.
+		// pkb.add(new PossibleKeybind(command + "添加泥土",
+		// "添加泥土到" + fullName));
+		// pkb.add(new PossibleKeybind(command + "移除泥土",
+		// "移除泥土自" + fullName));
+		pkb.add(new PossibleKeybind(command + "重置", "重置" + fullName));
+		
+		return pkb;
+	}
+}

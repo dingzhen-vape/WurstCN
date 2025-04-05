@@ -1,0 +1,209 @@
+/*
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ *
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+ */
+package net.wurstclient.options;
+
+import java.util.Objects;
+
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.text.Text;
+import net.wurstclient.WurstClient;
+import net.wurstclient.keybinds.Keybind;
+import net.wurstclient.keybinds.KeybindList;
+
+public final class KeybindManagerScreen extends Screen
+{
+	private final Screen prevScreen;
+	
+	private ListGui listGui;
+	private ButtonWidget addButton;
+	private ButtonWidget editButton;
+	private ButtonWidget removeButton;
+	private ButtonWidget backButton;
+	
+	public KeybindManagerScreen(Screen prevScreen)
+	{
+		super(Text.literal(""));
+		this.prevScreen = prevScreen;
+	}
+	
+	@Override
+	public void init()
+	{
+		listGui = new ListGui(client, this);
+		addSelectableChild(listGui);
+		
+		addDrawableChild(addButton = ButtonWidget
+			.builder(Text.literal("添加"),
+				b -> client.setScreen(new KeybindEditorScreen(this)))
+			.dimensions(width / 2 - 102, height - 52, 100, 20).build());
+		
+		addDrawableChild(
+			editButton = ButtonWidget.builder(Text.literal("编辑"), b -> edit())
+				.dimensions(width / 2 + 2, height - 52, 100, 20).build());
+		
+		addDrawableChild(removeButton =
+			ButtonWidget.builder(Text.literal("移除"), b -> remove())
+				.dimensions(width / 2 - 102, height - 28, 100, 20).build());
+		
+		addDrawableChild(backButton = ButtonWidget
+			.builder(Text.literal("返回"), b -> client.setScreen(prevScreen))
+			.dimensions(width / 2 + 2, height - 28, 100, 20).build());
+		
+		addDrawableChild(ButtonWidget.builder(Text.literal("重置快捷键"),
+			b -> client.setScreen(new ConfirmScreen(confirmed -> {
+				if(confirmed)
+					WurstClient.INSTANCE.getKeybinds()
+						.setKeybinds(KeybindList.DEFAULT_KEYBINDS);
+				client.setScreen(this);
+			}, Text.literal("您确定要重置快捷键吗？"), Text.literal("这将无法撤销！"))))
+			.dimensions(8, 8, 100, 20).build());
+		
+		addDrawableChild(ButtonWidget
+			.builder(Text.literal("配置文件..."),
+				b -> client.setScreen(new KeybindProfilesScreen(this)))
+			.dimensions(width - 108, 8, 100, 20).build());
+	}
+	
+	private void edit()
+	{
+		Keybind keybind = listGui.getSelectedKeybind();
+		if(keybind == null)
+			return;
+		
+		client.setScreen(new KeybindEditorScreen(this, keybind.getKey(),
+			keybind.getCommands()));
+	}
+	
+	private void remove()
+	{
+		Keybind keybind = listGui.getSelectedKeybind();
+		if(keybind == null)
+			return;
+		
+		WurstClient.INSTANCE.getKeybinds().remove(keybind.getKey());
+		client.setScreen(this);
+	}
+	
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+	{
+		switch(keyCode)
+		{
+			case GLFW.GLFW_KEY_ENTER:
+			if(editButton.active)
+				editButton.onPress();
+			else
+				addButton.onPress();
+			break;
+			
+			case GLFW.GLFW_KEY_DELETE:
+			removeButton.onPress();
+			break;
+			
+			case GLFW.GLFW_KEY_ESCAPE:
+			backButton.onPress();
+			break;
+			
+			default:
+			break;
+		}
+		
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+	
+	@Override
+	public void tick()
+	{
+		boolean selected = listGui.getSelectedOrNull() != null;
+		editButton.active = selected;
+		removeButton.active = selected;
+	}
+	
+	@Override
+	public void render(DrawContext context, int mouseX, int mouseY,
+		float partialTicks)
+	{
+		renderBackground(context, mouseX, mouseY, partialTicks);
+		listGui.render(context, mouseX, mouseY, partialTicks);
+		
+		context.drawCenteredTextWithShadow(textRenderer, "快捷键管理器", width / 2, 8,
+			0xFFFFFF);
+		
+		int count = WurstClient.INSTANCE.getKeybinds().getAllKeybinds().size();
+		context.drawCenteredTextWithShadow(textRenderer, "快捷键: " + count,
+			width / 2, 20, 0xFFFFFF);
+		
+		for(Drawable drawable : drawables)
+			drawable.render(context, mouseX, mouseY, partialTicks);
+	}
+	
+	@Override
+	public boolean shouldCloseOnEsc()
+	{
+		return false;
+	}
+	
+	private final class Entry
+		extends AlwaysSelectedEntryListWidget.Entry<KeybindManagerScreen.Entry>
+	{
+		private final Keybind keybind;
+		
+		public Entry(Keybind keybind)
+		{
+			this.keybind = Objects.requireNonNull(keybind);
+		}
+		
+		@Override
+		public Text getNarration()
+		{
+			return Text.translatable("narrator.select", "Keybind " + keybind);
+		}
+		
+		@Override
+		public void render(DrawContext context, int index, int y, int x,
+			int entryWidth, int entryHeight, int mouseX, int mouseY,
+			boolean hovered, float tickDelta)
+		{
+			TextRenderer tr = client.textRenderer;
+			
+			String keyText =
+				"键: " + keybind.getKey().replace("key.keyboard.", "");
+			context.drawText(tr, keyText, x + 3, y + 3, 0xA0A0A0, false);
+			
+			String cmdText = "命令: " + keybind.getCommands();
+			context.drawText(tr, cmdText, x + 3, y + 15, 0xA0A0A0, false);
+		}
+	}
+	
+	private final class ListGui
+		extends AlwaysSelectedEntryListWidget<KeybindManagerScreen.Entry>
+	{
+		public ListGui(MinecraftClient mc, KeybindManagerScreen screen)
+		{
+			super(mc, screen.width, screen.height - 96, 36, 30, 0);
+			
+			WurstClient.INSTANCE.getKeybinds().getAllKeybinds().stream()
+				.map(KeybindManagerScreen.Entry::new).forEach(this::addEntry);
+		}
+		
+		public Keybind getSelectedKeybind()
+		{
+			KeybindManagerScreen.Entry selected = getSelectedOrNull();
+			return selected != null ? selected.keybind : null;
+		}
+	}
+}
