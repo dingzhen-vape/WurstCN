@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "wurst",
+  "version": "${version}",
+  "name": "Wurst Client",
+  "description": "Wurst Wurst Wurst!",
+  "authors": [
+    "Alexander01998"
+  ],
+  "contact": {
+    "homepage": "https://www.wurstclient.net/modmenu-homepage/",
+    "sources": "https://www.wurstclient.net/modmenu-sources/",
+    "issues": "https://www.wurstclient.net/modmenu-issues/"
+  },
+  "license": "GPL-3.0-or-later",
+  "icon": "assets/wurst/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "net.wurstclient.WurstInitializer",
+      "net.wurstclient.test.WurstE2ETestClient"
+    ]
+  },
+  "mixins": [
+    "wurst.mixins.json"
+  ],
+  "accessWidener": "wurst.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.16.13",
+    "fabric-api": ">=0.126.1",
+    "minecraft": "~1.21.6-beta.3",
+    "java": ">=21"
+  },
+  "suggests": {
+    "mo_glass": "*"
+  },
+  "breaks": {
+    "wi_zoom": "*",
+    "wi-zoom": "*",
+    "vulkanmod": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.donate": "https://www.wurstclient.net/modmenu-donate/",
+        "modmenu.twitter": "https://www.wurstclient.net/modmenu-twitter/",
+        "modmenu.wiki": "https://www.wurstclient.net/modmenu-wiki/",
+        "Forum": "https://www.wurstclient.net/modmenu-forum/"
+      }
+    }
+  }
+}

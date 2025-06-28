@@ -1,0 +1,112 @@
+/*
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ *
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+ */
+package net.wurstclient.hacks;
+
+import java.util.ArrayDeque;
+
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.wurstclient.Category;
+import net.wurstclient.SearchTags;
+import net.wurstclient.events.PacketOutputListener;
+import net.wurstclient.events.UpdateListener;
+import net.wurstclient.hack.DontSaveState;
+import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.util.FakePlayerEntity;
+
+@DontSaveState
+@SearchTags({"LagSwitch", "lag switch"})
+public final class BlinkHack extends Hack
+	implements UpdateListener, PacketOutputListener
+{
+	private final SliderSetting limit =
+		new SliderSetting("限制", "当挂起的数据包达到给定的数量时，自动重启Blink。\n\n" + "0 = 无限制", 0,
+			0, 500, 1, ValueDisplay.INTEGER.withLabel(0, "关闭"));
+	
+	private final ArrayDeque<PlayerMoveC2SPacket> packets = new ArrayDeque<>();
+	private FakePlayerEntity fakePlayer;
+	
+	public BlinkHack()
+	{
+		super("闪现");
+		setCategory(Category.MOVEMENT);
+		addSetting(limit);
+	}
+	
+	@Override
+	public String getRenderName()
+	{
+		if(limit.getValueI() == 0)
+			return getName() + " [" + packets.size() + "]";
+		return getName() + " [" + packets.size() + "/" + limit.getValueI()
+			+ "]";
+	}
+	
+	@Override
+	protected void onEnable()
+	{
+		fakePlayer = new FakePlayerEntity();
+		
+		EVENTS.add(UpdateListener.class, this);
+		EVENTS.add(PacketOutputListener.class, this);
+	}
+	
+	@Override
+	protected void onDisable()
+	{
+		EVENTS.remove(UpdateListener.class, this);
+		EVENTS.remove(PacketOutputListener.class, this);
+		
+		fakePlayer.despawn();
+		packets.forEach(p -> MC.player.networkHandler.sendPacket(p));
+		packets.clear();
+	}
+	
+	@Override
+	public void onUpdate()
+	{
+		if(limit.getValueI() == 0)
+			return;
+		
+		if(packets.size() >= limit.getValueI())
+		{
+			setEnabled(false);
+			setEnabled(true);
+		}
+	}
+	
+	@Override
+	public void onSentPacket(PacketOutputEvent event)
+	{
+		if(!(event.getPacket() instanceof PlayerMoveC2SPacket))
+			return;
+		
+		event.cancel();
+		
+		PlayerMoveC2SPacket packet = (PlayerMoveC2SPacket)event.getPacket();
+		PlayerMoveC2SPacket prevPacket = packets.peekLast();
+		
+		if(prevPacket != null && packet.isOnGround() == prevPacket.isOnGround()
+			&& packet.getYaw(-1) == prevPacket.getYaw(-1)
+			&& packet.getPitch(-1) == prevPacket.getPitch(-1)
+			&& packet.getX(-1) == prevPacket.getX(-1)
+			&& packet.getY(-1) == prevPacket.getY(-1)
+			&& packet.getZ(-1) == prevPacket.getZ(-1))
+			return;
+		
+		packets.addLast(packet);
+	}
+	
+	public void cancel()
+	{
+		packets.clear();
+		fakePlayer.resetPlayerPosition();
+		setEnabled(false);
+	}
+}

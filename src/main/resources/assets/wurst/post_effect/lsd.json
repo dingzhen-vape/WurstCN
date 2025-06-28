@@ -1,0 +1,63 @@
+{
+  "targets": {
+    "swap": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:post/sobel",
+      "fragment_shader": "wurst:post/lsd",
+      "inputs": [
+        {
+          "sampler_name": "Diffuse",
+          "target": "minecraft:main"
+        }
+      ],
+      "output": "swap",
+      "uniforms": {
+        "LSDConfig": [
+          {
+            "name": "Frequency",
+            "type": "vec2",
+            "value": [
+              512.0,
+              288.0
+            ]
+          },
+          {
+            "name": "WobbleAmount",
+            "type": "vec2",
+            "value": [
+              0.002,
+              0.002
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:post/blit",
+      "fragment_shader": "minecraft:post/blit",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "swap"
+        }
+      ],
+      "output": "minecraft:main",
+      "uniforms": {
+        "BlitConfig": [
+          {
+            "name": "ColorModulate",
+            "type": "vec4",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,301 @@
+buildscript {
+	dependencies {
+		classpath "org.kohsuke:github-api:1.327"
+	}
+}
+
+plugins {
+	id "fabric-loom" version "${loom_version}"
+	id "com.diffplug.spotless" version "7.0.4"
+}
+
+def ENV = System.getenv()
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
+	// for more information about repositories.
+}
+
+// Override vulnerable dependencies until Minecraft updates to newer versions
+configurations.all {
+	resolutionStrategy {
+		// v2.5.1, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2024-57699
+		force "net.minidev:json-smart:2.5.2"
+	}
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+	
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	
+	// net.wurstclient.ai.PathPos extends net.minecraft.util.math.BlockPos,
+	// which uses javax.annotation.concurrent.Immutable, which is part of
+	// the JSR305 library.
+	//
+	// In other words, Wurst won't compile without this library,
+	// even though it's Minecraft that actually uses it.
+	modImplementation "com.google.code.findbugs:jsr305:3.0.2"
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/wurst.accesswidener")
+}
+
+configurations {
+	productionRuntime {
+		extendsFrom configurations.minecraftLibraries
+		extendsFrom configurations.loaderLibraries
+		extendsFrom configurations.minecraftRuntimeLibraries
+	}
+}
+
+dependencies {
+	productionRuntime "net.fabricmc:fabric-loader:${project.loader_version}"
+	productionRuntime "net.fabricmc:intermediary:${project.minecraft_version}"
+}
+
+import net.fabricmc.loom.util.Platform
+tasks.register('runEndToEndTest', JavaExec) {
+	dependsOn remapJar, downloadAssets
+	classpath.from configurations.productionRuntime
+	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
+	workingDir = file("run")
+	
+	doFirst {
+		classpath.from loom.minecraftProvider.minecraftClientJar
+		workingDir.mkdirs()
+		
+		args(
+			"--assetIndex", loom.minecraftProvider.versionInfo.assetIndex().fabricId(loom.minecraftProvider.minecraftVersion()),
+			"--assetsDir", new File(loom.files.userCache, "assets").absolutePath,
+			"--gameDir", workingDir.absolutePath
+		)
+		
+		if (Platform.CURRENT.operatingSystem.isMacOS()) {
+			jvmArgs("-XstartOnFirstThread")
+		}
+		
+		jvmArgs(
+			"-Dfabric.addMods=${configurations.modImplementation.find { it.name.contains('fabric-api') }.absolutePath}${File.pathSeparator}${remapJar.archiveFile.get().asFile.absolutePath}",
+			"-Dwurst.e2eTest",
+			"-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail",
+			"-Dfabric-tag-conventions-v1.legacyTagWarning=fail",
+			"-Dmixin.debug.verify=true",
+			"-Dmixin.debug.countInjections=true"
+		)
+	}
+}
+
+processResources {
+	inputs.property "version", project.version.substring(1)
+	
+	filesMatching("fabric.mod.json") {
+		expand "version": inputs.properties.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	// Minecraft 1.20.5 (24w14a) upwards uses Java 21.
+	it.options.release = 21
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+	
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	inputs.property "archivesName", project.base.archivesName
+	
+	from("LICENSE.txt") {
+		rename { "LICENSE-${inputs.properties.archivesName}.txt" }
+	}
+	
+	exclude("intentionally_untranslated.json")
+}
+
+import com.diffplug.spotless.generic.LicenseHeaderStep
+spotless {
+	lineEndings = "WINDOWS"
+	java {
+		removeUnusedImports()
+		leadingSpacesToTabs()
+		trimTrailingWhitespace()
+		eclipse().configFile(file("codestyle/formatter.xml"))
+	}
+	format("licenseHeader") {
+		target("src/*/java/**/*.java", "src/test/java/**/*.java")
+		def header_file = file("codestyle/license_header.txt")
+		def delimiter = LicenseHeaderStep.DEFAULT_JAVA_HEADER_DELIMITER
+		licenseHeaderFile(header_file, delimiter).updateYearWithLatest(true)
+	}
+	json {
+		target "src/**/*.json"
+		gson().indentWithSpaces(2).version("2.11.0")
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
+
+def getGhVersion() {
+	return version.substring(0, version.indexOf("-MC"))
+}
+
+def getChangelogLink(String platform, String from) {
+	def versionSlug = getGhVersion().substring(1).replace(".", "-")
+	def shortURL = "https://www.wurstclient.net/updates/wurst-${versionSlug}/"
+	def query = []
+	if (platform != "GitHub")
+		query.add("mc=${project.minecraft_version}")
+	query.add("utm_source=${platform}")
+	query.add("utm_medium=" + project.archives_base_name.replace("-", "+"))
+	def fullURL = shortURL + (query.isEmpty() ? "" : "?" + query.join("&"))
+	def encodedURL = java.net.URLEncoder.encode(fullURL, "UTF-8")
+	return "[${shortURL}](https://go.wimods.net/from/${from}?to=${encodedURL})"
+}
+
+def getChangelogImage(String from) {
+	return "![](https://img.wimods.net/${from})"
+}
+
+def getChangelog(String platform, String from) {
+	def prefix = platform == "GitHub" ? "" : "A changelog can be found at: "
+	def imgQuery = platform == "GitHub" ? "" : "?mc_version=${project.minecraft_version}&mod_loader=${project.mod_loader}"
+	return prefix + getChangelogLink(platform, from) + getChangelogImage(from + imgQuery)
+}
+
+import org.kohsuke.github.GHReleaseBuilder
+import org.kohsuke.github.GitHub
+
+task github(dependsOn: build) {
+	onlyIf {
+		ENV.GITHUB_TOKEN
+	}
+	
+	doLast {
+		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
+		def repoId = project.mcx_repo_id
+		def repository = github.getRepository(repoId)
+		def ghVersion = getGhVersion()
+		
+		def ghRelease = repository.getReleaseByTagName(ghVersion as String)
+		if(ghRelease == null) {
+			def releaseBuilder = new GHReleaseBuilder(repository, ghVersion as String)
+			releaseBuilder.body(getChangelogImage("github.com/${repoId}/releases/tag/${ghVersion}"))
+			releaseBuilder.prerelease(ghVersion.contains("pre"))
+			ghRelease = releaseBuilder.create()
+		}
+		
+		ghRelease.uploadAsset(remapJar.archiveFile.get().getAsFile(), "application/java-archive")
+		ghRelease.uploadAsset(remapSourcesJar.archiveFile.get().getAsFile(), "application/java-archive")
+	}
+}
+
+import org.kohsuke.github.GHIssueState
+import org.kohsuke.github.GHMilestoneState
+import java.time.Instant
+
+task closeMilestone {
+	onlyIf {
+		ENV.GITHUB_TOKEN
+	}
+	
+	doLast {
+		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
+		def repoId = project.gh_repo_id
+		def repository = github.getRepository(repoId)
+		def ghVersion = getGhVersion()
+		
+		// Weird API design: listMilestones() requires GHIssueState while everything else uses GHMilestoneState.
+		def milestone = repository.listMilestones(GHIssueState.ALL).find { it.title == ghVersion }
+		if (milestone == null) {
+			milestone = repository.createMilestone(ghVersion, "")
+		}
+		
+		if (milestone.getState() != GHMilestoneState.CLOSED) {
+			milestone.setDueOn(Date.from(Instant.now()))
+			milestone.setDescription(getChangelog("GitHub", "github.com/${repoId}/milestone/${ghVersion}"))
+			milestone.close()
+		}
+	}
+}
+
+task uploadBackups {
+	dependsOn build
+	
+	onlyIf {
+		ENV.WI_BACKUPS_API_KEY
+	}
+	
+	doLast {
+		def shortVersion = getGhVersion().substring(1)
+		def backupUrl = "https://api.wurstclient.net/artifact-backups/Wurst/${shortVersion}"
+		
+		def maxRetries = 3
+		def retryCount = 0
+		def success = false
+		
+		while (!success && retryCount < maxRetries) {
+			try {
+				def connection = new URL(backupUrl).openConnection() as HttpURLConnection
+				def boundary = UUID.randomUUID().toString()
+				connection.setRequestMethod("POST")
+				connection.setRequestProperty("X-API-Key", ENV.WI_BACKUPS_API_KEY)
+				connection.setRequestProperty("Accept", "application/json")
+				connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
+				connection.doOutput = true
+				
+				def output = connection.outputStream
+				[remapJar, remapSourcesJar].each { jarTask ->
+					def file = jarTask.archiveFile.get().asFile
+					output << "--${boundary}\r\n"
+					output << "Content-Disposition: form-data; name=\"files\"; filename=\"${file.name}\"\r\n"
+					output << "Content-Type: application/java-archive\r\n\r\n"
+					file.withInputStream { input -> 
+						output << input
+					}
+					output << "\r\n"
+				}
+				output << "--${boundary}--\r\n"
+				output.flush()
+				
+				if(connection.responseCode != 200) {
+					throw new IOException("HTTP ${connection.responseCode}: ${connection.responseMessage}")
+				}
+				
+				success = true
+				
+			} catch (Exception e) {
+				retryCount++
+				if (retryCount >= maxRetries) {
+					throw new GradleException("Failed to upload backups after ${maxRetries} attempts: ${e.message}")
+				}
+				println "Upload attempt ${retryCount} failed: ${e.message}. Retrying in 5 seconds..."
+				Thread.sleep(5000)
+			}
+		}
+	}
+}
