@@ -1,0 +1,120 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches-ignore:
+    - "dependabot/**"
+    tags-ignore:
+    - "**"
+    paths:
+    - "**.java"
+    - "**.json"
+    - "**.yml"
+    - "gradle**"
+    - "*.gradle"
+    - "*.accesswidener"
+  pull_request:
+    paths:
+    - "**.java"
+    - "**.json"
+    - "**.yml"
+    - "gradle**"
+    - "*.gradle"
+    - "*.accesswidener"
+  workflow_dispatch:
+    inputs:
+      distinct_id:
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Echo distinct ID ${{ inputs.distinct_id }}
+      run: echo ${{ inputs.distinct_id }}
+
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Set up Java 21
+      uses: actions/setup-java@v5
+      with:
+        java-version: "21"
+        distribution: "microsoft"
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+      with:
+        build-scan-publish: true
+        build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
+        build-scan-terms-of-use-agree: "yes"
+        cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+        cache-read-only: ${{ github.ref != 'refs/heads/master' && !startsWith(github.ref, 'refs/heads/1.') }}
+
+    - name: Build
+      run: ./gradlew build --stacktrace --warning-mode=fail
+
+    - name: Upload to VirusTotal for analysis
+      id: virustotal
+      env:
+        VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+      if: ${{ env.VIRUSTOTAL_API_KEY }}
+      uses: crazy-max/ghaction-virustotal@v4
+      with:
+        vt_api_key: ${{ env.VIRUSTOTAL_API_KEY }}
+        files: |
+          ./build/libs/*.jar
+      # An error in this step means that the upload failed, not that a false
+      # positive was detected.
+      continue-on-error: true
+
+    - name: Add VirusTotal links to build summary
+      if: ${{ steps.virustotal.outputs.analysis }}
+      run: |
+        echo "<details open>" >> $GITHUB_STEP_SUMMARY
+        echo "<summary>🛡️ VirusTotal Scans</summary>" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        IFS=',' read -ra ANALYSIS <<< "${{ steps.virustotal.outputs.analysis }}"
+        for i in "${ANALYSIS[@]}"; do
+          filepath=${i%%=*}
+          url=${i#*=}
+          filename=$(basename "$filepath")
+          echo "- [$filename]($url)" >> $GITHUB_STEP_SUMMARY
+        done
+        echo "</details>" >> $GITHUB_STEP_SUMMARY
+
+    - name: Run client gametests
+      env:
+        IMGUR_CLIENT_ID: ${{ secrets.IMGUR_CLIENT_ID }}
+      run: ./gradlew runClientGameTest --stacktrace --warning-mode=fail
+
+    - name: Run client gametests with mods
+      env:
+        IMGUR_CLIENT_ID: ${{ secrets.IMGUR_CLIENT_ID }}
+      run: ./gradlew runClientGameTestWithMods --stacktrace --warning-mode=fail
+
+    - name: Upload screenshots
+      uses: actions/upload-artifact@v6
+      if: ${{ success() || failure() }}
+      with:
+        name: screenshots
+        path: build/run/*/screenshots
+        compression-level: 0
+
+    - name: Upload logs
+      uses: actions/upload-artifact@v6
+      if: ${{ success() || failure() }}
+      with:
+        name: logs
+        path: build/run/*/logs/latest.log
+
+    - name: Upload crash reports
+      uses: actions/upload-artifact@v6
+      if: ${{ failure() }}
+      with:
+        name: crash-reports
+        path: build/run/*/crash-reports

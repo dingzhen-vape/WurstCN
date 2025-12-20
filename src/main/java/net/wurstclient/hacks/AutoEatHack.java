@@ -1,0 +1,362 @@
+/*
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ *
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+ */
+package net.wurstclient.hacks;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.stream.Stream;
+
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.food.FoodData;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.consume_effects.ConsumeEffect;
+import net.minecraft.world.item.consume_effects.TeleportRandomlyConsumeEffect;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CraftingTableBlock;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.wurstclient.Category;
+import net.wurstclient.SearchTags;
+import net.wurstclient.events.UpdateListener;
+import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.CheckboxSetting;
+import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.util.InventoryUtils;
+
+@SearchTags({"auto eat", "AutoFood", "auto food", "AutoFeeder", "auto feeder",
+	"AutoFeeding", "auto feeding", "自动汤", "auto soup"})
+public final class AutoEatHack extends Hack implements UpdateListener
+{
+	private final SliderSetting targetHunger = new SliderSetting(
+		"目标饥饿值", "description.wurst.setting.autoeat.target_hunger", 10,
+		0, 10, 0.5, ValueDisplay.DECIMAL);
+	
+	private final SliderSetting minHunger = new SliderSetting("最小饥饿值",
+		"description.wurst.setting.autoeat.min_hunger", 6.5, 0, 10, 0.5,
+		ValueDisplay.DECIMAL);
+	
+	private final SliderSetting injuredHunger = new SliderSetting(
+		"受伤饥饿值", "description.wurst.setting.autoeat.injured_hunger",
+		10, 0, 10, 0.5, ValueDisplay.DECIMAL);
+	
+	private final SliderSetting injuryThreshold =
+		new SliderSetting("受伤阈值",
+			"description.wurst.setting.autoeat.injury_threshold", 1.5, 0.5, 10,
+			0.5, ValueDisplay.DECIMAL);
+	
+	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
+		"从中获取物品", "description.wurst.setting.autoeat.take_items_from",
+		TakeItemsFrom.values(), TakeItemsFrom.HOTBAR);
+	
+	private final CheckboxSetting allowOffhand =
+		new CheckboxSetting("允许副手", true);
+	
+	private final CheckboxSetting eatWhileWalking =
+		new CheckboxSetting("边走边吃",
+			"description.wurst.setting.autoeat.eat_while_walking", false);
+	
+	private final CheckboxSetting allowHunger =
+		new CheckboxSetting("允许饥饿效果",
+			"description.wurst.setting.autoeat.allow_hunger", true);
+	
+	private final CheckboxSetting allowPoison =
+		new CheckboxSetting("允许中毒效果",
+			"description.wurst.setting.autoeat.allow_poison", false);
+	
+	private final CheckboxSetting allowChorus =
+		new CheckboxSetting("允许紫颂果",
+			"description.wurst.setting.autoeat.allow_chorus", false);
+	
+	private int oldSlot = -1;
+	
+	public AutoEatHack()
+	{
+		super("自动食物");
+		setCategory(Category.ITEMS);
+		
+		addSetting(targetHunger);
+		addSetting(minHunger);
+		addSetting(injuredHunger);
+		addSetting(injuryThreshold);
+		
+		addSetting(takeItemsFrom);
+		addSetting(allowOffhand);
+		
+		addSetting(eatWhileWalking);
+		addSetting(allowHunger);
+		addSetting(allowPoison);
+		addSetting(allowChorus);
+	}
+	
+	@Override
+	protected void onEnable()
+	{
+		WURST.getHax().autoSoupHack.setEnabled(false);
+		EVENTS.add(UpdateListener.class, this);
+	}
+	
+	@Override
+	protected void onDisable()
+	{
+		EVENTS.remove(UpdateListener.class, this);
+		
+		if(isEating())
+			stopEating();
+	}
+	
+	@Override
+	public void onUpdate()
+	{
+		LocalPlayer player = MC.player;
+		
+		if(!shouldEat())
+		{
+			if(isEating())
+				stopEating();
+			
+			return;
+		}
+		
+		FoodData hungerManager = player.getFoodData();
+		int foodLevel = hungerManager.getFoodLevel();
+		int targetHungerI = (int)(targetHunger.getValue() * 2);
+		int minHungerI = (int)(minHunger.getValue() * 2);
+		int injuredHungerI = (int)(injuredHunger.getValue() * 2);
+		
+		if(isInjured(player) && foodLevel < injuredHungerI)
+		{
+			eat(-1);
+			return;
+		}
+		
+		if(foodLevel < minHungerI)
+		{
+			eat(-1);
+			return;
+		}
+		
+		if(foodLevel < targetHungerI)
+		{
+			int maxPoints = targetHungerI - foodLevel;
+			eat(maxPoints);
+		}
+	}
+	
+	private void eat(int maxPoints)
+	{
+		Inventory inventory = MC.player.getInventory();
+		int foodSlot = findBestFoodSlot(maxPoints);
+		
+		if(foodSlot == -1)
+		{
+			if(isEating())
+				stopEating();
+			
+			return;
+		}
+		
+		// select food
+		if(foodSlot < 9)
+		{
+			if(!isEating())
+				oldSlot = inventory.getSelectedSlot();
+			
+			inventory.setSelectedSlot(foodSlot);
+			
+		}else if(foodSlot == 40)
+		{
+			if(!isEating())
+				oldSlot = inventory.getSelectedSlot();
+			
+			// off-hand slot, no need to select anything
+			
+		}else
+		{
+			InventoryUtils.selectItem(foodSlot);
+			return;
+		}
+		
+		// eat food
+		MC.options.keyUse.setDown(true);
+		IMC.getInteractionManager().rightClickItem();
+	}
+	
+	private int findBestFoodSlot(int maxPoints)
+	{
+		Inventory inventory = MC.player.getInventory();
+		FoodProperties bestFood = null;
+		int bestSlot = -1;
+		
+		int maxInvSlot = takeItemsFrom.getSelected().maxInvSlot;
+		
+		ArrayList<Integer> slots = new ArrayList<>();
+		if(maxInvSlot == 0)
+			slots.add(inventory.getSelectedSlot());
+		if(allowOffhand.isChecked())
+			slots.add(40);
+		Stream.iterate(0, i -> i < maxInvSlot, i -> i + 1)
+			.forEach(i -> slots.add(i));
+		
+		Comparator<FoodProperties> comparator =
+			Comparator.comparingDouble(FoodProperties::saturation);
+		
+		for(int slot : slots)
+		{
+			ItemStack stack = inventory.getItem(slot);
+			
+			// filter out non-food items
+			if(!stack.has(DataComponents.FOOD))
+				continue;
+			
+			if(!isAllowedFood(stack.get(DataComponents.CONSUMABLE)))
+				continue;
+			
+			FoodProperties food = stack.get(DataComponents.FOOD);
+			if(maxPoints >= 0 && food.nutrition() > maxPoints)
+				continue;
+			
+			// compare to previously found food
+			if(bestFood == null || comparator.compare(food, bestFood) > 0)
+			{
+				bestFood = food;
+				bestSlot = slot;
+			}
+		}
+		
+		return bestSlot;
+	}
+	
+	private boolean shouldEat()
+	{
+		if(MC.player.getAbilities().instabuild)
+			return false;
+		
+		if(!MC.player.canEat(false))
+			return false;
+		
+		if(!eatWhileWalking.isChecked()
+			&& (MC.player.zza != 0 || MC.player.xxa != 0))
+			return false;
+		
+		if(isClickable(MC.hitResult))
+			return false;
+		
+		return true;
+	}
+	
+	private void stopEating()
+	{
+		MC.options.keyUse.setDown(false);
+		MC.player.getInventory().setSelectedSlot(oldSlot);
+		oldSlot = -1;
+	}
+	
+	private boolean isAllowedFood(Consumable consumable)
+	{
+		for(ConsumeEffect consumeEffect : consumable.onConsumeEffects())
+		{
+			if(!allowChorus.isChecked()
+				&& consumeEffect instanceof TeleportRandomlyConsumeEffect)
+				return false;
+			
+			if(!(consumeEffect instanceof ApplyStatusEffectsConsumeEffect applyEffectsConsumeEffect))
+				continue;
+			
+			for(MobEffectInstance effect : applyEffectsConsumeEffect.effects())
+			{
+				Holder<MobEffect> entry = effect.getEffect();
+				
+				if(!allowHunger.isChecked() && entry == MobEffects.HUNGER)
+					return false;
+				
+				if(!allowPoison.isChecked() && entry == MobEffects.POISON)
+					return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean isEating()
+	{
+		return oldSlot != -1;
+	}
+	
+	private boolean isClickable(HitResult hitResult)
+	{
+		if(hitResult == null)
+			return false;
+		
+		if(hitResult instanceof EntityHitResult)
+		{
+			Entity entity = ((EntityHitResult)hitResult).getEntity();
+			return entity instanceof Villager
+				|| entity instanceof TamableAnimal;
+		}
+		
+		if(hitResult instanceof BlockHitResult)
+		{
+			BlockPos pos = ((BlockHitResult)hitResult).getBlockPos();
+			if(pos == null)
+				return false;
+			
+			Block block = MC.level.getBlockState(pos).getBlock();
+			return block instanceof BaseEntityBlock
+				|| block instanceof CraftingTableBlock;
+		}
+		
+		return false;
+	}
+	
+	private boolean isInjured(LocalPlayer player)
+	{
+		int injuryThresholdI = (int)(injuryThreshold.getValue() * 2);
+		return player.getHealth() < player.getMaxHealth() - injuryThresholdI;
+	}
+	
+	private enum TakeItemsFrom
+	{
+		HANDS("手上的", 0),
+		
+		HOTBAR("热键栏", 9),
+		
+		INVENTORY("背包", 36);
+		
+		private final String name;
+		private final int maxInvSlot;
+		
+		private TakeItemsFrom(String name, int maxInvSlot)
+		{
+			this.name = name;
+			this.maxInvSlot = maxInvSlot;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return name;
+		}
+	}
+}

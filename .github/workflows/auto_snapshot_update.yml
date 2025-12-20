@@ -1,0 +1,67 @@
+# Experimental workflow to automate updating to a new Minecraft snapshot.
+name: Auto Snapshot Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      mc_version:
+        description: "Minecraft version to update to"
+        required: true
+      yarn_mappings:
+        description: "Yarn mappings version (no longer used)"
+        required: false
+      fabric_loader:
+        description: "Fabric Loader version"
+        required: true
+      fapi_version:
+        description: "Fabric API version"
+        required: true
+      distinct_id:
+        required: false
+
+permissions:
+  # To push changes to the snapshot branch.
+  contents: write
+  # To trigger the CI workflow.
+  actions: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Echo distinct ID ${{ inputs.distinct_id }}
+      run: echo ${{ inputs.distinct_id }}
+
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+
+    - name: Update version constants
+      run: |
+        python scripts/update_version_constants.py \
+          "${{ inputs.mc_version }}" \
+          "${{ inputs.fabric_loader }}" \
+          "${{ inputs.fapi_version }}"
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "Wurst-Bot"
+        git config --global user.email "contact.wurstimperium@gmail.com"
+        git add .
+        git commit -m "[Wurst-Bot] Update to ${{ inputs.mc_version }}"
+        git push
+
+    - name: Trigger CI
+      uses: Wurst-Imperium/dispatch-and-wait@v1
+      with:
+        token: ${{ github.token }}
+        owner: ${{ github.repository_owner }}
+        repo: ${{ github.event.repository.name }}
+        ref: ${{ github.ref }}
+        workflow: gradle.yml
+        run_timeout_seconds: 600  # 10 minutes

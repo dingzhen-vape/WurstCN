@@ -1,0 +1,56 @@
+/*
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ *
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+ */
+package net.wurstclient.hacks;
+
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.wurstclient.Category;
+import net.wurstclient.SearchTags;
+import net.wurstclient.hack.Hack;
+
+@SearchTags({"name protect"})
+public final class NameProtectHack extends Hack
+{
+	public NameProtectHack()
+	{
+		super("隐藏玩家名字");
+		setCategory(Category.RENDER);
+	}
+	
+	public String protect(String string)
+	{
+		if(!isEnabled() || MC.player == null)
+			return string;
+		
+		String me = MC.getUser().getName();
+		if(string.contains(me))
+			return string.replace(me, "\u00a7o我\u00a7r");
+		
+		int i = 0;
+		for(PlayerInfo info : MC.player.connection.getOnlinePlayers())
+		{
+			i++;
+			String name =
+				info.getProfile().name().replaceAll("\u00a7(?:\\w|\\d)", "");
+			
+			if(string.contains(name))
+				return string.replace(name, "\u00a7o玩家\u00a7r" + i + "\u00a7r");
+		}
+		
+		for(AbstractClientPlayer player : MC.level.players())
+		{
+			i++;
+			String name = player.getName().getString();
+			
+			if(string.contains(name))
+				return string.replace(name, "\u00a7o玩家\u00a7r" + i + "\u00a7r");
+		}
+		
+		return string;
+	}
+}

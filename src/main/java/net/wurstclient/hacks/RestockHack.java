@@ -1,0 +1,181 @@
+/*
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ *
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+ */
+package net.wurstclient.hacks;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.wurstclient.Category;
+import net.wurstclient.SearchTags;
+import net.wurstclient.events.UpdateListener;
+import net.wurstclient.hack.Hack;
+import net.wurstclient.mixinterface.IClientPlayerInteractionManager;
+import net.wurstclient.settings.ItemListSetting;
+import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.util.InventoryUtils;
+
+@SearchTags({"AutoRestock", "auto-restock", "auto restock"})
+public final class RestockHack extends Hack implements UpdateListener
+{
+	public static final int OFFHAND_ID = Inventory.SLOT_OFFHAND;
+	public static final int OFFHAND_PKT_ID = 45;
+	
+	private static final List<Integer> SEARCH_SLOTS =
+		Stream.concat(IntStream.range(0, 36).boxed(), Stream.of(OFFHAND_ID))
+			.collect(Collectors.toCollection(ArrayList::new));
+	
+	private ItemListSetting items = new ItemListSetting("物品",
+		"需要补充的物品。", "minecraft:minecart");
+	
+	private final SliderSetting restockSlot = new SliderSetting("槽位",
+		"补充到哪个槽位。", 0, -1, 9, 1,
+		ValueDisplay.INTEGER.withLabel(9, "副手").withLabel(-1, "当前"));
+	
+	private final SliderSetting restockAmount = new SliderSetting(
+		"最小数量",
+		"手中物品的最小数量，低于这个数量时会触发补充。",
+		1, 1, 64, 1, ValueDisplay.INTEGER);
+	
+	private final SliderSetting repairMode = new SliderSetting(
+		"工具修复模式",
+		"当工具的耐久度达到给定的阈值时，会自动换掉，以便在它们损坏之前修复它们。\n"
+			+ "可以从0（关闭）到100调整。"
+			+ "可以从0（关闭）调整到100次剩余使用次数。",
+		0, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "关闭"));
+	
+	public RestockHack()
+	{
+		super("仓库补充");
+		setCategory(Category.ITEMS);
+		addSetting(items);
+		addSetting(restockSlot);
+		addSetting(restockAmount);
+		addSetting(repairMode);
+	}
+	
+	@Override
+	protected void onEnable()
+	{
+		EVENTS.add(UpdateListener.class, this);
+	}
+	
+	@Override
+	protected void onDisable()
+	{
+		EVENTS.remove(UpdateListener.class, this);
+	}
+	
+	@Override
+	public void onUpdate()
+	{
+		// Don't mess with the inventory while it's open.
+		if(MC.screen instanceof AbstractContainerScreen)
+			return;
+		
+		Inventory inv = MC.player.getInventory();
+		IClientPlayerInteractionManager im = IMC.getInteractionManager();
+		
+		int hotbarSlot = restockSlot.getValueI();
+		if(hotbarSlot == -1)
+			hotbarSlot = inv.getSelectedSlot();
+		else if(hotbarSlot == 9)
+			hotbarSlot = OFFHAND_ID;
+		
+		for(String itemName : items.getItemNames())
+		{
+			ItemStack hotbarStack = inv.getItem(hotbarSlot);
+			
+			boolean wrongItem =
+				hotbarStack.isEmpty() || !itemEqual(itemName, hotbarStack);
+			if(!wrongItem && hotbarStack.getCount() >= Math
+				.min(restockAmount.getValueI(), hotbarStack.getMaxStackSize()))
+				return;
+			
+			List<Integer> searchResult =
+				searchSlotsWithItem(itemName, hotbarSlot);
+			for(int itemIndex : searchResult)
+			{
+				int pickupIndex = InventoryUtils.toNetworkSlot(itemIndex);
+				
+				im.windowClick_PICKUP(pickupIndex);
+				im.windowClick_PICKUP(InventoryUtils.toNetworkSlot(hotbarSlot));
+				if(!MC.player.inventoryMenu.getCarried().isEmpty())
+					im.windowClick_PICKUP(pickupIndex);
+				
+				if(hotbarStack.getCount() >= hotbarStack.getMaxStackSize())
+					break;
+			}
+			
+			if(wrongItem && searchResult.isEmpty())
+				continue;
+			
+			break;
+		}
+		
+		ItemStack restockStack = inv.getItem(hotbarSlot);
+		if(repairMode.getValueI() > 0 && restockStack.isDamageableItem()
+			&& isTooDamaged(restockStack))
+			for(int i : SEARCH_SLOTS)
+			{
+				if(i == hotbarSlot || i == OFFHAND_ID)
+					continue;
+				
+				ItemStack stack = inv.getItem(i);
+				if(stack.isEmpty() || !stack.isDamageableItem())
+				{
+					IMC.getInteractionManager().windowClick_SWAP(i,
+						InventoryUtils.toNetworkSlot(hotbarSlot));
+					break;
+				}
+			}
+	}
+	
+	private boolean isTooDamaged(ItemStack stack)
+	{
+		return stack.getMaxDamage() - stack.getDamageValue() <= repairMode
+			.getValueI();
+	}
+	
+	private List<Integer> searchSlotsWithItem(String itemName, int slotToSkip)
+	{
+		List<Integer> slots = new ArrayList<>();
+		
+		for(int i : SEARCH_SLOTS)
+		{
+			if(i == slotToSkip)
+				continue;
+			
+			ItemStack stack = MC.player.getInventory().getItem(i);
+			if(stack.isEmpty())
+				continue;
+			
+			if(itemEqual(itemName, stack))
+				slots.add(i);
+		}
+		
+		return slots;
+	}
+	
+	private boolean itemEqual(String itemName, ItemStack stack)
+	{
+		if(repairMode.getValueI() > 0 && stack.isDamageableItem()
+			&& isTooDamaged(stack))
+			return false;
+		
+		return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString()
+			.equals(itemName);
+	}
+}

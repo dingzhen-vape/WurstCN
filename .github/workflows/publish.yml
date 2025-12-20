@@ -1,0 +1,121 @@
+name: Publish Release
+run-name: "Publish release from ${{ github.ref_name }} branch"
+
+on:
+  workflow_dispatch:
+    inputs:
+      close_milestone:
+        description: "Close milestone"
+        type: boolean
+        default: true
+      upload_backups:
+        description: "Upload to backups server"
+        type: boolean
+        default: true
+      publish_github:
+        description: "Publish to GitHub"
+        type: boolean
+        default: true
+      update_website:
+        description: "Update WurstClient.net post (only works if there already is one)"
+        type: boolean
+        default: false
+      distinct_id:
+        type: string
+        required: false
+
+permissions:
+  # Needed to push the tag.
+  contents: write
+  # Needed to close the milestone.
+  issues: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Echo distinct ID ${{ inputs.distinct_id }}
+      run: echo ${{ inputs.distinct_id }}
+
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        # Include all tags in case the new tag already exists.
+        fetch-tags: true
+
+    - name: Set up Java 21
+      uses: actions/setup-java@v5
+      with:
+        java-version: "21"
+        distribution: "microsoft"
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+      with:
+        build-scan-publish: true
+        build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
+        build-scan-terms-of-use-agree: "yes"
+        cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+        cache-read-only: ${{ github.ref != 'refs/heads/master' && !startsWith(github.ref, 'refs/heads/1.') }}
+
+    - name: Build
+      run: ./gradlew build --stacktrace --warning-mode=fail
+
+    - name: Create and push tag
+      if: ${{ github.ref_type != 'tag' }}
+      run: |
+        MOD_VERSION=$(grep "^mod_version=" gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+        git config --global user.name "Wurst-Bot"
+        git config --global user.email "contact.wurstimperium@gmail.com"
+        git tag "$MOD_VERSION"
+        git push origin "$MOD_VERSION"
+
+    - name: Close milestone
+      if: ${{ inputs.close_milestone }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: ./gradlew closeMilestone --stacktrace --no-configuration-cache
+
+    - name: Build website update inputs
+      id: website_inputs
+      if: ${{ inputs.update_website }}
+      run: |
+        echo "wurst_version=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r' | sed 's/^v//' | sed 's/-MC.*$//')" >> "$GITHUB_OUTPUT"
+        echo "mc_version=$(grep '^minecraft_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')" >> "$GITHUB_OUTPUT"
+        echo "fapi_version=$(grep '^fabric_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')" >> "$GITHUB_OUTPUT"
+
+    - name: Upload backups
+      if: ${{ inputs.upload_backups }}
+      uses: Wurst-Imperium/upload-backups@v1
+      with:
+        api_key: ${{ secrets.WI_BACKUPS_API_KEY }}
+        project: Wurst
+        version: ${{ steps.website_inputs.outputs.wurst_version }}
+        path: build/libs/*.jar
+
+    - name: Publish to GitHub
+      if: ${{ inputs.publish_github }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.OLD_MCX_PUBLISH_TOKEN }}
+      run: ./gradlew github --stacktrace --no-configuration-cache
+
+    - name: Trigger website update
+      if: ${{ inputs.update_website }}
+      uses: Wurst-Imperium/dispatch-and-wait@v1
+      with:
+        token: ${{ secrets.WURSTCLIENT_NET_PUBLISH_TOKEN }}
+        owner: Wurst-Imperium
+        repo: WurstClient.net
+        ref: gh-pages
+        workflow: add_wurst_port.yml
+        workflow_inputs: |
+          {
+            "wurst_version": "${{ steps.website_inputs.outputs.wurst_version }}",
+            "mc_version": "${{ steps.website_inputs.outputs.mc_version }}",
+            "fapi_version": "${{ steps.website_inputs.outputs.fapi_version }}"
+          }
+        run_timeout_seconds: 600  # 10 minutes

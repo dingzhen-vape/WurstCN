@@ -1,0 +1,257 @@
+/*
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ *
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+ */
+package net.wurstclient.hacks;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.wurstclient.Category;
+import net.wurstclient.SearchTags;
+import net.wurstclient.clickgui.screens.EditBlockListScreen;
+import net.wurstclient.events.GetAmbientOcclusionLightLevelListener;
+import net.wurstclient.events.RenderBlockEntityListener;
+import net.wurstclient.events.SetOpaqueCubeListener;
+import net.wurstclient.events.ShouldDrawSideListener;
+import net.wurstclient.events.UpdateListener;
+import net.wurstclient.hack.Hack;
+import net.wurstclient.mixinterface.ISimpleOption;
+import net.wurstclient.settings.BlockListSetting;
+import net.wurstclient.settings.CheckboxSetting;
+import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.util.BlockUtils;
+import net.wurstclient.util.ChatUtils;
+
+@SearchTags({"XRay", "x ray", "OreFinder", "ore finder"})
+public final class XRayHack extends Hack implements UpdateListener,
+	SetOpaqueCubeListener, GetAmbientOcclusionLightLevelListener,
+	ShouldDrawSideListener, RenderBlockEntityListener
+{
+	private final BlockListSetting ores = new BlockListSetting("矿石",
+		"A list of blocks that X-Ray will show. They don't have to be just ores"
+			+ " - 您可以添加任何想要的方块。\n\n"
+			+ "更改此设置时，请记得重新启动X-Ray。",
+		"minecraft:amethyst_cluster", "minecraft:ancient_debris",
+		"minecraft:anvil", "minecraft:beacon", "minecraft:bone_block",
+		"minecraft:bookshelf", "minecraft:brewing_stand",
+		"minecraft:budding_amethyst", "minecraft:chain_command_block",
+		"minecraft:chest", "minecraft:coal_block", "minecraft:coal_ore",
+		"minecraft:command_block", "minecraft:copper_ore", "minecraft:crafter",
+		"minecraft:crafting_table", "minecraft:creaking_heart",
+		"minecraft:decorated_pot", "minecraft:deepslate_coal_ore",
+		"minecraft:deepslate_copper_ore", "minecraft:deepslate_diamond_ore",
+		"minecraft:deepslate_emerald_ore", "minecraft:deepslate_gold_ore",
+		"minecraft:deepslate_iron_ore", "minecraft:deepslate_lapis_ore",
+		"minecraft:deepslate_redstone_ore", "minecraft:diamond_block",
+		"minecraft:diamond_ore", "minecraft:dispenser", "minecraft:dropper",
+		"minecraft:emerald_block", "minecraft:emerald_ore",
+		"minecraft:enchanting_table", "minecraft:end_portal",
+		"minecraft:end_portal_frame", "minecraft:ender_chest",
+		"minecraft:furnace", "minecraft:glowstone", "minecraft:gold_block",
+		"minecraft:gold_ore", "minecraft:hopper", "minecraft:iron_block",
+		"minecraft:iron_ore", "minecraft:ladder", "minecraft:lapis_block",
+		"minecraft:lapis_ore", "minecraft:lava", "minecraft:lodestone",
+		"minecraft:mossy_cobblestone", "minecraft:nether_gold_ore",
+		"minecraft:nether_portal", "minecraft:nether_quartz_ore",
+		"minecraft:raw_copper_block", "minecraft:raw_gold_block",
+		"minecraft:raw_iron_block", "minecraft:redstone_block",
+		"minecraft:redstone_ore", "minecraft:repeating_command_block",
+		"minecraft:sculk_catalyst", "minecraft:sculk_sensor",
+		"minecraft:sculk_shrieker", "minecraft:spawner",
+		"minecraft:suspicious_gravel", "minecraft:suspicious_sand",
+		"minecraft:tnt", "minecraft:torch", "minecraft:trapped_chest",
+		"minecraft:trial_spawner", "minecraft:vault", "minecraft:wall_torch",
+		"minecraft:water");
+	
+	private final CheckboxSetting onlyExposed = new CheckboxSetting(
+		"仅显示暴露",
+		"仅显示在洞穴中可见的矿石。这可以帮助对抗"
+			+ " 反X-Ray插件。\n\n"
+			+ "更改此设置时，请记得重新启动X-Ray。",
+		false);
+	
+	private final SliderSetting opacity = new SliderSetting("不透明度",
+		"启用X-Ray时非矿石方块的不透明度。\n\n"
+			+ "更改此设置时，请记得重新启动X-Ray。",
+		0, 0, 0.99, 0.01, ValueDisplay.PERCENTAGE.withLabel(0, "关闭"));
+	
+	private final String optiFineWarning;
+	private final String renderName =
+		Math.random() < 0.01 ? "X-Wurst" : getName();
+	
+	private ArrayList<String> oreNamesCache;
+	private final ThreadLocal<BlockPos.MutableBlockPos> mutablePosForExposedCheck =
+		ThreadLocal.withInitial(BlockPos.MutableBlockPos::new);
+	
+	public XRayHack()
+	{
+		super("矿透");
+		setCategory(Category.RENDER);
+		addSetting(ores);
+		addSetting(onlyExposed);
+		addSetting(opacity);
+		optiFineWarning = checkOptiFine();
+	}
+	
+	@Override
+	public String getRenderName()
+	{
+		return renderName;
+	}
+	
+	@Override
+	protected void onEnable()
+	{
+		// cache block names in case the setting changes while X-Ray is enabled
+		oreNamesCache = new ArrayList<>(ores.getBlockNames());
+		
+		// add event listeners
+		EVENTS.add(UpdateListener.class, this);
+		EVENTS.add(SetOpaqueCubeListener.class, this);
+		EVENTS.add(GetAmbientOcclusionLightLevelListener.class, this);
+		EVENTS.add(ShouldDrawSideListener.class, this);
+		EVENTS.add(RenderBlockEntityListener.class, this);
+		
+		// reload chunks
+		MC.levelRenderer.allChanged();
+		
+		// display warning if OptiFine is detected
+		if(optiFineWarning != null)
+			ChatUtils.warning(optiFineWarning);
+	}
+	
+	@Override
+	protected void onDisable()
+	{
+		// remove event listeners
+		EVENTS.remove(UpdateListener.class, this);
+		EVENTS.remove(SetOpaqueCubeListener.class, this);
+		EVENTS.remove(GetAmbientOcclusionLightLevelListener.class, this);
+		EVENTS.remove(ShouldDrawSideListener.class, this);
+		EVENTS.remove(RenderBlockEntityListener.class, this);
+		
+		// reload chunks
+		MC.levelRenderer.allChanged();
+		
+		// reset gamma
+		FullbrightHack fullbright = WURST.getHax().fullbrightHack;
+		if(!fullbright.isChangingGamma())
+			ISimpleOption.get(MC.options.gamma())
+				.forceSetValue(fullbright.getDefaultGamma());
+	}
+	
+	@Override
+	public void onUpdate()
+	{
+		// force gamma to 16 so that ores are bright enough to see
+		ISimpleOption.get(MC.options.gamma()).forceSetValue(16.0);
+	}
+	
+	@Override
+	public void onSetOpaqueCube(SetOpaqueCubeEvent event)
+	{
+		event.cancel();
+	}
+	
+	@Override
+	public void onGetAmbientOcclusionLightLevel(
+		GetAmbientOcclusionLightLevelEvent event)
+	{
+		event.setLightLevel(1);
+	}
+	
+	@Override
+	public void onShouldDrawSide(ShouldDrawSideEvent event)
+	{
+		boolean visible =
+			isVisible(event.getState().getBlock(), event.getPos());
+		if(!visible && opacity.getValue() > 0)
+			return;
+		
+		event.setRendered(visible);
+	}
+	
+	@Override
+	public void onRenderBlockEntity(RenderBlockEntityEvent event)
+	{
+		BlockPos pos = event.getState().blockPos;
+		if(!isVisible(BlockUtils.getBlock(pos), pos))
+			event.cancel();
+	}
+	
+	public boolean isVisible(Block block, BlockPos pos)
+	{
+		String name = BlockUtils.getName(block);
+		int index = Collections.binarySearch(oreNamesCache, name);
+		boolean visible = index >= 0;
+		
+		if(visible && onlyExposed.isChecked() && pos != null)
+			return isExposed(pos);
+		
+		return visible;
+	}
+	
+	private boolean isExposed(BlockPos pos)
+	{
+		BlockPos.MutableBlockPos mutablePos = mutablePosForExposedCheck.get();
+		for(Direction direction : Direction.values())
+			if(!BlockUtils
+				.isOpaqueFullCube(mutablePos.setWithOffset(pos, direction)))
+				return true;
+			
+		return false;
+	}
+	
+	public boolean isOpacityMode()
+	{
+		return isEnabled() && opacity.getValue() > 0;
+	}
+	
+	public int getOpacityColorMask()
+	{
+		return (int)(opacity.getValue() * 255) << 24 | 0xFFFFFF;
+	}
+	
+	public float getOpacityFloat()
+	{
+		return opacity.getValueF();
+	}
+	
+	/**
+	 * Checks if OptiFine/OptiFabric is installed and returns a warning message
+	 * if it is.
+	 */
+	private String checkOptiFine()
+	{
+		Stream<String> mods = FabricLoader.getInstance().getAllMods().stream()
+			.map(ModContainer::getMetadata).map(ModMetadata::getId);
+		
+		Pattern optifine = Pattern.compile("opti(?:fine|fabric).*");
+		
+		if(mods.anyMatch(optifine.asPredicate()))
+			return "安装了OptiFine。X-Ray将无法正常工作！";
+		
+		return null;
+	}
+	
+	public void openBlockListEditor(Screen prevScreen)
+	{
+		MC.setScreen(new EditBlockListScreen(prevScreen, ores));
+	}
+	
+	// See AbstractBlockRenderContextMixin, RenderLayersMixin
+}

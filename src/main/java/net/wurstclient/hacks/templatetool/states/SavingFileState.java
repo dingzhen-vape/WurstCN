@@ -1,0 +1,137 @@
+/*
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ *
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+ */
+package net.wurstclient.hacks.templatetool.states;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.block.state.BlockState;
+import net.wurstclient.hacks.TemplateToolHack;
+import net.wurstclient.hacks.templatetool.TemplateToolState;
+import net.wurstclient.util.BlockUtils;
+import net.wurstclient.util.ChatUtils;
+import net.wurstclient.util.json.JsonUtils;
+
+public final class SavingFileState extends TemplateToolState
+{
+	@Override
+	protected String getMessage(TemplateToolHack hack)
+	{
+		return "保存文件...";
+	}
+	
+	@Override
+	public void onEnter(TemplateToolHack hack)
+	{
+		JsonObject json = hack.areBlockTypesEnabled() ? createV2Json(hack)
+			: createV1Json(hack);
+		
+		// Save the file
+		try(PrintWriter save = new PrintWriter(new FileWriter(hack.getFile())))
+		{
+			save.print(JsonUtils.GSON.toJson(json));
+			
+		}catch(IOException e)
+		{
+			e.printStackTrace();
+			ChatUtils.error("文件无法保存。");
+			hack.setEnabled(false);
+			return;
+		}
+		
+		// Show success message
+		MutableComponent message = Component.literal("已保存模板为 ");
+		ClickEvent event = new ClickEvent.OpenFile(
+			hack.getFile().getParentFile().getAbsolutePath());
+		MutableComponent link = Component.literal(hack.getFile().getName())
+			.withStyle(s -> s.withUnderlined(true).withClickEvent(event));
+		message.append(link);
+		ChatUtils.component(message);
+		
+		hack.setEnabled(false);
+	}
+	
+	private JsonObject createV2Json(TemplateToolHack hack)
+	{
+		JsonObject json = new JsonObject();
+		json.addProperty("version", 2);
+		
+		Direction front = MC.player.getDirection();
+		BlockPos origin = hack.getOriginPos();
+		
+		JsonArray jsonBlocks = new JsonArray();
+		for(BlockPos pos : hack.getSortedBlocks())
+		{
+			BlockState state = hack.getNonEmptyBlocks().get(pos);
+			if(state == null)
+				throw new IllegalStateException("Block at " + pos
+					+ " exists in sortedBlocks but not in nonEmptyBlocks.");
+			
+			JsonObject jsonBlock = new JsonObject();
+			jsonBlock.addProperty("block",
+				BlockUtils.getName(state.getBlock()));
+			
+			JsonArray jsonPos = new JsonArray();
+			pos = toTemplatePos(pos, origin, front);
+			jsonPos.add(pos.getX());
+			jsonPos.add(pos.getY());
+			jsonPos.add(pos.getZ());
+			jsonBlock.add("pos", jsonPos);
+			
+			jsonBlocks.add(jsonBlock);
+		}
+		json.add("方块", jsonBlocks);
+		return json;
+	}
+	
+	private JsonObject createV1Json(TemplateToolHack hack)
+	{
+		JsonObject json = new JsonObject();
+		json.addProperty("version", 1);
+		
+		Direction front = MC.player.getDirection();
+		BlockPos origin = hack.getOriginPos();
+		
+		JsonArray jsonBlocks = new JsonArray();
+		for(BlockPos pos : hack.getSortedBlocks())
+		{
+			JsonArray jsonPos = new JsonArray();
+			pos = toTemplatePos(pos, origin, front);
+			jsonPos.add(pos.getX());
+			jsonPos.add(pos.getY());
+			jsonPos.add(pos.getZ());
+			jsonBlocks.add(jsonPos);
+		}
+		json.add("方块", jsonBlocks);
+		return json;
+	}
+	
+	private BlockPos toTemplatePos(BlockPos pos, BlockPos origin,
+		Direction front)
+	{
+		BlockPos translated = pos.subtract(origin);
+		Direction left = front.getCounterClockWise();
+		
+		int leftDist = translated.getX() * left.getStepX()
+			+ translated.getZ() * left.getStepZ();
+		int upDist = translated.getY();
+		int frontDist = translated.getX() * front.getStepX()
+			+ translated.getZ() * front.getStepZ();
+		
+		return new BlockPos(leftDist, upDist, frontDist);
+	}
+}

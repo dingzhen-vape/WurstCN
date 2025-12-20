@@ -1,0 +1,30 @@
+name: Check Translations
+
+on:
+  push:
+    branches-ignore:
+    - "dependabot/**"
+    tags-ignore:
+    - "**"
+    paths:
+    - "src/main/resources/assets/wurst/translations/**.json"
+    - "src/main/resources/intentionally_untranslated.json"
+  pull_request:
+    paths:
+    - "src/main/resources/assets/wurst/translations/**.json"
+    - "src/main/resources/intentionally_untranslated.json"
+  workflow_dispatch:
+
+jobs:
+  check_translations:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Check translations
+      uses: Wurst-Imperium/check-translations@v1
+      with:
+        lang-dir: "src/main/resources/assets/wurst/translations"
+        wurst-mode: true
