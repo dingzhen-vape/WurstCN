@@ -3,6 +3,9 @@
 这是一个基本完成汉化的wurst hack端，基于wurst最新版本制作。
 - 当wurst更新的时候，这个仓库可能不会更新
 
+# 注意！
+- 当前仓库已经过时，想要最新的支持？
+- 查看这个[插件](https://github.com/dingzhen-vape/WurstI18nPlusPlugin)
 ## 下载和安装
 - 当前仓库的Release
 ## 图片（汉化效果）
